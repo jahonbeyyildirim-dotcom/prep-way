@@ -97,6 +97,11 @@
   .play:hover{filter:brightness(1.07)}
   .script{font-size:16px;color:var(--muted)}
   .opts{display:grid;gap:10px}
+  .qpic{text-align:center;font-size:76px;line-height:1.15}
+  .opt.pic{font-size:30px;padding:10px 16px}
+  .exam-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  .exam-btns .btn{padding:11px 10px;font-size:14px;flex-direction:column;gap:2px;line-height:1.2}
+  .exam-btns .btn small{font-weight:600;opacity:.8;font-size:12px}
   .opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--ink)}
   .opt:hover{border-color:var(--blue)}
   .opt .n{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:14px;font-weight:700;font-family:Manrope}
@@ -258,18 +263,26 @@
 
     <h2>Imtihonni tanlang</h2>
     <div class="grid2">
-      <button class="card exam" data-start="eps">
+      <div class="card exam">
         <span class="tag">Koreyada ishlash · E-9 viza</span>
         <h3>EPS-TOPIK</h3>
         <p>Ish joyi, xavfsizlik, zavod va kundalik hayot mavzularida o'qish va tinglash.</p>
-        <div class="meta"><span class="chip">8 savol</span><span class="chip">8 daqiqa</span><span class="chip">O'qish + Tinglash</span></div>
-      </button>
-      <button class="card exam" data-start="topik">
+        <div class="meta"><span class="chip">O'qish + Tinglash</span><span class="chip" data-bank="eps">Bankda savollar</span></div>
+        <div class="exam-btns">
+          <button class="btn ghost" data-start="eps:quick">⚡ Tezkor test<small>10 savol · 10 daqiqa</small></button>
+          <button class="btn" data-start="eps:full">📝 To'liq imtihon<small>40 savol · 50 daqiqa</small></button>
+        </div>
+      </div>
+      <div class="card exam">
         <span class="tag">O'qish · universitet · grant</span>
         <h3>TOPIK I</h3>
         <p>1–2-daraja: kundalik so'zlar, grammatika, qisqa matnlar va dialoglar.</p>
-        <div class="meta"><span class="chip">8 savol</span><span class="chip">8 daqiqa</span><span class="chip">O'qish + Tinglash</span></div>
-      </button>
+        <div class="meta"><span class="chip">Tinglash + O'qish</span><span class="chip" data-bank="topik">Bankda savollar</span></div>
+        <div class="exam-btns">
+          <button class="btn ghost" data-start="topik:quick">⚡ Tezkor test<small>10 savol · 10 daqiqa</small></button>
+          <button class="btn" data-start="topik:full">📝 Katta mock<small>30 savol · 40 daqiqa</small></button>
+        </div>
+      </div>
     </div>
 
     <h2>Nima bor?</h2>
@@ -458,6 +471,7 @@
 <script src="app-config.js"></script>
 <script src="app-mode.js"></script>
 <script src="demo-api.js"></script>
+<script src="questions.js"></script>
 <script>
 (function(){
   // ---------- DATA ----------
@@ -531,6 +545,20 @@
        exp:"Sabab bildiruvchi <b>-아서/어서</b>: \"Havo issiq bo'lgani uchun derazani ochdim.\" 덥다 noto'g'ri fe'l: ㅂ → 우, shuning uchun <b>더워서</b>."}
     ]}
   };
+  // Savollar banki: eski 8 tadan savol + questions.js. Har bir savolning doimiy id si bor.
+  var MODES = {
+    eps:   { name:"EPS-TOPIK", order:["read","listen"], quick:{read:5, listen:5, min:10}, full:{read:20, listen:20, min:50} },
+    topik: { name:"TOPIK I",   order:["listen","read"], quick:{read:5, listen:5, min:10}, full:{read:18, listen:12, min:40} }
+  };
+  var BANK = {}, QBYID = {};
+  function pad3(n){ return ("00"+n).slice(-3); }
+  Object.keys(EXAMS).forEach(function(k){
+    var legacy = EXAMS[k].qs.map(function(q,i){ q.id = k.charAt(0)+pad3(i+1); return q; });
+    BANK[k] = legacy.concat((window.PW_QBANK && window.PW_QBANK[k]) || []);
+    BANK[k].forEach(function(q){ QBYID[q.id] = { exam: EXAMS[k].name, q: q }; });
+  });
+  function shuffle(a){ for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function isPicOpt(o){ return !/[A-Za-z0-9\uAC00-\uD7A3]/.test(o); }
 
   var WORDS = [
     {ko:"안전모",rom:"anjeonmo",uz:"xavfsizlik kaskasi",t:"eps"},
@@ -637,7 +665,11 @@
   // Telegramdan tashqarida localStorage ishlatiladi. Faqat {id, your} saqlanadi (4 KB chegarasi).
   var KEY = "hyMistakes";
   var mistakes = [];
-  function findQ(id){ var p = String(id).split("-"), ex = EXAMS[p[0]]; return (ex && ex.qs[+p[1]]) ? {exam:ex.name, q:ex.qs[+p[1]]} : null; }
+  function findQ(id){
+    if (QBYID[id]) return QBYID[id];
+    var p = String(id).split("-");   // eski format: "eps-3"
+    return (EXAMS[p[0]] && QBYID[p[0].charAt(0)+pad3(+p[1]+1)]) || null;
+  }
   function localLoad(){ try { mistakes = JSON.parse(localStorage.getItem(KEY) || "[]") || []; } catch(e){ mistakes = []; } }
   function loadM(cb){
     if (inTG && ver("6.9") && tg.CloudStorage){
@@ -768,7 +800,20 @@
   // ---------- TEST ----------
   var cur = null; // {key, exam, i, ans[], left, tid}
   function startTest(key){
-    var ex = EXAMS[key];
+    var parts = String(key).split(":"), k = parts[0], mode = parts[1]==="full" ? "full" : "quick";
+    var M = MODES[k], cfg = M[mode], qs = [];
+    M.order.forEach(function(sec){
+      var pool = shuffle(BANK[k].filter(function(q){ return q.sec===sec; }));
+      qs = qs.concat(pool.slice(0, Math.min(cfg[sec], pool.length)));
+    });
+    // Variantlar tartibini aralashtirish: javob har safar boshqa joyda. perm[ko'rsatilgan] = asl indeks.
+    qs = qs.map(function(q){
+      var perm = shuffle(q.opts.map(function(_,i){ return i; })), v = {};
+      for (var f in q) v[f] = q[f];
+      v.opts = perm.map(function(i){ return q.opts[i]; }); v.a = perm.indexOf(q.a); v.perm = perm;
+      return v;
+    });
+    var ex = { name: M.name+(mode==="full" ? " · to'liq" : " · tezkor"), minutes: cfg.min, qs: qs };
     cur = { key:key, exam:ex, i:0, ans:ex.qs.map(function(){return -1;}), left:ex.minutes*60, tid:null };
     $("tExam").textContent = ex.name;
     go("test");
@@ -796,10 +841,11 @@
     var h = '<div class="qsec '+q.sec+'">'+(q.sec==="listen"?"🎧 Tinglash · 듣기":"📖 O'qish · 읽기")+'</div>';
     h += '<div class="qinst ko">'+(cur.i+1)+'. '+esc(q.inst)+'</div><p class="qinst-uz">'+esc(q.uz)+'</p>';
     if (q.sign) h += '<div class="passage" style="text-align:center"><span class="sign ko">'+esc(q.sign)+'</span></div>';
+    if (q.pic) h += '<div class="passage qpic">'+esc(q.pic)+'</div>';
     if (q.text) h += '<div class="passage ko">'+esc(q.text)+'</div>';
     if (q.audio) h += '<div class="audio"><button class="play" id="playBtn" aria-label="Tinglash">▶</button><div><div style="font-weight:700">Audioni tinglang</div><button class="btn ghost" style="padding:6px 10px;font-size:13px;margin-top:4px" id="showScript">Matnni ko\'rsatish</button></div></div><div class="script ko" id="script" hidden>'+esc(q.audio)+'</div>';
     h += '<div class="opts">';
-    q.opts.forEach(function(o,k){ h += '<button class="opt ko'+(cur.ans[cur.i]===k?' sel':'')+'" data-k="'+k+'"><span class="n">'+(k+1)+'</span>'+esc(o)+'</button>'; });
+    q.opts.forEach(function(o,k){ h += '<button class="opt ko'+(isPicOpt(o)?' pic':'')+(cur.ans[cur.i]===k?' sel':'')+'" data-k="'+k+'"><span class="n">'+(k+1)+'</span>'+esc(o)+'</button>'; });
     h += '</div>';
     $("qCard").innerHTML = h;
     if (q.audio){
@@ -833,8 +879,9 @@
       var good = cur.ans[k]===q.a; if (good) ok++;
       sec[q.sec][1]++; if (good) sec[q.sec][0]++;
       if (!good){
-        var id = cur.key+"-"+k;
-        if (!mistakes.some(function(m){return m.id===id;})){ mistakes.unshift({id:id, your:cur.ans[k]}); added++; }
+        var id = q.id;
+        var yourOrig = cur.ans[k]>-1 && q.perm ? q.perm[cur.ans[k]] : cur.ans[k];
+        if (!mistakes.some(function(m){return m.id===id;})){ mistakes.unshift({id:id, your:yourOrig}); added++; }
       }
     });
     saveM();
@@ -859,7 +906,7 @@
 
   function reviewCard(q, your, label){
     var good = your===q.a;
-    var body = q.text || q.sign || ("🎧 "+q.audio);
+    var body = q.text || q.sign || q.pic || ("🎧 "+q.audio);
     return '<div class="card rv'+(good?'':' bad')+'"><div class="h"><span>'+esc(label)+' · '+(q.sec==="listen"?"Tinglash":"O'qish")+'</span><span style="color:'+(good?'var(--green)':'var(--red)')+'">'+(good?"✓ To'g'ri":"✕ Xato")+'</span></div>'+
       '<div class="q ko" style="white-space:pre-line">'+esc(body)+'</div>'+
       (good ? '' : '<div class="ans no ko">Sizning javobingiz: '+(your>-1? NUMS[your]+' '+esc(q.opts[your]) : '—')+'</div>')+
@@ -941,6 +988,7 @@
   }).catch(function(){ SERVER.ok = false; });
 
   // Qo'shimcha bo'limlar (features.js) uchun umumiy funksiyalar
+  document.querySelectorAll("[data-bank]").forEach(function(el){ el.textContent = BANK[el.dataset.bank].length+" ta savol bankda"; });
   window.HY = {
     $: $, esc: esc, toast: toast, go: go, back: back, api: api, speak: speak, haptic: haptic,
     tg: tg, inTG: inTG, ver: ver, CONFIG: CONFIG, SERVER: SERVER, WORDS: WORDS,
