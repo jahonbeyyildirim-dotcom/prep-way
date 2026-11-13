@@ -12,8 +12,11 @@
   try { user = JSON.parse(lsGet(UKEY) || "null"); } catch (e) {}
   var apiBase = (cfg.apiBase || "").replace(/\/$/, "");
 
+  // DEMO rejim: serversiz, kirishsiz (app.config.json → "demo": true)
+  var demo = !!cfg.demo && !(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData);
   var PW = window.PW = {
     native: native,
+    demo: demo,
     platform: native ? C.getPlatform() : "web",
     token: lsGet(TKEY),
     user: user,
@@ -25,6 +28,17 @@
       location.reload();
     }
   };
+  if (demo) {
+    document.documentElement.classList.add("demo");
+    document.addEventListener("DOMContentLoaded", function () {
+      var b = document.createElement("div");
+      b.style.cssText = "background:#cd2e3a;color:#fff;text-align:center;font-size:12.5px;font-weight:700;padding:calc(6px + env(safe-area-inset-top)) 10px 6px";
+      b.textContent = "DEMO versiya — AI javoblari namunaviy";
+      document.body.insertBefore(b, document.body.firstChild);
+      var hdr = document.querySelector("header"); if (hdr) hdr.style.paddingTop = "0";
+    });
+    return;
+  }
   if (!native) return;
   document.documentElement.classList.add("native");
 
