@@ -1,0 +1,4 @@
+aiogram>=3.13,<4
+aiohttp>=3.9
+google-genai>=1.50
+pypdf>=4.0

@@ -1,0 +1,95 @@
+# Android ilovani GitHub serverida yig'adi.
+#  - main'ga har yuklashda: APK "Artifacts" bo'limida paydo bo'ladi (Actions → oxirgi ish → Artifacts).
+#  - v1.0.0 kabi teg qo'yilganda: Releases sahifasida APK (hamma yuklab oladigan havola) va
+#    Google Play uchun AAB fayli chiqadi.
+name: Android ilova
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEY: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Kutubxonalarni o'rnatish
+        working-directory: mobile
+        run: npm ci
+
+      - name: Ilova sahifasini tayyorlash
+        working-directory: mobile
+        run: |
+          node scripts/build-web.mjs
+          npx cap sync android
+
+      - name: Versiya raqami
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then V="${GITHUB_REF_NAME#v}"; else V="1.0.${{ github.run_number }}"; fi
+          echo "VERSION_NAME=$V" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=${{ github.run_number }}" >> "$GITHUB_ENV"
+
+      - name: Imzo kalitini tiklash
+        if: env.HAS_KEY == 'true'
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
+
+      - name: Yig'ish (imzolangan release)
+        if: env.HAS_KEY == 'true'
+        working-directory: mobile/android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleRelease bundleRelease
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/dist/PrepWay-$VERSION_NAME.apk"
+          cp app/build/outputs/bundle/release/app-release.aab "$GITHUB_WORKSPACE/dist/PrepWay-$VERSION_NAME.aab"
+
+      - name: Yig'ish (sinov uchun debug — Google kirish ishlamaydi)
+        if: env.HAS_KEY != 'true'
+        working-directory: mobile/android
+        run: |
+          echo "::warning::ANDROID_KEYSTORE_BASE64 secret kiritilmagan: sinov (debug) APK yig'ilmoqda. Google orqali kirish faqat imzolangan versiyada ishlaydi."
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
+          mkdir -p "$GITHUB_WORKSPACE/dist"
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/dist/PrepWay-$VERSION_NAME-debug.apk"
+
+      - name: Fayllarni saqlash (Artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: PrepWay-android-${{ env.VERSION_NAME }}
+          path: dist/*
+
+      - name: Release sahifasiga chiqarish
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Prep Way ${{ env.VERSION_NAME }}
+          body: |
+            Android uchun Prep Way. Telefoningizda **PrepWay-${{ env.VERSION_NAME }}.apk** faylini yuklab oling va o'rnating
+            (birinchi marta telefon «noma'lum manbadan o'rnatish»ga ruxsat so'raydi).
+          files: dist/*

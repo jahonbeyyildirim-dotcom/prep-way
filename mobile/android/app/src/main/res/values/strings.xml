@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Prep Way</string>
+    <string name="title_activity_main">Prep Way</string>
+    <string name="package_name">uz.prepway.app</string>
+    <string name="custom_url_scheme">uz.prepway.app</string>
+</resources>

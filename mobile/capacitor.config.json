@@ -1,0 +1,14 @@
+{
+  "appId": "uz.prepway.app",
+  "appName": "Prep Way",
+  "webDir": "www",
+  "backgroundColor": "#f6f5f1",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never" },
+  "plugins": {
+    "SocialLogin": {
+      "providers": { "google": true, "facebook": false, "apple": false, "twitter": false },
+      "logLevel": 1
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "prep-way-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Prep Way — Android va iPhone ilovasi (Capacitor)",
+  "scripts": {
+    "build": "node scripts/build-web.mjs",
+    "sync": "node scripts/build-web.mjs && npx cap sync",
+    "icons": "npx capacitor-assets generate --iconBackgroundColor '#0f3d91' --splashBackgroundColor '#f6f5f1'",
+    "android": "node scripts/build-web.mjs && npx cap sync android && npx cap open android",
+    "ios": "node scripts/build-web.mjs && npx cap sync ios && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/ios": "^8.6.2",
+    "@capgo/capacitor-social-login": "^8.7.10"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "^8.6.2"
+  }
+}

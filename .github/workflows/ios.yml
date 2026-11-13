@@ -1,0 +1,36 @@
+# iPhone ilovasini Apple'ning Mac serverida yig'ib tekshiradi (simulyator uchun, imzosiz).
+# Bu App Store'ga yuklash emas: buning uchun Apple Developer akkaunti va Xcode kerak (README'ga qarang).
+name: iPhone ilova (tekshiruv)
+
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", "miniapp/**", ".github/workflows/ios.yml"]
+  workflow_dispatch:
+
+jobs:
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Kutubxonalarni o'rnatish
+        working-directory: mobile
+        run: npm ci
+
+      - name: Ilova sahifasini tayyorlash
+        working-directory: mobile
+        run: |
+          node scripts/build-web.mjs
+          npx cap sync ios
+
+      - name: Simulyator uchun yig'ish
+        working-directory: mobile/ios/App
+        run: |
+          xcodebuild -project App.xcodeproj -scheme App -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -40
