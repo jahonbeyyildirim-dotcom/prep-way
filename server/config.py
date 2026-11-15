@@ -27,7 +27,8 @@ WEBAPP_URL = os.getenv("WEBAPP_URL", "").strip().rstrip("/")
 # Model nomlari vaqt o'tishi bilan yangilanadi: aistudio.google.com dagi ro'yxatni tekshirib, kerak bo'lsa o'zgartiring.
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 GEMINI_TTS_MODEL = os.getenv("GEMINI_TTS_MODEL", "gemini-3.8-flash-lite-tts")
-TTS_VOICE = os.getenv("TTS_VOICE", "Kore")
+TTS_VOICE = os.getenv("TTS_VOICE", "Kore")            # Komiko: ayol ovozi
+TTS_VOICE_MALE = os.getenv("TTS_VOICE_MALE", "Charon")  # Komiko: erkak ovozi
 
 PREMIUM_STARS = _int("PREMIUM_STARS", 200)
 PREMIUM_DAYS = _int("PREMIUM_DAYS", 30)

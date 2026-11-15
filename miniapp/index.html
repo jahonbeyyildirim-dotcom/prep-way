@@ -234,6 +234,7 @@
   .face .ex{font-size:14px;margin-top:6px;opacity:.95}
   nav button{font-size:11px}
 </style>
+<link rel="stylesheet" href="komiko.css">
 </head>
 <body>
 
@@ -245,8 +246,8 @@
 </header>
 <nav>
   <button data-go="home" class="on"><span class="ni">🏠</span>Asosiy</button>
-  <button data-go="speak"><span class="ni">🎙️</span>Gapirish</button>
-  <button data-go="books"><span class="ni">📚</span>Kitoblar</button>
+  <button data-go="speak"><span class="ni">🤖</span>Komiko</button>
+  <button data-go="hw"><span class="ni">📷</span>Daftar</button>
   <button data-go="words"><span class="ni">🗂️</span>So'zlar</button>
   <button data-go="mistakes"><span class="ni">📝</span>Xatolar<span class="badge" id="mBadge" hidden>0</span></button>
 </nav>
@@ -255,11 +256,7 @@
 
   <!-- HOME -->
   <section class="view on" id="v-home">
-    <div class="hero">
-      <span class="eyebrow">🇺🇿 O'zbekiston uchun</span>
-      <h1>Koreys tili imtihoniga <em>o'zbek tilida</em> tayyorlaning</h1>
-      <p class="lead">EPS-TOPIK va TOPIK uchun mock testlar, tinglash mashqlari va har bir xatoga o'zbekcha tushuntirish. Koreyada ishlash yoki o'qish uchun birinchi qadam.</p>
-    </div>
+    <div id="homeDash"></div>
 
     <h2>Imtihonni tanlang</h2>
     <div class="grid2">
@@ -283,13 +280,6 @@
           <button class="btn" data-start="topik:full">📝 Katta mock<small>30 savol · 40 daqiqa</small></button>
         </div>
       </div>
-    </div>
-
-    <h2>Nima bor?</h2>
-    <div class="grid3">
-      <button class="card feat" data-go="speak" style="text-align:left"><div class="ico">🎙️</div><h4>Ovozli assistent</h4><p>Koreyscha gapiring: AI talaffuz, grammatika va so'z boyligini 100 balldan baholaydi.</p></button>
-      <button class="card feat" data-go="books" style="text-align:left"><div class="ico">📚</div><h4>O'z kitobingiz bo'yicha dars</h4><p>Koreys tili darsligingizni yuklang: AI har bir mavzu bo'yicha dars va mashq tuzadi.</p></button>
-      <button class="card feat" data-go="words" style="text-align:left"><div class="ico">한</div><h4>Eng qiyin so'zlar</h4><p>Boshlang'ichdan TOPIK 5–6 darajagacha so'zlar, maqollar va 사자성어.</p></button>
     </div>
 
     <h2>Maslahatlar</h2>
@@ -381,7 +371,7 @@
 
   <!-- SPEAK -->
   <section class="view" id="v-speak">
-    <h2 style="margin-top:0">Gapirish</h2>
+    <h2 style="margin-top:0">Komiko bilan gapirish</h2>
     <div class="seg" id="spSeg"><button data-m="pron" class="on">🎯 Talaffuz</button><button data-m="chat">🤖 AI suhbatdosh</button></div>
     <div class="card err" id="micFallback" hidden style="margin-bottom:14px"></div>
 
@@ -425,6 +415,9 @@
       </div>
     </div>
   </section>
+
+  <!-- DAFTAR (kamera) -->
+  <section class="view" id="v-hw"></section>
 
   <!-- BOOKS -->
   <section class="view" id="v-books">
@@ -758,6 +751,7 @@
   }
   function speak(text){
     if (!text) return;
+    if (window.Komiko && window.Komiko.speak) return window.Komiko.speak(text);
     try { speechSynthesis.cancel(); } catch(e){}
     if (curAudio){ try { curAudio.pause(); } catch(e){} }
     var a = new Audio(); curAudio = a;
@@ -773,7 +767,7 @@
   }
 
   // ---------- ROUTING ----------
-  var NAVMAP = { test:"home", result:"home", book:"books", lesson:"books" };
+  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home" };
   var PARENT = { lesson:"book", book:"books" };
   var curView = "home";
   function go(v){
@@ -999,5 +993,8 @@
 })();
 </script>
 <script src="features.js"></script>
+<script src="komiko.js"></script>
+<script src="home.js"></script>
+<script src="daftar.js"></script>
 </body>
 </html>

@@ -33,7 +33,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       var b = document.createElement("div");
       b.style.cssText = "background:#cd2e3a;color:#fff;text-align:center;font-size:12.5px;font-weight:700;padding:calc(6px + env(safe-area-inset-top)) 10px 6px";
-      b.textContent = "DEMO versiya — AI javoblari namunaviy";
+      b.textContent = "DEMO versiya — serversiz rejim";
       document.body.insertBefore(b, document.body.firstChild);
       var hdr = document.querySelector("header"); if (hdr) hdr.style.paddingTop = "0";
     });

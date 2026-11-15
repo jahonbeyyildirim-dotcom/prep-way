@@ -175,18 +175,44 @@ async def tts(req):
     uid = req["uid"]
     body = await req.json()
     text = str(body.get("text") or "").strip()[:400]
+    gender = "male" if body.get("voice") == "male" else "female"
     if not korean.only_hangul(text):
         return jerr("Faqat koreyscha matn ovozga aylantiriladi.")
-    path = ai.tts_cache_path(text)
+    path = ai.tts_cache_path(text, gender)
     if not path.exists():
         if not await storage.take(uid, "tts"):
             return jerr("Bugungi ovoz limiti tugadi.", 429)
         try:
-            await ai.tts(text)
+            await ai.tts(text, gender)
         except Exception:
             await storage.give_back(uid, "tts")
             raise
     return web.FileResponse(path, headers={"Content-Type": "audio/wav", "Cache-Control": "private, max-age=86400"})
+
+
+async def homework(req):
+    """Daftar tekshiruvi: rasm + topshiriq (JSON)."""
+    uid = req["uid"]
+    form = await req.post()
+    f = form.get("image")
+    if f is None or not hasattr(f, "file"):
+        return jerr("Rasm topilmadi.")
+    data = f.file.read()
+    if len(data) > 8 * 1024 * 1024:
+        return jerr("Rasm juda katta (8 MB dan oshmasin).")
+    mime = f.content_type if f.content_type in ("image/jpeg", "image/png", "image/webp") else "image/jpeg"
+    try:
+        task = json.loads(str(form.get("task") or "{}"))
+    except json.JSONDecodeError:
+        task = {}
+    if not isinstance(task, dict) or not task.get("items"):
+        return jerr("Topshiriq topilmadi.")
+    await _take_ai(uid)
+    try:
+        return web.json_response(await ai.check_homework(data, mime, task))
+    except Exception:
+        await storage.give_back(uid, "ai")
+        raise
 
 
 async def advice(req):
@@ -281,6 +307,7 @@ def make_app() -> web.Application:
         web.post("/api/chat", chat),
         web.post("/api/tts", tts),
         web.post("/api/advice", advice),
+        web.post("/api/homework", homework),
         web.post("/api/words", words),
         web.get("/api/books", books_list),
         web.post("/api/books", books_add),

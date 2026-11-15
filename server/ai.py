@@ -31,7 +31,7 @@ class AIError(Exception):
     """Foydalanuvchiga ko'rsatiladigan xato (o'zbek tilida)."""
 
 
-SYSTEM = """You are "Prep Way AI ustoz" — a patient, precise Korean-language teacher for Uzbek speakers
+SYSTEM = """You are "Komiko", the Prep Way AI tutor — a patient, precise Korean-language teacher for Uzbek speakers
 preparing for TOPIK and EPS-TOPIK.
 Rules:
 - Write every explanation, tip and translation in Uzbek using the Latin script (modern orthography: o', g', sh, ch).
@@ -394,22 +394,27 @@ def _pcm_to_wav(pcm: bytes, rate: int = 24000) -> bytes:
     return buf.getvalue()
 
 
-def tts_cache_path(text: str) -> Path:
-    h = hashlib.sha1(f"{config.GEMINI_TTS_MODEL}|{config.TTS_VOICE}|{text}".encode()).hexdigest()
+def voice_name(gender: str | None) -> str:
+    return config.TTS_VOICE_MALE if gender == "male" else config.TTS_VOICE
+
+
+def tts_cache_path(text: str, gender: str | None = None) -> Path:
+    h = hashlib.sha1(f"{config.GEMINI_TTS_MODEL}|{voice_name(gender)}|{text}".encode()).hexdigest()
     return TTS_DIR / f"{h}.wav"
 
 
-async def tts(text: str) -> bytes:
-    """Koreyscha matnni ovozga aylantiradi (WAV). Natija keshlanadi: bir gap bir marta yaratiladi."""
+async def tts(text: str, gender: str | None = None) -> bytes:
+    """Koreyscha matnni Komiko ovozida (ayol/erkak) WAV ga aylantiradi. Natija keshlanadi."""
     text = text.strip()[:400]
-    path = tts_cache_path(text)
+    path = tts_cache_path(text, gender)
+    vname = voice_name(gender)
     if path.exists():
         return path.read_bytes()
     if config.AI_FAKE:
         raise AIError("Sinov rejimida server ovozi yo'q.")
     voice_variants = [
-        types.VoiceConfig(voice=config.TTS_VOICE),
-        types.VoiceConfig(prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=config.TTS_VOICE)),
+        types.VoiceConfig(voice=vname),
+        types.VoiceConfig(prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=vname)),
     ]
     last = None
     for vc in voice_variants:
@@ -439,3 +444,32 @@ async def tts(text: str) -> bytes:
             log.warning("TTS javobi kutilmagan: %s", e)
             raise AIError("Ovoz yaratib bo'lmadi.")
     raise _api_error_to_uz(last)
+
+
+# ---------------------------------------------------------------- DAFTAR TEKSHIRUVI (rasm)
+async def check_homework(image: bytes, mime: str, task: dict) -> dict:
+    """O'quvchi daftarga qo'lda yozgan topshiriqni rasm orqali tekshiradi."""
+    items = [i for i in (task.get("items") or []) if isinstance(i, dict)][:12]
+    if config.AI_FAKE:
+        return {"recognized_text": "\n".join(str(i.get("ko", "")) for i in items),
+                "items": [{"n": k + 1, "written": i.get("ko", ""), "ok": True, "note_uz": ""} for k, i in enumerate(items)],
+                "feedback_uz": "Sinov rejimi: hammasi to'g'ri deb belgilandi."}
+    listing = "\n".join(f'{k + 1}. prompt (Uzbek): {i.get("uz", "")} | expected Korean: {i.get("ko", "")}' for k, i in enumerate(items))
+    data = await _json_call([
+        types.Part.from_bytes(data=image, mime_type=mime),
+        "This is a photo of a learner's paper notebook. The learner was given this task:\n"
+        f"«{task.get('title_uz', '')}»\n{listing}\n"
+        "Read the HANDWRITTEN Korean in the photo. For every numbered item decide if the learner wrote the expected Korean "
+        "correctly (minor spacing differences are OK; wrong/missing letters, wrong 받침 or vowels are NOT OK). "
+        "If an item is missing in the photo, written=\"\" and ok=false. If the photo is not a notebook/handwriting, "
+        "say so in feedback_uz and mark all items false.\n"
+        "For wrong items explain the mistake in Uzbek in note_uz (which letter is wrong and why).\n"
+        'Shape: {"recognized_text": "", "items": [{"n": 1, "written": "", "ok": true, "note_uz": ""}], "feedback_uz": ""}',
+    ], temperature=0.1)
+    out = []
+    for k, i in enumerate(items):
+        got = next((x for x in data.get("items", []) if isinstance(x, dict) and int(x.get("n") or 0) == k + 1), {})
+        out.append({"n": k + 1, "written": str(got.get("written", "")), "ok": bool(got.get("ok")),
+                    "note_uz": str(got.get("note_uz", ""))})
+    return {"recognized_text": str(data.get("recognized_text", "")), "items": out,
+            "feedback_uz": str(data.get("feedback_uz", ""))}

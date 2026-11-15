@@ -66,6 +66,14 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Daftaringizdagi topshiriqni rasmga olib, Komiko tekshirishi uchun kamera kerak.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Daftar rasmini galereyadan tanlash uchun.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Topshiriq qayerda bajarilganini belgilash uchun joylashuv ishlatiladi.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Koreyscha gapirganingizni tanib, talaffuzingizni baholash uchun.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Prep Way talaffuzingizni baholash va AI suhbatdosh bilan gaplashish uchun mikrofondan foydalanadi.</string>
 	<key>CFBundleURLTypes</key>
