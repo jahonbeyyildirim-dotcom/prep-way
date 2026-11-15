@@ -469,6 +469,7 @@
 <script src="app-mode.js"></script>
 <script src="demo-api.js"></script>
 <script src="questions.js"></script>
+<script src="questions-i18n.js"></script>
 <script>
 (function(){
   // ---------- DATA ----------
@@ -622,6 +623,7 @@
     {ko:"금상첨화",rom:"geumsangcheomhwa",uz:"\"oltin ustiga gul\": yaxshi ustiga yana yaxshi",t:"idiom"},
     {ko:"작심삼일",rom:"jaksimsamil",uz:"\"uch kunlik qaror\": qat'iyatning tez so'nishi",t:"idiom",ex:"운동 계획이 또 작심삼일이 됐어요.",exuz:"Sport rejam yana uch kunlik bo'lib qoldi."}
   ];
+  window.PW_WORDS = WORDS;
 
   // ---------- SOZLAMALAR ----------
   // BOT_USERNAME: @BotFather'da yaratgan botingiz nomi (@ belgisisiz)
@@ -662,6 +664,11 @@
   // Telegramdan tashqarida localStorage ishlatiladi. Faqat {id, your} saqlanadi (4 KB chegarasi).
   var KEY = "hyMistakes";
   var mistakes = [];
+  // Tushuntirish tanlangan tilda (rus/ingliz tarjimasi bo'lsa)
+  function expOf(q){
+    var l = window.I18N ? I18N.lang() : "uz", t = window.PW_QTR && window.PW_QTR[q.id];
+    return (l !== "uz" && t) ? t[l === "ru" ? 0 : 1] : q.exp;
+  }
   function findQ(id){
     if (QBYID[id]) return QBYID[id];
     var p = String(id).split("-");   // eski format: "eps-3"
@@ -909,7 +916,7 @@
       '<div class="q ko" style="white-space:pre-line">'+esc(body)+'</div>'+
       (good ? '' : '<div class="ans no ko">Sizning javobingiz: '+(your>-1? NUMS[your]+' '+esc(q.opts[your]) : '—')+'</div>')+
       '<div class="ans ok ko">To\'g\'ri javob: '+NUMS[q.a]+' '+esc(q.opts[q.a])+'</div>'+
-      '<div class="exp">'+q.exp+'</div></div>';
+      '<div class="exp">'+expOf(q)+'</div></div>';
   }
 
   // ---------- MISTAKES ----------
@@ -1000,6 +1007,8 @@
 <script src="komiko.js"></script>
 <script src="six-data.js"></script>
 <script src="six.js"></script>
+<script src="dict-data.js"></script>
+<script src="dict.js"></script>
 <script src="home.js"></script>
 <script src="daftar.js"></script>
 </body>

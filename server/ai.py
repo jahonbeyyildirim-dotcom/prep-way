@@ -473,3 +473,22 @@ async def check_homework(image: bytes, mime: str, task: dict) -> dict:
                     "note_uz": str(got.get("note_uz", ""))})
     return {"recognized_text": str(data.get("recognized_text", "")), "items": out,
             "feedback_uz": str(data.get("feedback_uz", ""))}
+
+
+# ---------------------------------------------------------------- LUG'AT
+async def dict_lookup(q: str, lang: str = "uz") -> dict:
+    """So'zni koreys ↔ o'zbek/rus/ingliz tarjima qiladi (oflayn lug'atda topilmaganda)."""
+    q = q.strip()[:60]
+    if config.AI_FAKE:
+        return {"entries": [{"ko": q, "rom": "", "uz": "(sinov)", "ru": "(тест)", "en": "(test)"}]}
+    data = await _json_call([
+        "You are a Korean dictionary for Uzbek, Russian and English speakers. The user typed: "
+        f"«{q}». It may be Korean (possibly conjugated or with particles) or an Uzbek/Russian/English word. "
+        "Return up to 3 Korean dictionary entries that best match (use the dictionary form, e.g. 먹어요 → 먹다). "
+        "For each: ko, rom (Revised Romanization), uz, ru, en (short meanings), and one simple example sentence "
+        "ex_ko with translations ex_uz, ex_ru, ex_en. If it is not a real word, return an empty list.\n"
+        'Shape: {"entries": [{"ko": "", "rom": "", "uz": "", "ru": "", "en": "", "ex_ko": "", "ex_uz": "", "ex_ru": "", "ex_en": ""}]}',
+    ], temperature=0.1)
+    keys = ("ko", "rom", "uz", "ru", "en", "ex_ko", "ex_uz", "ex_ru", "ex_en")
+    out = [{k: str(e.get(k, ""))[:200] for k in keys} for e in (data.get("entries") or []) if isinstance(e, dict) and e.get("ko")]
+    return {"entries": out[:3]}

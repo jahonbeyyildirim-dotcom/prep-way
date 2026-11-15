@@ -459,9 +459,11 @@
         '<button class="tile t1" data-act="chat"><span>🤖</span><b>Komiko</b><small>' + esc(T({ uz: "Ovozli suhbat", ru: "Голосовой диалог", en: "Voice chat" })) + '</small></button>' +
         '<button class="tile t2" data-go="hw"><span>📷</span><b>' + esc(T({ uz: "Daftar", ru: "Тетрадь", en: "Notebook" })) + '</b><small>' + esc(T({ uz: "Rasm bilan tekshiruv", ru: "Проверка по фото", en: "Photo check" })) + '</small></button>' +
         '<button class="tile t3" data-go="speak"><span>🎯</span><b>' + esc(T({ uz: "Talaffuz", ru: "Произношение", en: "Pronunciation" })) + '</b><small>' + esc(T({ uz: "Gapni ayting, baho oling", ru: "Скажите фразу — получите оценку", en: "Say it, get a score" })) + '</small></button>' +
+        '<button class="tile t5" id="dhDict"><span>📖</span><b>' + esc(T({ uz: "Lug'at", ru: "Словарь", en: "Dictionary" })) + '</b><small>' + esc(T({ uz: "Koreys ⇄ o'zbek · rus · ingliz: istalgan so'zni tarjima qiling", ru: "Корейский ⇄ узбекский · русский · английский: переводите любое слово", en: "Korean ⇄ Uzbek · Russian · English: translate any word" })) + '</small></button>' +
         '<button class="tile t4" data-go="books"><span>📚</span><b>' + esc(T({ uz: "Kitoblar", ru: "Книги", en: "Books" })) + '</b><small>' + esc(T({ uz: "O'z darsligingiz", ru: "Ваш учебник", en: "Your textbook" })) + '</small></button>' +
       '</div>';
     $("dhSet").onclick = settings;
+    if ($("dhDict")) $("dhDict").onclick = function () { if (window.PWDict) PWDict.open(""); };
     box.querySelectorAll('[data-act="chat"]').forEach(function (b) { b.onclick = function () { K.openChat(); }; });
     var hello = $("hello"); if (hello) hello.textContent = "";
   }

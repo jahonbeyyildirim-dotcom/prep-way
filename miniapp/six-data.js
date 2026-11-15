@@ -229,5 +229,117 @@ window.PW_SIX = [
       { q: { uz: "Necha xalta piyoz oldi?", ru: "Сколько пакетов лука он купил?", en: "How many bags of onions did he buy?" }, o: ["한 봉지", "두 봉지", "세 봉지", "안 샀어요"], a: 1 },
       { q: { uz: "Sotuvchi tekinga nima berdi?", ru: "Что продавец дал в придачу?", en: "What did the seller give for free?" }, o: ["사과", "양파", "귤", "봉투"], a: 2 }
     ]
+  },
+  {
+    id: 5, ko: "병원에서", level: "A2",
+    title: { uz: "Shifokor qabulida", ru: "На приёме у врача", en: "At the doctor's" },
+    q: { ko: "민준 씨는 약을 하루에 몇 번 먹어야 할까요?", uz: "Minjun dorini kuniga necha marta ichishi kerak?", ru: "Сколько раз в день Минджуну принимать лекарство?", en: "How many times a day must Minjun take the medicine?",
+         a: { ko: "하루에 세 번이에요.", uz: "Kuniga uch marta.", ru: "Три раза в день.", en: "Three times a day." } },
+    lines: [
+      ["K", "안녕하세요! '6분 한국어'의 코미코예요.", "Salom! «6 daqiqa koreys»dan Komikoman.", "Привет! Я Комико из «6 минут корейского».", "Hi! I'm Komiko from \"6-Minute Korean\"."],
+      ["M", "안녕하세요, 민준이에요. 오늘은 병원에서 쓰는 표현을 배워요.", "Salom, Minjunman. Bugun kasalxonada ishlatiladigan iboralarni o'rganamiz.", "Привет, я Минджун. Сегодня учим фразы для больницы.", "Hi, Minjun here. Today we learn phrases for the clinic."],
+      ["K", "오늘의 질문이에요. 민준 씨는 약을 하루에 몇 번 먹어야 할까요?", "Bugungi savol: Minjun dorini kuniga necha marta ichishi kerak?", "Вопрос дня: сколько раз в день Минджуну принимать лекарство?", "Today's question: how many times a day must Minjun take the medicine?"],
+      ["K", "어서 오세요. 어디가 불편하세요?", "Keling. Sizni nima bezovta qilyapti?", "Проходите. Что вас беспокоит?", "Come in. What seems to be the problem?"],
+      ["M", "어제부터 목이 아프고 기침이 나요.", "Kechadan beri tomog'im og'riyapti va yo'talyapman.", "Со вчерашнего дня болит горло и кашель.", "Since yesterday I've had a sore throat and a cough."],
+      ["K", "열도 있어요?", "Isitmangiz ham bormi?", "Температура тоже есть?", "Do you have a fever too?"],
+      ["M", "네, 밤에 열이 좀 났어요.", "Ha, kechasi biroz isitmam chiqdi.", "Да, ночью была небольшая температура.", "Yes, I had a slight fever at night."],
+      ["K", "입을 크게 벌려 보세요. 아, 목이 많이 부었네요.", "Og'zingizni katta oching. A, tomog'ingiz ancha shishibdi.", "Откройте рот пошире. О, горло сильно опухло.", "Open wide. Ah, your throat is quite swollen."],
+      ["M", "감기예요?", "Shamollashmi?", "Это простуда?", "Is it a cold?"],
+      ["K", "네, 감기 몸살이에요. 약을 처방해 드릴게요.", "Ha, shamollab, holsizlanibsiz. Dori yozib beraman.", "Да, простуда с ломотой. Выпишу лекарство.", "Yes, a cold with body aches. I'll prescribe some medicine."],
+      ["M", "약은 어떻게 먹어요?", "Dorini qanday ichaman?", "Как принимать лекарство?", "How do I take the medicine?"],
+      ["K", "하루에 세 번, 식후 삼십 분에 드세요.", "Kuniga uch marta, ovqatdan o'ttiz daqiqa keyin iching.", "Три раза в день, через тридцать минут после еды.", "Three times a day, thirty minutes after meals."],
+      ["M", "내일 출근해도 돼요?", "Ertaga ishga borsam bo'ladimi?", "Можно мне завтра на работу?", "Can I go to work tomorrow?"],
+      ["K", "오늘은 푹 쉬고, 내일 괜찮으면 출근하세요.", "Bugun yaxshilab dam oling, ertaga tuzalsangiz, ishga boring.", "Сегодня хорошо отдохните, а завтра, если станет лучше, идите на работу.", "Rest well today, and go to work tomorrow if you feel okay."],
+      ["M", "감사합니다, 선생님.", "Rahmat, doktor.", "Спасибо, доктор.", "Thank you, doctor."],
+      ["K", "민준 씨, 약을 하루에 몇 번 먹어요?", "Minjun, dorini kuniga necha marta ichasiz?", "Минджун, сколько раз в день принимать лекарство?", "Minjun, how many times a day do you take it?"],
+      ["M", "하루에 세 번, 밥 먹고 삼십 분 후에 먹어요!", "Kuniga uch marta, ovqatdan o'ttiz daqiqa keyin!", "Три раза в день, через тридцать минут после еды!", "Three times a day, thirty minutes after eating!"],
+      ["K", "맞아요! 이제 오늘의 단어를 정리해 봐요.", "To'g'ri! Endi bugungi so'zlarni takrorlaymiz.", "Верно! Теперь повторим слова дня.", "Right! Now let's go over today's words."]
+    ],
+    outro: [
+      ["K", "아프면 참지 말고 꼭 병원에 가세요!", "Kasal bo'lsangiz, chidab yurmang, albatta shifokorga boring!", "Если заболели — не терпите, обязательно идите к врачу!", "If you're sick, don't just put up with it — see a doctor!"],
+      ["M", "건강하세요! 다음에 또 만나요.", "Sog' bo'ling! Keyingi safar ko'rishamiz.", "Будьте здоровы! До встречи.", "Stay healthy! See you next time."]
+    ],
+    words: [
+      { ko: "불편하다", rom: "bulpyeonhada", hl: ["불편하세요"], m: { uz: "noqulay; bezovta qilmoq", ru: "неудобный; беспокоить", en: "uncomfortable; to bother" },
+        use: { uz: "Shifokor: «어디가 불편하세요?» — sizni nima bezovta qilyapti? Kundalik hayotda ham: «의자가 불편해요» — stul noqulay.", ru: "Врач: «어디가 불편하세요?» — что беспокоит? В быту: «의자가 불편해요» — стул неудобный.", en: "Doctors ask \"어디가 불편하세요?\" — what's bothering you? Also: \"의자가 불편해요\" — the chair is uncomfortable." },
+        ex: [["어디가 불편하세요?", "Sizni nima bezovta qilyapti?", "Что вас беспокоит?", "What's bothering you?"], ["이 신발은 좀 불편해요.", "Bu oyoq kiyim biroz noqulay.", "Эта обувь неудобная.", "These shoes are a bit uncomfortable."]] },
+      { ko: "기침", rom: "gichim", hl: ["기침"], m: { uz: "yo'tal", ru: "кашель", en: "cough" },
+        use: { uz: "«기침이 나다 / 기침을 하다» — yo'talmoq.", ru: "«기침이 나다 / 기침을 하다» — кашлять.", en: "\"기침이 나다 / 기침을 하다\" — to cough." },
+        ex: [["기침이 계속 나요.", "Yo'tal to'xtamayapti.", "Кашель не проходит.", "I keep coughing."], ["기침할 때 입을 가리세요.", "Yo'talganda og'zingizni yoping.", "Прикрывайте рот, когда кашляете.", "Cover your mouth when you cough."]] },
+      { ko: "열이 나다", rom: "yeori nada", hl: ["열이"], m: { uz: "isitma chiqmoq", ru: "температурить", en: "to have a fever" },
+        use: { uz: "Kasallik haqida gapirganda. 열 — isitma, harorat.", ru: "Когда говорят о болезни. 열 — жар, температура.", en: "When talking about illness. 열 — fever, heat." },
+        ex: [["아이가 열이 나요.", "Bolaning isitmasi bor.", "У ребёнка температура.", "My child has a fever."], ["열이 내렸어요.", "Isitma tushdi.", "Температура спала.", "The fever went down."]] },
+      { ko: "감기", rom: "gamgi", hl: ["감기"], m: { uz: "shamollash", ru: "простуда", en: "a cold" },
+        use: { uz: "«감기에 걸리다» — shamollamoq.", ru: "«감기에 걸리다» — простудиться.", en: "\"감기에 걸리다\" — to catch a cold." },
+        ex: [["감기에 걸렸어요.", "Shamollab qoldim.", "Я простудился.", "I caught a cold."], ["감기 조심하세요.", "Shamollashdan ehtiyot bo'ling.", "Берегитесь простуды.", "Take care not to catch a cold."]] },
+      { ko: "처방하다", rom: "cheobanghada", hl: ["처방"], m: { uz: "retsept yozmoq", ru: "выписывать (лекарство)", en: "to prescribe" },
+        use: { uz: "Retsept bilan dorixonaga (약국) borasiz. 처방전 — retsept qog'ozi.", ru: "С рецептом идут в аптеку (약국). 처방전 — рецепт.", en: "Take it to the pharmacy (약국). 처방전 — prescription slip." },
+        ex: [["의사가 약을 처방했어요.", "Shifokor dori yozib berdi.", "Врач выписал лекарство.", "The doctor prescribed medicine."], ["처방전을 약국에 주세요.", "Retseptni dorixonaga bering.", "Отдайте рецепт в аптеку.", "Give the prescription to the pharmacy."]] },
+      { ko: "식후", rom: "sikhu", hl: ["식후"], m: { uz: "ovqatdan keyin", ru: "после еды", en: "after meals" },
+        use: { uz: "Dori qutisida yoziladi. Teskarisi: 식전 — ovqatdan oldin.", ru: "Пишут на упаковке лекарств. Противоположное: 식전 — до еды.", en: "Written on medicine packets. Opposite: 식전 — before meals." },
+        ex: [["식후 삼십 분에 드세요.", "Ovqatdan 30 daqiqa keyin iching.", "Принимайте через 30 минут после еды.", "Take it 30 minutes after meals."], ["이 약은 식전에 먹어요.", "Bu dori ovqatdan oldin ichiladi.", "Это лекарство пьют до еды.", "This one is taken before meals."]] }
+    ],
+    grammar: { p: "-아/어도 되다", m: { uz: "Ruxsat: «...sam bo'ladimi?» / «...sangiz bo'ladi».", ru: "Разрешение: «можно…?» / «можно…».", en: "Permission: \"may I …?\" / \"you may …\"." },
+      ex: [["내일 출근해도 돼요?", "Ertaga ishga borsam bo'ladimi?", "Можно завтра на работу?", "Can I go to work tomorrow?"], ["여기 앉아도 돼요.", "Bu yerga o'tirsangiz bo'ladi.", "Здесь можно сесть.", "You may sit here."]] },
+    quiz: [
+      { q: { uz: "Minjunning qayeri og'riyapti?", ru: "Что болит у Минджуна?", en: "What hurts?" }, o: ["다리", "목", "눈", "배"], a: 1 },
+      { q: { uz: "Shifokor qanday tashxis qo'ydi?", ru: "Какой диагноз поставил врач?", en: "What did the doctor say it is?" }, o: ["감기 몸살", "배탈", "두통", "골절"], a: 0 },
+      { q: { uz: "Dori qachon ichiladi?", ru: "Когда принимать лекарство?", en: "When is the medicine taken?" }, o: ["식전", "식후 30분", "자기 전에만", "아침에만"], a: 1 }
+    ]
+  },
+  {
+    id: 6, ko: "은행에서", level: "A2–B1",
+    title: { uz: "Bankda: hisob ochish va pul yuborish", ru: "В банке: счёт и денежный перевод", en: "At the bank: opening an account and sending money" },
+    q: { ko: "민준 씨는 오늘 은행에서 무엇을 만들까요?", uz: "Minjun bugun bankda nima ochadi?", ru: "Что Минджун оформит сегодня в банке?", en: "What will Minjun set up at the bank today?",
+         a: { ko: "통장하고 체크카드를 만들어요.", uz: "Bank hisobi va debet karta.", ru: "Счёт и дебетовую карту.", en: "A bank account and a debit card." } },
+    lines: [
+      ["K", "안녕하세요! '6분 한국어'의 코미코예요.", "Salom! «6 daqiqa koreys»dan Komikoman.", "Привет! Я Комико из «6 минут корейского».", "Hi! I'm Komiko from \"6-Minute Korean\"."],
+      ["M", "안녕하세요, 민준이에요. 오늘은 은행에 가요.", "Salom, Minjunman. Bugun bankka boramiz.", "Привет, я Минджун. Сегодня идём в банк.", "Hi, Minjun here. Today we're going to the bank."],
+      ["K", "오늘의 질문이에요. 민준 씨는 은행에서 무엇을 만들까요?", "Bugungi savol: Minjun bankda nima ochadi?", "Вопрос дня: что Минджун оформит в банке?", "Today's question: what will Minjun set up at the bank?"],
+      ["K", "다음 손님, 이쪽으로 오세요. 무엇을 도와드릴까요?", "Keyingi mijoz, bu yoqqa keling. Nima yordam beray?", "Следующий, проходите сюда. Чем могу помочь?", "Next, please, this way. How can I help?"],
+      ["M", "통장을 만들고 싶어요.", "Bank hisobi ochmoqchiman.", "Хочу открыть счёт.", "I'd like to open an account."],
+      ["K", "신분증 있으세요?", "Shaxsingizni tasdiqlovchi hujjat bormi?", "У вас есть удостоверение личности?", "Do you have ID?"],
+      ["M", "네, 외국인등록증 여기 있어요.", "Ha, mana xorijlik ro'yxatga olish kartam.", "Да, вот моя карта иностранца.", "Yes, here's my alien registration card."],
+      ["K", "이 신청서를 써 주세요. 그리고 비밀번호 네 자리를 눌러 주세요.", "Bu arizani to'ldiring. Va to'rt xonali parolni tering.", "Заполните заявление и введите четырёхзначный пароль.", "Please fill in this form and enter a four-digit PIN."],
+      ["M", "체크카드도 만들 수 있어요?", "Debet karta ham ochsa bo'ladimi?", "Можно ещё сделать дебетовую карту?", "Can I get a debit card too?"],
+      ["K", "네, 같이 만들어 드릴게요.", "Ha, birga ochib beraman.", "Да, оформлю вместе.", "Yes, I'll set one up as well."],
+      ["M", "그리고 고향에 돈을 보내고 싶은데, 해외 송금은 어떻게 해요?", "Yana vatanimga pul yubormoqchiman, chet elga pul o'tkazish qanday qilinadi?", "И я хочу отправить деньги на родину — как сделать международный перевод?", "Also, I want to send money home — how do overseas transfers work?"],
+      ["K", "앱으로 하면 수수료가 더 싸요. 제가 설치를 도와드릴게요.", "Ilova orqali qilsangiz, komissiya arzonroq. O'rnatishga yordam beraman.", "Через приложение комиссия ниже. Помогу установить.", "The fee is lower in the app. I'll help you install it."],
+      ["M", "정말 친절하시네요. 감사합니다!", "Juda xushmuomala ekansiz. Rahmat!", "Вы очень любезны. Спасибо!", "You're very kind. Thank you!"],
+      ["K", "민준 씨, 오늘 은행에서 무엇을 만들었어요?", "Minjun, bugun bankda nima ochdingiz?", "Минджун, что вы сегодня оформили в банке?", "Minjun, what did you set up at the bank today?"],
+      ["M", "통장하고 체크카드를 만들었어요!", "Bank hisobi va debet karta ochdim!", "Открыл счёт и дебетовую карту!", "An account and a debit card!"],
+      ["K", "맞아요! 이제 오늘의 단어를 정리해 봐요.", "To'g'ri! Endi bugungi so'zlarni takrorlaymiz.", "Верно! Теперь повторим слова дня.", "Right! Now let's go over today's words."]
+    ],
+    outro: [
+      ["K", "은행에 갈 때 외국인등록증을 꼭 가져가세요!", "Bankka borganda xorijlik kartangizni albatta oling!", "В банк обязательно берите карту иностранца!", "Always take your registration card to the bank!"],
+      ["M", "다음 시간에 또 만나요!", "Keyingi safar ko'rishamiz!", "До встречи!", "See you next time!"]
+    ],
+    words: [
+      { ko: "통장", rom: "tongjang", hl: ["통장"], m: { uz: "bank hisobi (omonat daftarchasi)", ru: "банковский счёт (сберкнижка)", en: "bank account (passbook)" },
+        use: { uz: "«통장을 만들다» — hisob ochmoq. Maosh shu hisobga tushadi.", ru: "«통장을 만들다» — открыть счёт. На него приходит зарплата.", en: "\"통장을 만들다\" — to open an account. Your salary is paid into it." },
+        ex: [["통장을 만들고 싶어요.", "Bank hisobi ochmoqchiman.", "Хочу открыть счёт.", "I'd like to open an account."], ["월급이 통장에 들어왔어요.", "Maosh hisobga tushdi.", "Зарплата пришла на счёт.", "My salary came into my account."]] },
+      { ko: "신분증", rom: "sinbunjeung", hl: ["신분증"], m: { uz: "shaxsni tasdiqlovchi hujjat", ru: "удостоверение личности", en: "ID card" },
+        use: { uz: "Bank, aloqa do'koni, kasalxonada so'raladi.", ru: "Спрашивают в банке, салоне связи, больнице.", en: "Asked for at banks, phone shops, hospitals." },
+        ex: [["신분증을 보여 주세요.", "Hujjatingizni ko'rsating.", "Покажите удостоверение.", "Please show your ID."], ["신분증을 잃어버렸어요.", "Hujjatimni yo'qotib qo'ydim.", "Я потерял удостоверение.", "I lost my ID."]] },
+      { ko: "외국인등록증", rom: "oegugin deungnokjeung", hl: ["외국인등록증"], m: { uz: "xorijlik ro'yxatga olish kartasi", ru: "карта регистрации иностранца", en: "alien registration card" },
+        use: { uz: "Koreyada yashovchi chet elliklar uchun asosiy hujjat (ARC).", ru: "Главный документ иностранца, живущего в Корее (ARC).", en: "The main ID for foreigners living in Korea (ARC)." },
+        ex: [["외국인등록증을 만들었어요.", "Xorijlik kartamni oldim.", "Я получил карту иностранца.", "I got my registration card."], ["외국인등록증 여기 있어요.", "Mana kartam.", "Вот моя карта.", "Here's my registration card."]] },
+      { ko: "비밀번호", rom: "bimilbeonho", hl: ["비밀번호"], m: { uz: "parol, PIN-kod", ru: "пароль, PIN-код", en: "password, PIN" },
+        use: { uz: "Bank karta, telefon va saytlarda.", ru: "Для карты, телефона и сайтов.", en: "For cards, phones and websites." },
+        ex: [["비밀번호를 눌러 주세요.", "Parolni tering.", "Введите пароль.", "Please enter your PIN."], ["비밀번호를 잊어버렸어요.", "Parolni unutib qo'ydim.", "Я забыл пароль.", "I forgot my password."]] },
+      { ko: "송금", rom: "songgeum", hl: ["송금"], m: { uz: "pul o'tkazmasi", ru: "денежный перевод", en: "money transfer, remittance" },
+        use: { uz: "«해외 송금» — chet elga pul yuborish.", ru: "«해외 송금» — перевод за границу.", en: "\"해외 송금\" — an overseas transfer." },
+        ex: [["고향에 송금했어요.", "Vatanga pul yubordim.", "Я отправил деньги на родину.", "I sent money home."], ["해외 송금은 앱이 편해요.", "Chet elga pul yuborishga ilova qulay.", "Для перевода за границу удобно приложение.", "The app is handy for overseas transfers."]] },
+      { ko: "수수료", rom: "susuryo", hl: ["수수료"], m: { uz: "komissiya, xizmat haqi", ru: "комиссия", en: "fee, commission" },
+        use: { uz: "Bank, pul o'tkazish va ATM xizmatlari uchun olinadi.", ru: "Берут за банковские услуги, переводы, банкомат.", en: "Charged for banking, transfers and ATMs." },
+        ex: [["수수료가 얼마예요?", "Komissiya qancha?", "Какая комиссия?", "How much is the fee?"], ["앱으로 하면 수수료가 싸요.", "Ilovada komissiya arzon.", "В приложении комиссия ниже.", "The fee is lower in the app."]] }
+    ],
+    grammar: { p: "-(으)ㄴ데 / -는데", m: { uz: "Vaziyatni tushuntirib, keyin so'rov yoki savol berish: «...moqchiman, (shuning uchun) ...».", ru: "Сначала обстановка, потом просьба или вопрос: «я хочу…, (так что)…».", en: "Sets the background before a request or question: \"I want to …, so …\"." },
+      ex: [["고향에 돈을 보내고 싶은데, 어떻게 해요?", "Vatanimga pul yubormoqchiman, qanday qilaman?", "Хочу отправить деньги на родину — как это сделать?", "I want to send money home — how do I do it?"], ["비가 오는데 우산이 없어요.", "Yomg'ir yog'yapti, lekin soyabonim yo'q.", "Идёт дождь, а у меня нет зонта.", "It's raining, but I don't have an umbrella."]] },
+    quiz: [
+      { q: { uz: "Hisob ochish uchun nima kerak?", ru: "Что нужно для открытия счёта?", en: "What is needed to open an account?" }, o: ["사진", "외국인등록증", "돈 백만 원", "친구"], a: 1 },
+      { q: { uz: "Parol necha xonali?", ru: "Сколько цифр в пароле?", en: "How many digits is the PIN?" }, o: ["두 자리", "네 자리", "여섯 자리", "여덟 자리"], a: 1 },
+      { q: { uz: "Chet elga pulni qanday yuborish arzonroq?", ru: "Как дешевле отправить деньги за границу?", en: "What's the cheaper way to send money abroad?" }, o: ["창구에서", "앱으로", "우체국에서", "친구에게"], a: 1 }
+    ]
   }
 ];

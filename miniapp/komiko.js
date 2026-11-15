@@ -583,15 +583,24 @@
     return last;
   }
   function nameFill(s) { var n = Profile.name() || "…"; return s.replace("{N}", n); }
-  function komikoSay(ko, uz, chips) {
+  // Boshqa ikki tildagi tarjima: parts = [[ko, uz], ...]
+  function othersOf(parts) {
+    var l = L();
+    return ["uz", "ru", "en"].filter(function (x) { return x !== l; }).map(function (x) {
+      var t = parts.map(function (p) { return x === "uz" ? p[1] : ((CT[p[0]] || [])[LI[x]] || ""); }).join(" ").trim();
+      return t ? (window.I18N ? I18N.FLAG[x] : x) + " " + nameFill(t) : "";
+    }).filter(Boolean).join(" · ");
+  }
+  function komikoSay(ko, uz, chips, parts) {
+    var oth = parts ? othersOf(parts) : "";
     document.querySelectorAll("#chLog .k-chips").forEach(function (c) { c.remove(); });
     document.querySelectorAll("#chLog .komiko.live").forEach(function (s) { s.classList.remove("live", "talking"); });
     var h = '<div class="k-row">' + avatar(38, "live") + '<div class="bub ai"><div class="ko">' + esc(ko) +
-      ' <button class="mini" data-say="' + esc(ko) + '" aria-label="Tinglash">🔊</button></div>' + (uz ? '<div class="tr">' + esc(uz) + '</div>' : '') + '</div></div>';
+      ' <button class="mini" data-say="' + esc(ko) + '" aria-label="Tinglash">🔊</button></div>' + (uz ? '<div class="tr">' + esc(uz) + '</div>' : '') + (oth ? '<div class="tri">' + esc(oth) + '</div>' : '') + '</div></div>';
     if (chips && chips.length) {
       h += '<div class="k-chips"><div class="k-chips-t">' + T({ uz: "💡 Shunday javob berishingiz mumkin (bosib tinglang):", ru: "💡 Можно ответить так (нажмите, чтобы послушать):", en: "💡 You could answer like this (tap to listen):" }) + '</div>' + chips.map(function (a) {
         var ko2 = nameFill(a[0]);
-        return '<button class="k-chip" data-say="' + esc(ko2) + '"><span class="ko">' + esc(ko2) + '</span><small>' + esc(nameFill(tr(a[0], a[1]))) + '</small></button>';
+        return '<button class="k-chip" data-say="' + esc(ko2) + '"><span class="ko">' + esc(ko2) + '</span><small>' + esc(nameFill(tr(a[0], a[1]))) + '</small><small class="tri">' + esc(othersOf([[a[0], a[1]]])) + '</small></button>';
       }).join("") + '</div>';
     }
     add(h);
@@ -622,7 +631,7 @@
   function askTurn() {
     var T = SCRIPTS[kc.topic].turns[kc.i];
     kc.tries = 0;
-    komikoSay(T.k[0], tr(T.k[0], T.k[1]), T.a);
+    komikoSay(T.k[0], tr(T.k[0], T.k[1]), T.a, [T.k]);
   }
   function evalAnswer(variants) {
     var T = SCRIPTS[kc.topic].turns[kc.i], bestR = null, bestA = null;
@@ -654,7 +663,7 @@
     Activity.mark("chat");
     if (!okay && kc.tries === 0) {
       kc.tries++;
-      setTimeout(function () { komikoSay("다시 한 번 말해 볼까요?", tr("다시 한 번 말해 볼까요?", "Yana bir marta aytib ko'ramizmi?"), SCRIPTS[kc.topic].turns[kc.i].a); }, 500);
+      setTimeout(function () { komikoSay("다시 한 번 말해 볼까요?", tr("다시 한 번 말해 볼까요?", "Yana bir marta aytib ko'ramizmi?"), SCRIPTS[kc.topic].turns[kc.i].a, [["다시 한 번 말해 볼까요?", "Yana bir marta aytib ko'ramizmi?"]]); }, 500);
       return;
     }
     kc.scores.push(sc);
@@ -667,14 +676,14 @@
       kc.busy = false;
       if (kc.i >= S.turns.length) { finishLocal(R); return; }
       var T = S.turns[kc.i]; kc.tries = 0;
-      komikoSay(R[0] + " " + T.k[0], tr(R[0], R[1]) + " " + tr(T.k[0], T.k[1]), T.a);
+      komikoSay(R[0] + " " + T.k[0], tr(R[0], R[1]) + " " + tr(T.k[0], T.k[1]), T.a, [R, T.k]);
     }, 700);
   }
   function finishLocal(R) {
     kc.done = true;
     var S = SCRIPTS[kc.topic];
     var avg = kc.scores.length ? Math.round(kc.scores.reduce(function (a, b) { return a + b; }, 0) / kc.scores.length) : 0;
-    komikoSay(R[0] + " " + S.end[0], tr(R[0], R[1]) + " " + tr(S.end[0], S.end[1]));
+    komikoSay(R[0] + " " + S.end[0], tr(R[0], R[1]) + " " + tr(S.end[0], S.end[1]), null, [R, S.end]);
     H.pushHist("speak", { overall: avg, accuracy: avg, pronunciation: avg, fluency: null, level: "chat-" + kc.topic, date: today() });
     var keys = Object.keys(SCRIPTS), next = keys[(keys.indexOf(kc.topic) + 1) % keys.length];
     add('<div class="card k-sum"><div style="font-weight:800;font-size:17px">🎉 Suhbat tugadi: o\'rtacha ' + avg + ' ball</div>' +
@@ -700,7 +709,7 @@
   function chatLocal() {
     setTopicButtons();
     var mic = $("chMic"), send = $("chSend"), inp = $("chText");
-    inp.placeholder = "Koreyscha yozing yoki o'zbekcha so'rang…";
+    inp.placeholder = window.I18N ? I18N.t("Koreyscha yozing yoki o'zbekcha so'rang…") : "Koreyscha yozing yoki o'zbekcha so'rang…";
     mic.onclick = function () {
       if (lis.on) { stopListen(); return; }
       if (kc.done) { toast("Suhbat tugadi: «Qaytadan» yoki keyingi mavzuni tanlang."); return; }
@@ -724,7 +733,8 @@
   function onSpeakView() {
     var head = $("kHead");
     if (head) head.innerHTML = avatar(46, "live") + '<div><div style="font-weight:800">Komiko</div><div class="note" style="font-size:12.5px">' +
-      (Profile.voice() === "male" ? "Erkak ovozi" : "Ayol ovozi") + ' · ' + (Profile.speed() === "slow" ? "sekin" : "odatiy tezlik") + '</div></div>' +
+      (Profile.voice() === "male" ? T({ uz: "Erkak ovozi", ru: "Мужской голос", en: "Male voice" }) : T({ uz: "Ayol ovozi", ru: "Женский голос", en: "Female voice" })) + ' · ' +
+      (Profile.speed() === "slow" ? T({ uz: "sekin", ru: "медленно", en: "slow" }) : T({ uz: "odatiy tezlik", ru: "обычная скорость", en: "normal speed" })) + '</div></div>' +
       '<button class="btn ghost" id="kVoiceBtn" style="margin-left:auto;padding:7px 12px;font-size:13px">🔈 Ovozni o\'zgartirish</button>';
     var vb = $("kVoiceBtn"); if (vb) vb.onclick = voicePicker;
     if (initDone) return;

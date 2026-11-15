@@ -215,6 +215,20 @@ async def homework(req):
         raise
 
 
+async def dict_lookup(req):
+    uid = req["uid"]
+    body = await req.json()
+    q = str(body.get("q") or "").strip()
+    if not q:
+        return jerr("So'z kiritilmadi.")
+    await _take_ai(uid)
+    try:
+        return web.json_response(await ai.dict_lookup(q, str(body.get("lang") or "uz")))
+    except Exception:
+        await storage.give_back(uid, "ai")
+        raise
+
+
 async def advice(req):
     uid = req["uid"]
     stats = await req.json()
@@ -308,6 +322,7 @@ def make_app() -> web.Application:
         web.post("/api/tts", tts),
         web.post("/api/advice", advice),
         web.post("/api/homework", homework),
+        web.post("/api/dict", dict_lookup),
         web.post("/api/words", words),
         web.get("/api/books", books_list),
         web.post("/api/books", books_add),

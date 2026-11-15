@@ -11,14 +11,38 @@
   function done() { try { return JSON.parse(localStorage.getItem(DKEY) || "{}"); } catch (e) { return {}; } }
   function markDone(id) { var d = done(); d[id] = Date.now(); try { localStorage.setItem(DKEY, JSON.stringify(d)); } catch (e) {} K.Activity.mark("six"); }
 
-  // Epizodning to'liq navbati: suhbat + so'zlar takrori + xayrlashuv
+  // Epizodning to'liq navbati:
+  // 1) suhbat  2) so'zlar takrori (so'z + 2 misol)  3) grammatika  4) «ortimdan takrorlang» (sekin + pauza)  5) xayrlashuv
+  var GR_INTRO = ["오늘의 문법은 '{p}'예요.", "Bugungi grammatika: «{p}».", "Грамматика дня: «{p}».", "Today's grammar: \"{p}\"."];
+  var SH_INTRO = ["이제 따라 해 보세요. 잘 듣고 따라 말해 보세요.", "Endi takrorlang: diqqat bilan tinglab, ortimdan ayting.", "Теперь повторяйте: слушайте и говорите за мной.", "Now repeat after me: listen carefully and say it back."];
+  var cache = {};
   function queue(ep) {
-    var q = ep.lines.slice();
-    ep.words.forEach(function (w) { q.push(["K", w.ko + ".", P(w.m), P(w.m), P(w.m), w]); q.push(["M", w.ex[0][0], w.ex[0][1], w.ex[0][2], w.ex[0][3], w]); });
-    return q.concat(ep.outro);
+    if (cache[ep.id]) return cache[ep.id];
+    var q = ep.lines.slice(), i;
+    ep.words.forEach(function (w) {
+      var a = ["K", w.ko + ".", w.m.uz, w.m.ru, w.m.en]; a.w = w; a.sh = 1; q.push(a);   // so'zni takrorlash uchun pauza
+      var b = w.ex[0].slice(); b.unshift("M"); b.w = w; q.push(b);
+      if (w.ex[1]) { var c = w.ex[1].slice(); c.unshift("K"); c.w = w; q.push(c); }
+    });
+    var g = ep.grammar;
+    var gi = GR_INTRO.map(function (x) { return x.split("{p}").join(g.p); }); gi.unshift("K"); gi.gr = 1; q.push(gi);
+    g.ex.forEach(function (x, k) { var e = x.slice(); e.unshift(k % 2 ? "K" : "M"); e.gr = 1; q.push(e); });
+    var si = SH_INTRO.slice(); si.unshift("M"); si.shi = 1; q.push(si);
+    var qi = -1;
+    for (i = 0; i < ep.lines.length; i++) if (ep.lines[i][1].indexOf("오늘의 질문") >= 0) { qi = i; break; }
+    var dl = ep.lines.slice(qi + 1, ep.lines.length - 3).filter(function (l) { return l[1].indexOf("들어 봐요") < 0; });
+    dl.forEach(function (l) { var x = l.slice(); x.sh = 1; q.push(x); });
+    q = q.concat(ep.outro);
+    cache[ep.id] = q;
+    return q;
+  }
+  function lineSecs(l) {
+    var n = l[1].replace(/\s/g, "").length;
+    // + har bir gap uchun ovoz tizimining ishga tushish vaqti (~0.4 s) va gaplar orasidagi pauza
+    return l.sh ? n * 0.31 + 1.0 + (n * 0.28 + 1.6) : n * 0.23 + 1.3;
   }
   function minutes(ep) {
-    var secs = queue(ep).reduce(function (s, l) { return s + l[1].replace(/\s/g, "").length * 0.23 + 0.9; }, 0);
+    var secs = queue(ep).reduce(function (s, l) { return s + lineSecs(l); }, 0);
     return Math.max(1, Math.round(secs / 60));
   }
   function today() {
@@ -102,10 +126,15 @@
     var cur = document.querySelector('.tx-l[data-i="' + pl.i + '"]');
     if (cur && $("sxPane").dataset.t === "tx" && cur.scrollIntoView) cur.scrollIntoView({ block: "center", behavior: "smooth" });
     var l = pl.q[pl.i];
-    K.tmpSpeed = pl.speed;
+    K.tmpSpeed = l.sh ? "slow" : pl.speed;
     var pr = K.speak(l[1], VOICE[l[0]]) || Promise.resolve();
     pr.then(function () {
       if (tok !== pl.tok || !pl.on) return;
+      var pause = 450;
+      if (l.sh) {   // o'quvchi takrorlashi uchun vaqt
+        pause = Math.round((l[1].replace(/\s/g, "").length * 0.28 + 1.6) * 1000);
+        var nw = $("sxNow"); if (nw) nw.insertAdjacentHTML("beforeend", '<div class="sp-rep">🗣 ' + esc(T({ uz: "Endi siz takrorlang…", ru: "Теперь повторите вы…", en: "Now you say it…" })) + '</div>');
+      }
       setTimeout(function () {
         if (tok !== pl.tok || !pl.on) return;
         pl.i++;
@@ -142,7 +171,11 @@
       el.innerHTML = '<div class="tx-tools"><label><input type="checkbox" id="sxTr"' + (pl.tr ? " checked" : "") + '> ' + esc(T({ uz: "Tarjimani ko'rsatish", ru: "Показывать перевод", en: "Show translation" })) + '</label>' +
         '<span class="note">' + esc(T({ uz: "Ajratilgan so'zni bosing", ru: "Нажмите на выделенное слово", en: "Tap a highlighted word" })) + '</span></div>' +
         '<div class="tx">' + pl.q.map(function (l, i) {
-          return '<div class="tx-l ' + l[0] + (i === pl.i ? " cur" : "") + (l[5] ? " rc" : "") + '" data-i="' + i + '"><span class="tx-w">' + NAME[l[0]] + '</span><div><div class="ko">' + mark(ep, l[1]) + '</div>' +
+          var prev = pl.q[i - 1] || [], hd = "";
+          if (l.w && !prev.w) hd = '<div class="tx-sec">📚 ' + esc(T({ uz: "So'zlar takrori", ru: "Повторение слов", en: "Word review" })) + '</div>';
+          if (l.gr && !prev.gr) hd = '<div class="tx-sec">🧩 ' + esc(T({ uz: "Grammatika", ru: "Грамматика", en: "Grammar" })) + '</div>';
+          if (l.shi) hd = '<div class="tx-sec">🗣 ' + esc(T({ uz: "Ortimdan takrorlang (sekin, pauza bilan)", ru: "Повторяйте за мной (медленно, с паузами)", en: "Repeat after me (slow, with pauses)" })) + '</div>';
+          return hd + '<div class="tx-l ' + l[0] + (i === pl.i ? " cur" : "") + (l.w || l.gr ? " rc" : "") + (l.sh ? " sh" : "") + '" data-i="' + i + '"><span class="tx-w">' + NAME[l[0]] + '</span><div><div class="ko">' + mark(ep, l[1]) + '</div>' +
             '<div class="tx-tr"' + (pl.tr ? "" : " hidden") + '>' + esc(trLine(l)) + '</div></div></div>';
         }).join("") + '</div>';
       $("sxTr").onchange = function () { pl.tr = this.checked; el.querySelectorAll(".tx-tr").forEach(function (x) { x.hidden = !pl.tr; }); };
