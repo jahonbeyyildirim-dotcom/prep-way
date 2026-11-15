@@ -416,6 +416,9 @@
     </div>
   </section>
 
+  <!-- 6 DAQIQA KOREYS -->
+  <section class="view" id="v-six"></section>
+
   <!-- DAFTAR (kamera) -->
   <section class="view" id="v-hw"></section>
 
@@ -461,6 +464,7 @@
 
 <div class="toast" id="toast"></div>
 
+<script src="i18n.js"></script>
 <script src="app-config.js"></script>
 <script src="app-mode.js"></script>
 <script src="demo-api.js"></script>
@@ -767,7 +771,7 @@
   }
 
   // ---------- ROUTING ----------
-  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home" };
+  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home", six:"home" };
   var PARENT = { lesson:"book", book:"books" };
   var curView = "home";
   function go(v){
@@ -933,8 +937,8 @@
       return;
     }
     var w = deck[wi];
-    $("wCount").textContent = (wi+1)+" / "+deck.length+" · bilganlar: "+known;
-    $("fKo").textContent=w.ko; $("fRom").textContent="["+w.rom+"]"; $("fUz").textContent=w.uz; $("fKo2").textContent=w.ko+" · "+w.rom;
+    $("wCount").textContent = (wi+1)+" / "+deck.length+" · "+(window.I18N ? I18N.f({uz:"bilganlar",ru:"знаю",en:"known"}) : "bilganlar")+": "+known;
+    $("fKo").textContent=w.ko; $("fRom").textContent="["+w.rom+"]"; $("fUz").innerHTML = window.I18N ? I18N.tri(I18N.word(w.ko, w.uz)) : esc(w.uz); $("fKo2").textContent=w.ko+" · "+w.rom;
     $("fEx").textContent = w.ex ? (w.ex + (w.exuz ? " — " + w.exuz : "")) : "";
     $("fKo").style.fontSize = w.ko.length > 8 ? "26px" : "";
   }
@@ -994,6 +998,8 @@
 </script>
 <script src="features.js"></script>
 <script src="komiko.js"></script>
+<script src="six-data.js"></script>
+<script src="six.js"></script>
 <script src="home.js"></script>
 <script src="daftar.js"></script>
 </body>

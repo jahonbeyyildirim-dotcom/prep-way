@@ -192,6 +192,30 @@
       .then(function (b) { cache[key] = URL.createObjectURL(b); if (tok === cur.token) return play(cache[key]); })
       .catch(function () { if (tok === cur.token) return deviceSpeak(text, voice, tok); });
   }
+  // Interfeys tilida gapirish (o'zbek/rus/ingliz). Natija: true — ovoz chiqdi, false — bu tilda ovoz yo'q
+  function sayLocal(text, code) {
+    stopSpeak();
+    var tok = ++cur.token, voice = Profile.voice();
+    if (TTS && NATIVE) {
+      return TTS.isLanguageSupported({ lang: code }).then(function (r) {
+        if (!r || !r.supported) return false;
+        if (tok === cur.token) setTalking(true);
+        return TTS.speak({ text: text, lang: code, rate: 1.0, pitch: voice === "male" ? 0.85 : 1.08, category: "playback", queueStrategy: 0 })
+          .then(function () { if (tok === cur.token) setTalking(false); return true; });
+      }).catch(function () { setTalking(false); return false; });
+    }
+    if ("speechSynthesis" in window) {
+      var pre = code.slice(0, 2), vs = (speechSynthesis.getVoices() || []).filter(function (v) { return v.lang.toLowerCase().indexOf(pre) === 0; });
+      if (!vs.length) return Promise.resolve(false);
+      return new Promise(function (res) {
+        var u = new SpeechSynthesisUtterance(text); u.lang = code; u.voice = vs[0];
+        u.onstart = function () { if (tok === cur.token) setTalking(true); };
+        u.onend = u.onerror = function () { if (tok === cur.token) setTalking(false); res(true); };
+        speechSynthesis.speak(u);
+      });
+    }
+    return Promise.resolve(false);
+  }
   // Asosiy funksiya: index.html dagi speak() shu yerga yo'naltiriladi
   function speak(text, voice) {
     if (!text) return Promise.resolve();
@@ -232,8 +256,9 @@
     return "Ovozni tanib bo'lmadi. Qayta urinib ko'ring.";
   }
   // Natija: [variant1, variant2, ...] (koreyscha matnlar)
-  function listen() {
+  function listen(langCode) {
     stopSpeak();
+    var LC = langCode || "ko-KR";
     if (SR && NATIVE) {
       return SR.available().then(function (r) {
         if (r && r.available === false) throw new Error("not available");
@@ -245,7 +270,7 @@
         });
       }).then(function () {
         lis.on = true;
-        return SR.start({ language: "ko-KR", maxResults: 5, partialResults: false, popup: false });
+        return SR.start({ language: LC, maxResults: 5, partialResults: false, popup: false });
       }).then(function (r) {
         lis.on = false;
         var m = (r && r.matches) || [];
@@ -256,7 +281,7 @@
     if (WSR) {
       return new Promise(function (res, rej) {
         var r = new WSR(); lis.web = r;
-        r.lang = "ko-KR"; r.maxAlternatives = 5; r.interimResults = false; r.continuous = false;
+        r.lang = LC; r.maxAlternatives = 5; r.interimResults = false; r.continuous = false;
         var got = null;
         r.onresult = function (ev) {
           got = [];
@@ -452,37 +477,102 @@
     low: [["괜찮아요.", "Hechqisi yo'q."]]
   };
   var PHRASES = [
-    [/salom|assalom/i, "안녕하세요", "annyeonghaseyo", "Salom"],
-    [/rahmat|tashakkur/i, "감사합니다", "gamsahamnida", "Rahmat"],
-    [/kechir|uzr/i, "죄송합니다", "joesonghamnida", "Kechirasiz (uzr so'rash). Murojaat qilishda: 실례합니다 (sillyehamnida)"],
-    [/xayr/i, "안녕히 계세요", "annyeonghi gyeseyo", "Xayr (qolayotgan odamga)"],
-    [/qancha|narx/i, "얼마예요?", "eolmayeyo?", "Qancha turadi?"],
-    [/hojatxona|tualet/i, "화장실이 어디예요?", "hwajangsiri eodiyeyo?", "Hojatxona qayerda?"],
-    [/qayerda/i, "어디예요?", "eodiyeyo?", "Qayerda?"],
-    [/tushunmadim|bilmayman/i, "잘 모르겠어요", "jal moreugesseoyo", "Tushunmadim / bilmayman"],
-    [/sekin/i, "천천히 말해 주세요", "cheoncheonhi malhae juseyo", "Sekinroq gapiring"],
-    [/takror|qaytar/i, "다시 한 번 말해 주세요", "dasi han beon malhae juseyo", "Yana bir marta ayting"],
-    [/yordam/i, "도와주세요", "dowajuseyo", "Yordam bering"],
-    [/kasalxona|shifoxona|doktor/i, "병원", "byeongwon", "Kasalxona"],
-    [/og'ri|ogri/i, "아파요", "apayo", "Og'riyapti"],
-    [/suv/i, "물", "mul", "Suv"],
-    [/ovqat/i, "밥", "bap", "Ovqat (guruch)"],
-    [/maosh|oylik/i, "월급", "wolgeup", "Oylik maosh"],
-    [/pul/i, "돈", "don", "Pul"],
-    [/ism/i, "이름이 뭐예요?", "ireumi mwoyeyo?", "Ismingiz nima?"],
-    [/tanish/i, "만나서 반갑습니다", "mannaseo bangapseumnida", "Tanishganimdan xursandman"],
-    [/sevaman|yaxshi ko'raman/i, "사랑해요", "saranghaeyo", "Sevaman"],
-    [/do'st|dost/i, "친구", "chingu", "Do'st"],
-    [/ertaga/i, "내일", "naeil", "Ertaga"],
-    [/bugun/i, "오늘", "oneul", "Bugun"],
-    [/kecha/i, "어제", "eoje", "Kecha"],
-    [/soat necha|vaqt/i, "몇 시예요?", "myeot siyeyo?", "Soat necha?"],
-    [/uy/i, "집", "jip", "Uy"],
-    [/ish/i, "일", "il", "Ish"],
-    [/^ha$|^ha\b/i, "네", "ne", "Ha"],
-    [/yo'q|yoq/i, "아니요", "aniyo", "Yo'q"],
-    [/yaxshi/i, "좋아요", "joayo", "Yaxshi"]
+    [/salom|assalom|привет|здравств|hello|\bhi\b/i, "안녕하세요", "annyeonghaseyo", ["Salom", "Здравствуйте", "Hello"]],
+    [/rahmat|tashakkur|спасибо|thank/i, "감사합니다", "gamsahamnida", ["Rahmat", "Спасибо", "Thank you"]],
+    [/kechir|uzr|извин|прост|sorry|excuse/i, "죄송합니다", "joesonghamnida", ["Kechirasiz (uzr so'rash)", "Извините (извинение)", "I'm sorry (apology)"]],
+    [/xayr|пока|до свидан|bye/i, "안녕히 계세요", "annyeonghi gyeseyo", ["Xayr (qolayotgan odamga)", "До свидания (тому, кто остаётся)", "Goodbye (to someone staying)"]],
+    [/qancha|narx|сколько|цена|how much|price/i, "얼마예요?", "eolmayeyo?", ["Qancha turadi?", "Сколько стоит?", "How much is it?"]],
+    [/hojatxona|tualet|туалет|toilet|bathroom/i, "화장실이 어디예요?", "hwajangsiri eodiyeyo?", ["Hojatxona qayerda?", "Где туалет?", "Where is the toilet?"]],
+    [/qayerda|где|where/i, "어디예요?", "eodiyeyo?", ["Qayerda?", "Где?", "Where is it?"]],
+    [/tushunmadim|bilmayman|не понял|не знаю|don't understand|don't know/i, "잘 모르겠어요", "jal moreugesseoyo", ["Tushunmadim / bilmayman", "Не понимаю / не знаю", "I don't understand / I don't know"]],
+    [/sekin|медлен|slow/i, "천천히 말해 주세요", "cheoncheonhi malhae juseyo", ["Sekinroq gapiring", "Говорите медленнее", "Please speak slowly"]],
+    [/takror|qaytar|повтор|repeat/i, "다시 한 번 말해 주세요", "dasi han beon malhae juseyo", ["Yana bir marta ayting", "Повторите, пожалуйста", "Please say it again"]],
+    [/yordam|помог|помощ|help/i, "도와주세요", "dowajuseyo", ["Yordam bering", "Помогите", "Please help me"]],
+    [/kasalxona|shifoxona|doktor|больниц|врач|hospital|doctor/i, "병원", "byeongwon", ["Kasalxona", "Больница", "Hospital"]],
+    [/og'ri|ogri|болит|hurt|pain/i, "아파요", "apayo", ["Og'riyapti", "Болит", "It hurts"]],
+    [/suv|вода|воды|water/i, "물", "mul", ["Suv", "Вода", "Water"]],
+    [/ovqat|еда|еду|food|meal/i, "밥", "bap", ["Ovqat (guruch)", "Еда (рис)", "Meal (rice)"]],
+    [/maosh|oylik|зарплат|salary/i, "월급", "wolgeup", ["Oylik maosh", "Зарплата", "Monthly salary"]],
+    [/pul|деньг|money/i, "돈", "don", ["Pul", "Деньги", "Money"]],
+    [/ism|зовут|имя|name/i, "이름이 뭐예요?", "ireumi mwoyeyo?", ["Ismingiz nima?", "Как вас зовут?", "What's your name?"]],
+    [/tanish|приятно|nice to meet/i, "만나서 반갑습니다", "mannaseo bangapseumnida", ["Tanishganimdan xursandman", "Приятно познакомиться", "Nice to meet you"]],
+    [/sevaman|yaxshi ko'raman|люблю|love/i, "사랑해요", "saranghaeyo", ["Sevaman", "Люблю", "I love you"]],
+    [/do'st|dost|друг|friend/i, "친구", "chingu", ["Do'st", "Друг", "Friend"]],
+    [/ertaga|завтра|tomorrow/i, "내일", "naeil", ["Ertaga", "Завтра", "Tomorrow"]],
+    [/bugun|сегодня|today/i, "오늘", "oneul", ["Bugun", "Сегодня", "Today"]],
+    [/kecha|вчера|yesterday/i, "어제", "eoje", ["Kecha", "Вчера", "Yesterday"]],
+    [/soat necha|vaqt|который час|время|what time/i, "몇 시예요?", "myeot siyeyo?", ["Soat necha?", "Который час?", "What time is it?"]],
+    [/\buy\b|\bдом|\bhome\b|\bhouse/i, "집", "jip", ["Uy", "Дом", "Home"]],
+    [/\bish\b|работ|\bwork\b|\bjob\b/i, "일", "il", ["Ish", "Работа", "Work"]],
+    [/^ha$|^ha\b|^да\b|^yes\b/i, "네", "ne", ["Ha", "Да", "Yes"]],
+    [/yo'q|yoq|^нет|^no\b/i, "아니요", "aniyo", ["Yo'q", "Нет", "No"]],
+    [/yaxshi|хорошо|good/i, "좋아요", "joayo", ["Yaxshi", "Хорошо", "Good"]]
   ];
+
+  // Komiko suhbati tarjimalari: koreyscha → [ruscha, inglizcha]
+  var CT = {
+    "안녕하세요! 저는 코미코예요. 이름이 뭐예요?": ["Привет! Я Комико. Как вас зовут?", "Hi! I'm Komiko. What's your name?"],
+    "제 이름은 {N}이에요.": ["Меня зовут {N}.", "My name is {N}."], "저는 {N}입니다.": ["Я — {N}.", "I am {N}."],
+    "만나서 반가워요! 어느 나라 사람이에요?": ["Приятно познакомиться! Из какой вы страны?", "Nice to meet you! Where are you from?"],
+    "저는 우즈베키스탄 사람이에요.": ["Я из Узбекистана.", "I'm from Uzbekistan."], "우즈베키스탄에서 왔어요.": ["Я приехал из Узбекистана.", "I came from Uzbekistan."],
+    "몇 살이에요?": ["Сколько вам лет?", "How old are you?"], "스물다섯 살이에요.": ["Мне двадцать пять.", "I'm twenty-five."], "저는 스무 살이에요.": ["Мне двадцать.", "I'm twenty."],
+    "무슨 일을 해요?": ["Чем вы занимаетесь?", "What do you do?"], "저는 학생이에요.": ["Я студент.", "I'm a student."], "저는 회사원이에요.": ["Я офисный работник.", "I'm an office worker."],
+    "왜 한국어를 공부해요?": ["Почему вы учите корейский?", "Why are you studying Korean?"],
+    "한국에서 일하고 싶어요.": ["Хочу работать в Корее.", "I want to work in Korea."], "한국 대학교에 가고 싶어요.": ["Хочу поступить в корейский университет.", "I want to go to a Korean university."],
+    "오늘 정말 잘했어요! 다음에 또 만나요.": ["Сегодня было отлично! До встречи.", "You did great today! See you next time."],
+    "안녕하세요. 오늘 처음 출근했어요?": ["Здравствуйте. Вы сегодня первый день на работе?", "Hello. Is today your first day at work?"],
+    "네, 오늘 처음 왔어요.": ["Да, сегодня первый день.", "Yes, it's my first day."], "네, 잘 부탁드립니다.": ["Да, прошу любить и жаловать.", "Yes, I look forward to working with you."],
+    "이 기계를 사용할 줄 알아요?": ["Вы умеете пользоваться этим станком?", "Do you know how to use this machine?"],
+    "아니요, 잘 몰라요. 가르쳐 주세요.": ["Нет, плохо знаю. Научите, пожалуйста.", "No, not really. Please teach me."], "네, 사용할 줄 알아요.": ["Да, умею.", "Yes, I know how."],
+    "일할 때 안전모를 꼭 쓰세요.": ["Во время работы обязательно носите каску.", "Always wear a hard hat while working."],
+    "네, 알겠습니다.": ["Да, понял.", "Yes, understood."], "네, 꼭 쓰겠습니다.": ["Да, обязательно надену.", "Yes, I'll be sure to wear it."],
+    "오늘 잔업이 있어요. 할 수 있어요?": ["Сегодня есть сверхурочная работа. Сможете?", "There's overtime today. Can you do it?"],
+    "네, 할 수 있어요.": ["Да, смогу.", "Yes, I can."], "죄송하지만 오늘은 어려워요.": ["Извините, сегодня сложно.", "Sorry, today is difficult."],
+    "손을 다쳤어요? 괜찮아요?": ["Вы поранили руку? Всё в порядке?", "Did you hurt your hand? Are you okay?"],
+    "손이 좀 아파요. 병원에 가도 돼요?": ["Рука немного болит. Можно в больницу?", "My hand hurts a bit. May I go to the hospital?"], "괜찮아요. 조금 다쳤어요.": ["Ничего. Немного поранился.", "I'm okay. Just a small injury."],
+    "첫날 수고했어요! 내일 또 봐요.": ["Спасибо за первый день! До завтра.", "Good work on your first day! See you tomorrow."],
+    "어서 오세요! 뭘 찾으세요?": ["Добро пожаловать! Что ищете?", "Welcome! What are you looking for?"],
+    "사과 있어요?": ["Яблоки есть?", "Do you have apples?"], "운동화를 찾아요.": ["Ищу кроссовки.", "I'm looking for sneakers."],
+    "이거 어때요? 아주 신선해요.": ["Как вам это? Очень свежее.", "How about this? It's very fresh."],
+    "이거 얼마예요?": ["Сколько это стоит?", "How much is this?"], "좋아요. 이거 주세요.": ["Хорошо. Дайте это.", "Good. I'll take this."],
+    "한 개에 천 원이에요. 몇 개 드릴까요?": ["Тысяча вон за штуку. Сколько вам?", "1,000 won each. How many would you like?"],
+    "다섯 개 주세요.": ["Дайте пять.", "Five, please."], "세 개 주세요.": ["Дайте три.", "Three, please."],
+    "봉투 필요하세요?": ["Пакет нужен?", "Do you need a bag?"], "네, 하나 주세요.": ["Да, один, пожалуйста.", "Yes, one please."], "아니요, 괜찮아요.": ["Нет, не нужно.", "No, I'm fine."],
+    "카드로 계산하시겠어요?": ["Будете платить картой?", "Will you pay by card?"],
+    "네, 카드로 할게요.": ["Да, картой.", "Yes, by card."], "아니요, 현금으로 할게요.": ["Нет, наличными.", "No, in cash."],
+    "감사합니다! 또 오세요.": ["Спасибо! Приходите ещё.", "Thank you! Come again."],
+    "어디가 아프세요?": ["Что у вас болит?", "Where does it hurt?"], "머리가 아파요.": ["Болит голова.", "I have a headache."], "배가 아파요.": ["Болит живот.", "I have a stomachache."],
+    "언제부터 아팠어요?": ["С какого времени болит?", "Since when has it hurt?"], "어제부터 아팠어요.": ["Со вчерашнего дня.", "Since yesterday."], "사흘 전부터 아팠어요.": ["Уже три дня.", "For three days."],
+    "열도 있어요?": ["Температура тоже есть?", "Do you have a fever too?"], "네, 열이 조금 있어요.": ["Да, небольшая.", "Yes, a slight fever."], "아니요, 열은 없어요.": ["Нет, температуры нет.", "No, no fever."],
+    "약을 하루에 세 번 드세요.": ["Принимайте лекарство три раза в день.", "Take the medicine three times a day."],
+    "밥 먹고 먹어요?": ["После еды?", "After meals?"],
+    "푹 쉬세요. 빨리 나으세요.": ["Хорошо отдохните. Выздоравливайте.", "Get some good rest. Get well soon."],
+    "감사합니다, 선생님.": ["Спасибо, доктор.", "Thank you, doctor."], "네, 감사합니다.": ["Да, спасибо.", "Yes, thank you."],
+    "빨리 나으세요!": ["Выздоравливайте!", "Get well soon!"],
+    "오늘 날씨가 어때요?": ["Какая сегодня погода?", "How's the weather today?"], "오늘은 날씨가 좋아요.": ["Сегодня хорошая погода.", "The weather is nice today."], "오늘은 비가 와요.": ["Сегодня идёт дождь.", "It's raining today."],
+    "주말에 보통 뭐 해요?": ["Что вы обычно делаете на выходных?", "What do you usually do on weekends?"],
+    "친구들하고 축구를 해요.": ["Играю в футбол с друзьями.", "I play football with friends."], "집에서 쉬어요.": ["Отдыхаю дома.", "I rest at home."],
+    "가족이 몇 명이에요?": ["Сколько человек в вашей семье?", "How many people are in your family?"], "우리 가족은 다섯 명이에요.": ["Нас в семье пятеро.", "There are five of us."], "네 명이에요.": ["Четыре человека.", "Four people."],
+    "무슨 음식을 좋아해요?": ["Какую еду вы любите?", "What food do you like?"], "저는 비빔밥을 좋아해요.": ["Я люблю пибимпап.", "I like bibimbap."], "한국 음식을 좋아해요.": ["Люблю корейскую еду.", "I like Korean food."],
+    "내일 같이 밥 먹을까요?": ["Пообедаем завтра вместе?", "Shall we eat together tomorrow?"],
+    "좋아요! 몇 시에 만날까요?": ["Давайте! Во сколько встретимся?", "Sure! What time shall we meet?"], "미안해요. 내일은 바빠요.": ["Извините, завтра я занят.", "Sorry, I'm busy tomorrow."],
+    "재미있었어요! 또 이야기해요.": ["Было интересно! Поговорим ещё.", "That was fun! Let's talk again."],
+    "어디에 가요?": ["Куда вы идёте?", "Where are you going?"], "시장에 가요.": ["На рынок.", "To the market."], "회사에 가요.": ["На работу.", "To work."],
+    "버스로 가요? 지하철로 가요?": ["На автобусе или на метро?", "By bus or by subway?"], "지하철로 가요.": ["На метро.", "By subway."], "버스로 가요.": ["На автобусе.", "By bus."],
+    "길을 잃었어요? 도와드릴까요?": ["Заблудились? Помочь?", "Are you lost? Can I help?"],
+    "네, 서울역이 어디예요?": ["Да, где станция Сеул?", "Yes, where is Seoul Station?"], "네, 화장실이 어디에 있어요?": ["Да, где туалет?", "Yes, where is the toilet?"],
+    "저기 은행 옆에 있어요. 걸어서 오 분 걸려요.": ["Вон там, рядом с банком. Пять минут пешком.", "Over there, next to the bank. Five minutes on foot."],
+    "감사합니다!": ["Спасибо!", "Thank you!"], "정말 고마워요.": ["Большое спасибо.", "Thanks so much."],
+    "교통카드 있어요?": ["У вас есть транспортная карта?", "Do you have a transit card?"], "네, 있어요.": ["Да, есть.", "Yes, I do."], "아니요, 어디에서 사요?": ["Нет, где её купить?", "No, where do I buy one?"],
+    "조심히 가세요!": ["Счастливого пути!", "Get home safely!"],
+    "잘했어요!": ["Молодец!", "Well done!"], "완벽해요!": ["Идеально!", "Perfect!"], "아주 좋아요!": ["Очень хорошо!", "Very good!"],
+    "좋아요!": ["Хорошо!", "Good!"], "괜찮아요!": ["Неплохо!", "Not bad!"], "괜찮아요.": ["Ничего страшного.", "That's okay."],
+    "다시 한 번 말해 볼까요?": ["Попробуем ещё раз?", "Shall we try once more?"]
+  };
+  var LI = { ru: 0, en: 1 };
+  function L() { return window.I18N ? I18N.lang() : "uz"; }
+  function tr(ko, uz) { var l = L(); if (l === "uz") return uz; var v = CT[ko]; return v ? v[LI[l]] : uz; }
+  function T(m, v) { return window.I18N ? I18N.f(m, v) : m.uz; }
   var kc = { topic: "intro", i: 0, tries: 0, scores: [], done: false, busy: false };
 
   function chatLog() { return $("chLog"); }
@@ -499,9 +589,9 @@
     var h = '<div class="k-row">' + avatar(38, "live") + '<div class="bub ai"><div class="ko">' + esc(ko) +
       ' <button class="mini" data-say="' + esc(ko) + '" aria-label="Tinglash">🔊</button></div>' + (uz ? '<div class="tr">' + esc(uz) + '</div>' : '') + '</div></div>';
     if (chips && chips.length) {
-      h += '<div class="k-chips"><div class="k-chips-t">💡 Shunday javob berishingiz mumkin (bosib tinglang):</div>' + chips.map(function (a) {
+      h += '<div class="k-chips"><div class="k-chips-t">' + T({ uz: "💡 Shunday javob berishingiz mumkin (bosib tinglang):", ru: "💡 Можно ответить так (нажмите, чтобы послушать):", en: "💡 You could answer like this (tap to listen):" }) + '</div>' + chips.map(function (a) {
         var ko2 = nameFill(a[0]);
-        return '<button class="k-chip" data-say="' + esc(ko2) + '"><span class="ko">' + esc(ko2) + '</span><small>' + esc(nameFill(a[1])) + '</small></button>';
+        return '<button class="k-chip" data-say="' + esc(ko2) + '"><span class="ko">' + esc(ko2) + '</span><small>' + esc(nameFill(tr(a[0], a[1]))) + '</small></button>';
       }).join("") + '</div>';
     }
     add(h);
@@ -523,15 +613,16 @@
     stopAll();
     kc.i = 0; kc.tries = 0; kc.scores = []; kc.done = false; kc.busy = false;
     var S = SCRIPTS[kc.topic];
-    chatLog().innerHTML = '<div class="k-intro">' + avatar(54) + '<div><b>Komiko bilan suhbat: ' + esc(S.t) + '</b>' +
-      '<div class="note" style="font-size:13.5px">Komiko gapiradi → 🎙️ ni bosib koreyscha javob bering. Har bir javobingiz baholanadi. ' +
-      'Yozib ham javob berishingiz yoki o\'zbekcha so\'rashingiz mumkin: masalan, «rahmat koreyscha qanday?»</div></div></div>';
+    chatLog().innerHTML = '<div class="k-intro">' + avatar(54) + '<div><b>' + T({ uz: "Komiko bilan suhbat", ru: "Разговор с Комико", en: "Talk with Komiko" }) + ': ' + esc(window.I18N ? I18N.t(S.t) : S.t) + '</b>' +
+      '<div class="note" style="font-size:13.5px">' + T({ uz: "Komiko gapiradi → 🎙️ ni bosib koreyscha javob bering. Har bir javobingiz baholanadi. Yozib ham javob berishingiz yoki o'zbekcha so'rashingiz mumkin: masalan, «rahmat koreyscha qanday?»",
+        ru: "Комико говорит → нажмите 🎙️ и ответьте по-корейски. Каждый ответ оценивается. Можно писать или спросить по-русски: например, «как сказать спасибо?»",
+        en: "Komiko speaks → tap 🎙️ and answer in Korean. Every answer is scored. You can also type, or ask in English: e.g. \"how do you say thank you?\"" }) + '</div></div></div>';
     askTurn();
   }
   function askTurn() {
     var T = SCRIPTS[kc.topic].turns[kc.i];
     kc.tries = 0;
-    komikoSay(T.k[0], T.k[1], T.a);
+    komikoSay(T.k[0], tr(T.k[0], T.k[1]), T.a);
   }
   function evalAnswer(variants) {
     var T = SCRIPTS[kc.topic].turns[kc.i], bestR = null, bestA = null;
@@ -556,14 +647,14 @@
     add('<div class="bub me ko">' + (typed ? "" : "🎙️ ") + esc(E.r.said) + '</div>');
     var good = sc >= 80, okay = sc >= 55;
     var model = nameFill(E.a[0]);
-    var fix = '<div class="fix ' + (good ? "" : okay ? "mid" : "low") + '"><b>' + (good ? "✅ To'g'ri!" : okay ? "🟡 Yaxshi, lekin aniqroq:" : "🔴 To'liq tushunmadim.") + ' ' + sc + ' ball</b>';
-    if (!good) fix += '<div class="ko" style="margin-top:4px">To\'g\'ri variant: <b>' + esc(model) + '</b> <button class="mini" data-say="' + esc(model) + '">🔊</button></div><div>' + esc(nameFill(E.a[1])) + '</div>';
+    var fix = '<div class="fix ' + (good ? "" : okay ? "mid" : "low") + '"><b>' + (good ? T({ uz: "✅ To'g'ri!", ru: "✅ Верно!", en: "✅ Correct!" }) : okay ? T({ uz: "🟡 Yaxshi, lekin aniqroq:", ru: "🟡 Хорошо, но точнее:", en: "🟡 Good, but more precisely:" }) : T({ uz: "🔴 To'liq tushunmadim.", ru: "🔴 Не совсем понял.", en: "🔴 I didn't quite get that." })) + ' ' + sc + ' ' + T({ uz: "ball", ru: "баллов", en: "pts" }) + '</b>';
+    if (!good) fix += '<div class="ko" style="margin-top:4px">' + T({ uz: "To'g'ri variant", ru: "Правильно", en: "Correct version" }) + ': <b>' + esc(model) + '</b> <button class="mini" data-say="' + esc(model) + '">🔊</button></div><div>' + esc(nameFill(tr(E.a[0], E.a[1]))) + '</div>';
     fix += '</div>';
     add(fix);
     Activity.mark("chat");
     if (!okay && kc.tries === 0) {
       kc.tries++;
-      setTimeout(function () { komikoSay("다시 한 번 말해 볼까요?", "Yana bir marta aytib ko'ramizmi?", SCRIPTS[kc.topic].turns[kc.i].a); }, 500);
+      setTimeout(function () { komikoSay("다시 한 번 말해 볼까요?", tr("다시 한 번 말해 볼까요?", "Yana bir marta aytib ko'ramizmi?"), SCRIPTS[kc.topic].turns[kc.i].a); }, 500);
       return;
     }
     kc.scores.push(sc);
@@ -576,14 +667,14 @@
       kc.busy = false;
       if (kc.i >= S.turns.length) { finishLocal(R); return; }
       var T = S.turns[kc.i]; kc.tries = 0;
-      komikoSay(R[0] + " " + T.k[0], R[1] + " " + T.k[1], T.a);
+      komikoSay(R[0] + " " + T.k[0], tr(R[0], R[1]) + " " + tr(T.k[0], T.k[1]), T.a);
     }, 700);
   }
   function finishLocal(R) {
     kc.done = true;
     var S = SCRIPTS[kc.topic];
     var avg = kc.scores.length ? Math.round(kc.scores.reduce(function (a, b) { return a + b; }, 0) / kc.scores.length) : 0;
-    komikoSay(R[0] + " " + S.end[0], R[1] + " " + S.end[1]);
+    komikoSay(R[0] + " " + S.end[0], tr(R[0], R[1]) + " " + tr(S.end[0], S.end[1]));
     H.pushHist("speak", { overall: avg, accuracy: avg, pronunciation: avg, fluency: null, level: "chat-" + kc.topic, date: today() });
     var keys = Object.keys(SCRIPTS), next = keys[(keys.indexOf(kc.topic) + 1) % keys.length];
     add('<div class="card k-sum"><div style="font-weight:800;font-size:17px">🎉 Suhbat tugadi: o\'rtacha ' + avg + ' ball</div>' +
@@ -596,12 +687,14 @@
     add('<div class="bub me">' + esc(text) + '</div>');
     var hit = PHRASES.find(function (p) { return p[0].test(text); });
     if (hit) {
-      add('<div class="k-row">' + avatar(38) + '<div class="bub ai"><div>«' + esc(hit[3]) + '» koreyscha:</div><div class="ko" style="font-size:20px;font-weight:700;margin-top:4px">' + esc(hit[1]) +
-        ' <button class="mini" data-say="' + esc(hit[1]) + '">🔊</button></div><div class="tr">O\'qilishi: ' + esc(hit[2]) + '</div></div></div>');
+      var lbl = hit[3][{ uz: 0, ru: 1, en: 2 }[L()]];
+      add('<div class="k-row">' + avatar(38) + '<div class="bub ai"><div>«' + esc(lbl) + '» ' + T({ uz: "koreyscha:", ru: "по-корейски:", en: "in Korean:" }) + '</div><div class="ko" style="font-size:20px;font-weight:700;margin-top:4px">' + esc(hit[1]) +
+        ' <button class="mini" data-say="' + esc(hit[1]) + '">🔊</button></div><div class="tr">' + T({ uz: "O'qilishi", ru: "Читается", en: "Reads as" }) + ': ' + esc(hit[2]) + '</div></div></div>');
       speak(hit[1]);
     } else {
-      add('<div class="k-row">' + avatar(38) + '<div class="bub ai">Buni hozircha bilmayman 🙂 Men shu mavzu bo\'yicha gaplashaman: yuqoridagi variantlardan birini koreyscha aytib ko\'ring. ' +
-        'Oddiy iboralarni ham so\'rashingiz mumkin: «rahmat», «qancha turadi», «tushunmadim», «yordam bering».</div></div>');
+      add('<div class="k-row">' + avatar(38) + '<div class="bub ai">' + T({ uz: "Buni hozircha bilmayman 🙂 Yuqoridagi variantlardan birini koreyscha aytib ko'ring. Oddiy iboralarni ham so'rashingiz mumkin: «rahmat», «qancha turadi», «tushunmadim», «yordam bering».",
+        ru: "Этого я пока не знаю 🙂 Скажите по-корейски один из вариантов выше. Можно спросить простые фразы: «спасибо», «сколько стоит», «не понимаю», «помогите».",
+        en: "I don't know that yet 🙂 Try saying one of the options above in Korean. You can also ask simple phrases: \"thank you\", \"how much\", \"I don't understand\", \"help\"." }) + '</div></div>');
     }
   }
   function chatLocal() {
@@ -700,7 +793,7 @@
   if (Profile.get()) setTimeout(initLevel, 0);
 
   window.Komiko = {
-    speak: speak, stop: stopAll, listen: listen, stopListen: stopListen, canListen: canListen,
+    speak: speak, sayLocal: sayLocal, stop: stopAll, listen: listen, isListening: function () { return lis.on; }, stopListen: stopListen, canListen: canListen,
     compare: compare, best: best, avatar: avatar, Profile: Profile, Activity: Activity,
     sheet: sheet, closeSheet: closeSheet, openChat: openChat, voicePicker: voicePicker, today: today, LOCAL: LOCAL, onlyHangul: onlyHangul
   };
