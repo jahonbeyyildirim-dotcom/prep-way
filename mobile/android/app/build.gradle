@@ -11,6 +11,8 @@ android {
         versionCode = Integer.parseInt(System.getenv("VERSION_CODE") ?: "1")
         versionName = System.getenv("VERSION_NAME") ?: "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Faqat haqiqiy telefonlar uchun (ARM). x86 kutubxonalari faqat emulyatorlarga kerak — APK ~23 MB yengillashadi.
+        ndk { abiFilters "armeabi-v7a", "arm64-v8a" }
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
