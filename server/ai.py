@@ -4,6 +4,7 @@ Barcha javoblar JSON ko'rinishida olinadi va tekshiriladi.
 AI_FAKE=1 bo'lsa, Gemini'ga murojaat qilinmaydi: sinash uchun namunaviy javoblar qaytadi.
 """
 import asyncio
+import base64
 import hashlib
 import io
 import json
@@ -88,15 +89,22 @@ async def _json_call(parts: list, temperature: float = 0.4) -> dict:
         temperature=temperature,
     )
     last = None
+    models = [config.GEMINI_MODEL] + [m for m in config.GEMINI_FALLBACK_MODELS if m != config.GEMINI_MODEL]
     for _attempt in range(2):
-        try:
-            resp = await _cli().aio.models.generate_content(model=config.GEMINI_MODEL, contents=parts, config=cfg)
-            return _parse_json(resp.text)
-        except json.JSONDecodeError as e:
-            last = e
-            continue
-        except genai_errors.APIError as e:
-            raise _api_error_to_uz(e)
+        for i, model in enumerate(models):
+            try:
+                resp = await _cli().aio.models.generate_content(model=model, contents=parts, config=cfg)
+                return _parse_json(resp.text)
+            except json.JSONDecodeError as e:
+                last = e
+                break
+            except genai_errors.APIError as e:
+                code = getattr(e, "code", 0) or 0
+                # Model band (503), limit (429) yoki vaqtinchalik xato — keyingi modelga o'tamiz
+                if code in (429, 500, 503, 504, 404) and i < len(models) - 1:
+                    log.warning("Model %s javob bermadi (%s) — %s ga o'tilmoqda", model, code, models[i + 1])
+                    continue
+                raise _api_error_to_uz(e)
     log.warning("JSON o'qib bo'lmadi: %s", last)
     raise AIError("AI javobini o'qib bo'lmadi. Qayta urinib ko'ring.")
 
@@ -412,38 +420,48 @@ async def tts(text: str, gender: str | None = None) -> bytes:
         return path.read_bytes()
     if config.AI_FAKE:
         raise AIError("Sinov rejimida server ovozi yo'q.")
-    voice_variants = [
-        types.VoiceConfig(voice=vname),
-        types.VoiceConfig(prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=vname)),
-    ]
-    last = None
-    for vc in voice_variants:
-        try:
-            resp = await _cli().aio.models.generate_content(
-                model=config.GEMINI_TTS_MODEL,
-                contents=text,
-                config=types.GenerateContentConfig(
-                    response_modalities=["AUDIO"],
-                    speech_config=types.SpeechConfig(voice_config=vc, language_code="ko-KR"),
-                ),
-            )
-            part = resp.candidates[0].content.parts[0].inline_data
-            rate = 24000
-            m = re.search(r"rate=(\d+)", part.mime_type or "")
-            if m:
-                rate = int(m.group(1))
-            data = part.data if (part.mime_type or "").startswith("audio/wav") else _pcm_to_wav(part.data, rate)
-            path.write_bytes(data)
-            return data
-        except genai_errors.ClientError as e:
-            last = e  # boshqa ovoz sozlamasi bilan qayta urinamiz
-            continue
-        except genai_errors.APIError as e:
-            raise _api_error_to_uz(e)
-        except (AttributeError, IndexError, TypeError) as e:
-            log.warning("TTS javobi kutilmagan: %s", e)
-            raise AIError("Ovoz yaratib bo'lmadi.")
-    raise _api_error_to_uz(last)
+    # Gemini 3.8 TTS: Interactions API (javob odatda tayyor WAV, base64)
+    try:
+        it = await _cli().aio.interactions.create(
+            model=config.GEMINI_TTS_MODEL,
+            input=[{"type": "user_input", "content": [{"type": "text", "text": text}]}],
+            response_format={"type": "audio"},
+            generation_config={"speech_config": [{"voice": vname}]},
+        )
+    except genai_errors.APIError as e:
+        raise _api_error_to_uz(e)
+    audio = _find_audio(it.model_dump() if hasattr(it, "model_dump") else it)
+    if not audio:
+        log.warning("TTS javobida audio topilmadi")
+        raise AIError("Ovoz yaratib bo'lmadi.")
+    raw, mime = audio
+    data = base64.b64decode(raw) if isinstance(raw, str) else raw
+    if not (mime or "").startswith("audio/wav") and data[:4] != b"RIFF":
+        rate = 24000
+        m = re.search(r"rate=(\d+)", mime or "")
+        if m:
+            rate = int(m.group(1))
+        data = _pcm_to_wav(data, rate)
+    path.write_bytes(data)
+    return data
+
+
+def _find_audio(obj):
+    """Interactions javobidan oxirgi audio bo'lagini (data, mime_type) topadi."""
+    found = None
+    if isinstance(obj, dict):
+        if obj.get("type") == "audio" and obj.get("data"):
+            found = (obj["data"], obj.get("mime_type") or obj.get("mimeType") or "")
+        for v in obj.values():
+            r = _find_audio(v)
+            if r:
+                found = r
+    elif isinstance(obj, (list, tuple)):
+        for v in obj:
+            r = _find_audio(v)
+            if r:
+                found = r
+    return found
 
 
 # ---------------------------------------------------------------- DAFTAR TEKSHIRUVI (rasm)
