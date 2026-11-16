@@ -762,6 +762,25 @@
       return true;
     } catch(e){ toast("Audio ishlamadi. Matnni ko'ring."); return false; }
   }
+  // Dialog: har bir qator navbat bilan ayol/erkak ovozida. "남자:"/"여자:" belgisi bo'lsa — shu ovoz.
+  var dlgTok = 0;
+  function speakDialog(text){
+    var lines = String(text||"").split("\n").map(function(l){ return l.trim(); }).filter(Boolean), my = ++dlgTok;
+    if (lines.length < 2 || !(window.Komiko && window.Komiko.speak)) return speak(String(text).replace(/(^|\n)\s*(남자|여자)\s*:\s*/g, "$1"));
+    var i = 0;
+    (function next(){
+      if (my !== dlgTok || i >= lines.length) return;
+      var l = lines[i], m = l.match(/^(남자|여자)\s*:\s*/), v = m ? (m[1]==="남자" ? "male" : "female") : (i % 2 === 0 ? "female" : "male");
+      if (m) l = l.slice(m[0].length);
+      i++;
+      Promise.resolve(window.Komiko.speak(l, v)).then(function(){ if (my === dlgTok) setTimeout(next, 450); });
+    })();
+  }
+  function stopDialog(){ dlgTok++; }
+  // Ko'rilgan savollar: testlarda avval yangi savollar beriladi
+  var SEEN_KEY = "pwSeen";
+  function seenMap(){ try { return JSON.parse(localStorage.getItem(SEEN_KEY) || "{}") || {}; } catch(e){ return {}; } }
+  function markSeen(ids){ var m = seenMap(); ids.forEach(function(id){ m[id] = (m[id]||0)+1; }); try { localStorage.setItem(SEEN_KEY, JSON.stringify(m)); } catch(e){} }
   function speak(text){
     if (!text) return;
     if (window.Komiko && window.Komiko.speak) return window.Komiko.speak(text);
@@ -810,7 +829,9 @@
     var parts = String(key).split(":"), k = parts[0], mode = parts[1]==="full" ? "full" : "quick";
     var M = MODES[k], cfg = M[mode], qs = [];
     M.order.forEach(function(sec){
-      var pool = shuffle(BANK[k].filter(function(q){ return q.sec===sec; }));
+      var seen = seenMap();
+      var pool = shuffle(BANK[k].filter(function(q){ return q.sec===sec; }))
+        .sort(function(x, y){ return (seen[x.id]||0) - (seen[y.id]||0); });
       qs = qs.concat(pool.slice(0, Math.min(cfg[sec], pool.length)));
     });
     // Variantlar tartibini aralashtirish: javob har safar boshqa joyda. perm[ko'rsatilgan] = asl indeks.
@@ -842,6 +863,7 @@
     cur.left--;
   }
   function renderQ(){
+    stopDialog();
     var q = cur.exam.qs[cur.i], n = cur.exam.qs.length;
     $("tCount").textContent = (cur.i+1)+" / "+n;
     $("prog").style.width = ((cur.i+1)/n*100)+"%";
@@ -856,7 +878,7 @@
     h += '</div>';
     $("qCard").innerHTML = h;
     if (q.audio){
-      $("playBtn").onclick = function(){ speak(q.audio); };
+      $("playBtn").onclick = function(){ speakDialog(q.audio); };
       $("showScript").onclick = function(){ var s=$("script"); s.hidden=!s.hidden; this.textContent = s.hidden?"Matnni ko'rsatish":"Matnni yashirish"; };
     }
     $("qCard").querySelectorAll(".opt").forEach(function(b){
@@ -880,8 +902,9 @@
   };
 
   function finish(){
-    stopTimer();
+    stopTimer(); stopDialog();
     var qs = cur.exam.qs, ok=0, sec={read:[0,0],listen:[0,0]}, added=0;
+    markSeen(qs.map(function(q){ return q.id; }));
     qs.forEach(function(q,k){
       var good = cur.ans[k]===q.a; if (good) ok++;
       sec[q.sec][1]++; if (good) sec[q.sec][0]++;
