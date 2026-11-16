@@ -121,6 +121,7 @@
     "E'lonni o'qing va unga MOS KELMAYDIGANini tanlang.": ["Прочитайте объявление и выберите НЕВЕРНОЕ.", "Read the notice and choose the one that is NOT true."],
     "Taklifnomani o'qing va MOS KELMAYDIGANini tanlang.": ["Прочитайте приглашение и выберите НЕВЕРНОЕ.", "Read the invitation and choose the one that is NOT true."],
     "Tinglang: nima haqida gapiryapti?": ["Послушайте: о чём говорят?", "Listen: what are they talking about?"],
+    "Tinglang: u nega kechikdi?": ["Послушайте: почему он опоздал?", "Listen: why was he late?"],
     "Tinglang: mijoz nima qilyapti?": ["Послушайте: что делает клиент?", "Listen: what is the customer doing?"],
     // Daftar topshiriqlari
     "Hangul: oila va oddiy so'zlar": ["Хангыль: семья и простые слова", "Hangul: family and simple words"],
