@@ -10,7 +10,8 @@
   var C = window.Capacitor, P = (C && C.Plugins) || {};
   var NATIVE = !!(window.PW && window.PW.native);
   // Mahalliy (serversiz) rejim: demo yoki server yo'q
-  function LOCAL() { return !!(window.PW && window.PW.demo) || !H.SERVER.ok; }
+  var aiDown = 0;   // server AI band bo'lsa — vaqtincha oflayn Komiko
+  function LOCAL() { return !!(window.PW && window.PW.demo) || !H.SERVER.ok || (aiDown && Date.now() - aiDown < 10 * 60 * 1000); }
 
   // =====================================================================
   // PROFIL va FAOLLIK (seriya, kunlik daqiqalar)
@@ -802,6 +803,19 @@
   }
   if (Profile.get()) setTimeout(initLevel, 0);
 
+  // Server AI javob bermasa (band, limit, internet) — suhbat va talaffuz avtomatik oflayn rejimga o'tadi
+  var rawApi = H.api;
+  H.api = function (path, opt) {
+    return rawApi(path, opt).catch(function (e) {
+      if (/^\/api\/(chat|speech)/.test(path) && !LOCAL()) {
+        aiDown = Date.now();
+        H.toast(T({ uz: "AI serveri hozir band — Komiko oflayn rejimda davom etadi.", ru: "Сервер ИИ занят — Комико продолжит в офлайн-режиме.", en: "The AI server is busy — Komiko continues in offline mode." }));
+        initDone = false; kc.started = false;
+        setTimeout(function () { onSpeakView(); var b = document.querySelector('#spSeg button.on'); if (b) b.click(); }, 50);
+      }
+      throw e;
+    });
+  };
   window.Komiko = {
     speak: speak, sayLocal: sayLocal, stop: stopAll, listen: listen, isListening: function () { return lis.on; }, stopListen: stopListen, canListen: canListen,
     compare: compare, best: best, avatar: avatar, Profile: Profile, Activity: Activity,

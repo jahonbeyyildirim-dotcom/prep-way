@@ -23,7 +23,7 @@ def _cors(req, resp):
     if origin in config.CORS_ORIGINS:
         resp.headers["Access-Control-Allow-Origin"] = origin
         resp.headers["Vary"] = "Origin"
-        resp.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-Telegram-Init-Data"
+        resp.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type, X-Telegram-Init-Data, X-Lang"
         resp.headers["Access-Control-Allow-Methods"] = "GET, POST, DELETE, OPTIONS"
         resp.headers["Access-Control-Max-Age"] = "86400"
     return resp
@@ -52,6 +52,7 @@ async def middleware(req: web.Request, handler):
                 return jerr("Sessiya tugagan yoki avtorizatsiya xatosi. Qayta kiring.", 401)
             user = {"id": 1, "first_name": "Dev"}
         req["uid"] = int(user["id"])
+        ai.set_lang(req.headers.get("X-Lang", "uz"))
         req["user"] = user
     try:
         return await handler(req)

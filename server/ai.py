@@ -5,6 +5,7 @@ AI_FAKE=1 bo'lsa, Gemini'ga murojaat qilinmaydi: sinash uchun namunaviy javoblar
 """
 import asyncio
 import base64
+import contextvars
 import hashlib
 import io
 import json
@@ -58,6 +59,23 @@ def _cli():
     return _client
 
 
+# Foydalanuvchi tanlagan til (uz/ru/en): izohlar shu tilda yoziladi (JSON kalitlari o'zgarmaydi)
+_LANG = contextvars.ContextVar("pw_lang", default="uz")
+_LANG_NAME = {"ru": "Russian", "en": "English"}
+
+
+def set_lang(lang: str) -> None:
+    _LANG.set(lang if lang in ("uz", "ru", "en") else "uz")
+
+
+def _lang_note() -> str | None:
+    name = _LANG_NAME.get(_LANG.get())
+    if not name:
+        return None
+    return (f"IMPORTANT: the learner's interface language is {name}. Write every explanation/feedback/tip/translation "
+            f"field (including JSON keys ending in _uz) in {name}, not Uzbek. Keep the JSON keys exactly as specified.")
+
+
 def _api_error_to_uz(e: Exception) -> AIError:
     code = getattr(e, "code", None)
     log.warning("Gemini xatosi: %s", e)
@@ -91,6 +109,9 @@ async def _json_call(parts: list, temperature: float = 0.4) -> dict:
         response_mime_type="application/json",
         temperature=temperature,
     )
+    note = _lang_note()
+    if note:
+        parts = list(parts) + [note]
     last = None
     models = [config.GEMINI_MODEL] + [m for m in config.GEMINI_FALLBACK_MODELS if m != config.GEMINI_MODEL]
     for _attempt in range(2):

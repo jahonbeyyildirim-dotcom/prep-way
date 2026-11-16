@@ -729,6 +729,7 @@
     var headers = {};
     if (inTG) headers["X-Telegram-Init-Data"] = tg.initData;
     else if (window.PW && PW.native && PW.token) headers["Authorization"] = "Bearer " + PW.token;
+    if (window.I18N) headers["X-Lang"] = I18N.lang();
     var body = opt.body;
     if (opt.json !== undefined){ headers["Content-Type"] = "application/json"; body = JSON.stringify(opt.json); }
     return fetch(CONFIG.API_BASE + path, { method: opt.method || (body ? "POST" : "GET"), headers: headers, body: body })
