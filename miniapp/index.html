@@ -102,6 +102,8 @@
   .exam-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
   .exam-btns .btn{padding:11px 10px;font-size:14px;flex-direction:column;gap:2px;line-height:1.2}
   .exam-btns .btn small{font-weight:600;opacity:.8;font-size:12px}
+  .exam-btns.prac{margin-top:8px}
+  .exam-btns.prac .btn{padding:8px 8px;font-size:13px}
   .opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--ink)}
   .opt:hover{border-color:var(--blue)}
   .opt .n{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:14px;font-weight:700;font-family:Manrope}
@@ -269,6 +271,10 @@
           <button class="btn ghost" data-start="eps:quick">⚡ Tezkor test<small>10 savol · 10 daqiqa</small></button>
           <button class="btn" data-start="eps:full">📝 To'liq imtihon<small>40 savol · 50 daqiqa</small></button>
         </div>
+        <div class="exam-btns prac">
+          <button class="btn ghost" data-start="eps:listen">🎧 Tinglash mashqi<small>10 savol · 15 daqiqa</small></button>
+          <button class="btn ghost" data-start="eps:read">📖 O'qish mashqi<small>10 savol · 15 daqiqa</small></button>
+        </div>
       </div>
       <div class="card exam">
         <span class="tag">O'qish · universitet · grant</span>
@@ -278,6 +284,10 @@
         <div class="exam-btns">
           <button class="btn ghost" data-start="topik:quick">⚡ Tezkor test<small>10 savol · 10 daqiqa</small></button>
           <button class="btn" data-start="topik:full">📝 Katta mock<small>30 savol · 40 daqiqa</small></button>
+        </div>
+        <div class="exam-btns prac">
+          <button class="btn ghost" data-start="topik:listen">🎧 Tinglash mashqi<small>10 savol · 15 daqiqa</small></button>
+          <button class="btn ghost" data-start="topik:read">📖 O'qish mashqi<small>10 savol · 15 daqiqa</small></button>
         </div>
       </div>
     </div>
@@ -545,8 +555,8 @@
   };
   // Savollar banki: eski 8 tadan savol + questions.js. Har bir savolning doimiy id si bor.
   var MODES = {
-    eps:   { name:"EPS-TOPIK", order:["read","listen"], quick:{read:5, listen:5, min:10}, full:{read:20, listen:20, min:50} },
-    topik: { name:"TOPIK I",   order:["listen","read"], quick:{read:5, listen:5, min:10}, full:{read:18, listen:12, min:40} }
+    eps:   { name:"EPS-TOPIK", order:["read","listen"], quick:{read:5, listen:5, min:10}, full:{read:20, listen:20, min:50}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:15} },
+    topik: { name:"TOPIK I",   order:["listen","read"], quick:{read:5, listen:5, min:10}, full:{read:18, listen:12, min:40}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:15} }
   };
   var BANK = {}, QBYID = {};
   function pad3(n){ return ("00"+n).slice(-3); }
@@ -826,7 +836,7 @@
   // ---------- TEST ----------
   var cur = null; // {key, exam, i, ans[], left, tid}
   function startTest(key){
-    var parts = String(key).split(":"), k = parts[0], mode = parts[1]==="full" ? "full" : "quick";
+    var parts = String(key).split(":"), k = parts[0], mode = ({full:1, listen:1, read:1})[parts[1]] ? parts[1] : "quick";
     var M = MODES[k], cfg = M[mode], qs = [];
     M.order.forEach(function(sec){
       var seen = seenMap();
@@ -841,7 +851,7 @@
       v.opts = perm.map(function(i){ return q.opts[i]; }); v.a = perm.indexOf(q.a); v.perm = perm;
       return v;
     });
-    var ex = { name: M.name+(mode==="full" ? TF(" · to'liq"," · полный"," · full") : TF(" · tezkor"," · быстрый"," · quick")), minutes: cfg.min, qs: qs };
+    var ex = { name: M.name+({full:TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: cfg.min, qs: qs };
     cur = { key:key, exam:ex, i:0, ans:ex.qs.map(function(){return -1;}), left:ex.minutes*60, tid:null };
     $("tExam").textContent = ex.name;
     go("test");

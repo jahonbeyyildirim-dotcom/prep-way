@@ -16,6 +16,8 @@
     "kun seriya": ["дней подряд", "day streak"], "daqiqa bugun": ["мин сегодня", "min today"],
     "Bugungi reja": ["План на сегодня", "Today's plan"],
     "10 savol · 10 daqiqa": ["10 вопросов · 10 минут", "10 questions · 10 min"],
+    "10 savol · 15 daqiqa": ["10 вопросов · 15 минут", "10 questions · 15 min"],
+    "🎧 Tinglash mashqi": ["🎧 Аудирование", "🎧 Listening drill"], "📖 O'qish mashqi": ["📖 Чтение", "📖 Reading drill"],
     "Komiko bilan suhbat": ["Разговор с Комико", "Talk with Komiko"],
     "Ovozli mashq · 5 daqiqa": ["Голосовая практика · 5 минут", "Voice practice · 5 min"],
     "Daftar topshirig'i": ["Задание в тетради", "Notebook task"],
