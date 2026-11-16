@@ -431,15 +431,24 @@ async def tts(text: str, gender: str | None = None) -> bytes:
     if config.AI_FAKE:
         raise AIError("Sinov rejimida server ovozi yo'q.")
     # Gemini 3.8 TTS: Interactions API (javob odatda tayyor WAV, base64)
-    try:
-        it = await _cli().aio.interactions.create(
-            model=config.GEMINI_TTS_MODEL,
-            input=[{"type": "user_input", "content": [{"type": "text", "text": text}]}],
-            response_format={"type": "audio"},
-            generation_config={"speech_config": [{"voice": vname}]},
-        )
-    except genai_errors.APIError as e:
-        raise _api_error_to_uz(e)
+    it, err = None, None
+    for model in dict.fromkeys([config.GEMINI_TTS_MODEL, "gemini-3.8-flash-tts"]):
+        try:
+            it = await _cli().aio.interactions.create(
+                api_version="v1beta",
+                model=model,
+                input=[{"type": "user_input", "content": [{"type": "text", "text": text}]}],
+                response_format={"type": "audio"},
+                generation_config={"speech_config": [{"voice": vname}]},
+            )
+            break
+        except genai_errors.APIError as e:
+            err = _api_error_to_uz(e)
+        except Exception as e:  # Interactions API o'z xato sinflaridan foydalanadi
+            log.warning("TTS (%s) xatosi: %s", model, str(e)[:300])
+            err = AIError("Ovoz yaratib bo'lmadi. Birozdan keyin qayta urinib ko'ring.")
+    if it is None:
+        raise err
     audio = _find_audio(it.model_dump() if hasattr(it, "model_dump") else it)
     if not audio:
         log.warning("TTS javobida audio topilmadi")
