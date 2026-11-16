@@ -124,6 +124,7 @@
     "Tavsifga mos keladiganini tanlang.": ["Выберите то, что подходит к описанию.", "Choose what matches the description."],
     "Tinglang: erkak endi nima qiladi?": ["Послушайте: что мужчина сделает сейчас?", "Listen: what will the man do now?"],
     "E'lonni o'qing va MOS KELMAYDIGANini tanlang.": ["Прочитайте объявление и выберите то, что НЕ соответствует.", "Read the notice and choose what does NOT match."],
+    "Tinglang: ayol nima uchun qo'ng'iroq qildi?": ["Послушайте: зачем женщина позвонила?", "Listen: why did the woman call?"],
     "Tinglang: u nega kechikdi?": ["Послушайте: почему он опоздал?", "Listen: why was he late?"],
     "Tinglang: mijoz nima qilyapti?": ["Послушайте: что делает клиент?", "Listen: what is the customer doing?"],
     // Daftar topshiriqlari

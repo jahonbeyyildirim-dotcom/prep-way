@@ -841,7 +841,7 @@
       v.opts = perm.map(function(i){ return q.opts[i]; }); v.a = perm.indexOf(q.a); v.perm = perm;
       return v;
     });
-    var ex = { name: M.name+(mode==="full" ? " · to'liq" : " · tezkor"), minutes: cfg.min, qs: qs };
+    var ex = { name: M.name+(mode==="full" ? TF(" · to'liq"," · полный"," · full") : TF(" · tezkor"," · быстрый"," · quick")), minutes: cfg.min, qs: qs };
     cur = { key:key, exam:ex, i:0, ans:ex.qs.map(function(){return -1;}), left:ex.minutes*60, tid:null };
     $("tExam").textContent = ex.name;
     go("test");
@@ -859,7 +859,7 @@
     var m = Math.floor(cur.left/60), s = cur.left%60;
     var el = $("timer"); el.textContent = (m<10?"0":"")+m+":"+(s<10?"0":"")+s;
     el.classList.toggle("low", cur.left<=60);
-    if (cur.left<=0){ toast("Vaqt tugadi!"); finish(); return; }
+    if (cur.left<=0){ toast(TF("Vaqt tugadi!","Время вышло!","Time's up!")); finish(); return; }
     cur.left--;
   }
   function renderQ(){
@@ -896,7 +896,7 @@
     var n = cur.exam.qs.length;
     if (cur.i<n-1){ cur.i++; renderQ(); return; }
     var empty = cur.ans.filter(function(a){return a<0;}).length;
-    if (empty && !this.dataset.confirm){ this.dataset.confirm="1"; this.textContent="Baribir yakunlash"; toast(empty+" ta savolga javob berilmagan."); return; }
+    if (empty && !this.dataset.confirm){ this.dataset.confirm="1"; this.textContent="Baribir yakunlash"; toast(TF("{n} ta savolga javob berilmagan.","Без ответа: {n} вопр.","{n} questions unanswered.",{n:empty})); return; }
     delete this.dataset.confirm;
     finish();
   };
@@ -921,26 +921,29 @@
     pushHist("tests", { exam: cur.exam.name, pct: pct, read: sp(sec.read), listen: sp(sec.listen), date: new Date().toISOString().slice(0,10) });
     $("ring").style.setProperty("--p", pct);
     $("pct").textContent = pct+"%";
-    var bars = '<div style="font-weight:800;font-size:18px">'+ok+' / '+qs.length+' to\'g\'ri</div>';
-    [["read","O'qish","var(--blue)"],["listen","Tinglash","var(--red)"]].forEach(function(r){
+    var bars = '<div style="font-weight:800;font-size:18px">'+TF("{a} / {b} to'g'ri","{a} / {b} верно","{a} / {b} correct",{a:ok,b:qs.length})+'</div>';
+    [["read",secName("read"),"var(--blue)"],["listen",secName("listen"),"var(--red)"]].forEach(function(r){
       var s=sec[r[0]], p = s[1]? Math.round(s[0]/s[1]*100):0;
       bars += '<div class="brow"><span>'+r[1]+'</span><div class="btrack"><i style="width:'+p+'%;background:'+r[2]+'"></i></div><span>'+s[0]+'/'+s[1]+'</span></div>';
     });
-    var msg = pct>=80 ? "Ajoyib! Imtihonga tayyorgarlik yaxshi." : pct>=50 ? "Yomon emas. Xatolar ustida ishlang." : "Boshlanish. So'zlar va grammatikani takrorlang.";
-    bars += '<div class="note">'+msg+(added? " "+added+" ta savol xatolar daftariga qo'shildi.":"")+'</div>';
+    var msg = pct>=80 ? TF("Ajoyib! Imtihonga tayyorgarlik yaxshi.","Отлично! Подготовка к экзамену хорошая.","Excellent! You're well prepared.") : pct>=50 ? TF("Yomon emas. Xatolar ustida ishlang.","Неплохо. Поработайте над ошибками.","Not bad. Work on your mistakes.") : TF("Boshlanish. So'zlar va grammatikani takrorlang.","Это начало. Повторите слова и грамматику.","A start. Review words and grammar.");
+    bars += '<div class="note">'+msg+(added? " "+TF("{n} ta savol xatolar daftariga qo'shildi.","{n} вопр. добавлено в тетрадь ошибок.","{n} questions added to your mistakes list.",{n:added}):"")+'</div>';
     $("bars").innerHTML = bars;
-    $("review").innerHTML = qs.map(function(q,k){ return reviewCard(q, cur.ans[k], (k+1)+"-savol"); }).join("");
+    $("review").innerHTML = qs.map(function(q,k){ return reviewCard(q, cur.ans[k], TF("{n}-savol","Вопрос {n}","Question {n}",{n:k+1})); }).join("");
     $("retryBtn").onclick = (function(key){ return function(){ startTest(key); }; })(cur.key);
     go("result");
   }
 
+  // Dinamik matnlar tarjimasi (uz/ru/en)
+  function TF(uz, ru, en, vars){ return window.I18N ? I18N.f({uz:uz, ru:ru, en:en}, vars) : uz; }
+  function secName(sec){ return sec==="listen" ? TF("Tinglash","Аудирование","Listening") : TF("O'qish","Чтение","Reading"); }
   function reviewCard(q, your, label){
     var good = your===q.a;
     var body = q.text || q.sign || q.pic || ("🎧 "+q.audio);
-    return '<div class="card rv'+(good?'':' bad')+'"><div class="h"><span>'+esc(label)+' · '+(q.sec==="listen"?"Tinglash":"O'qish")+'</span><span style="color:'+(good?'var(--green)':'var(--red)')+'">'+(good?"✓ To'g'ri":"✕ Xato")+'</span></div>'+
+    return '<div class="card rv'+(good?'':' bad')+'"><div class="h"><span>'+esc(label)+' · '+secName(q.sec)+'</span><span style="color:'+(good?'var(--green)':'var(--red)')+'">'+(good?TF("✓ To'g'ri","✓ Верно","✓ Correct"):TF("✕ Xato","✕ Ошибка","✕ Wrong"))+'</span></div>'+
       '<div class="q ko" style="white-space:pre-line">'+esc(body)+'</div>'+
-      (good ? '' : '<div class="ans no ko">Sizning javobingiz: '+(your>-1? NUMS[your]+' '+esc(q.opts[your]) : '—')+'</div>')+
-      '<div class="ans ok ko">To\'g\'ri javob: '+NUMS[q.a]+' '+esc(q.opts[q.a])+'</div>'+
+      (good ? '' : '<div class="ans no ko">'+TF("Sizning javobingiz","Ваш ответ","Your answer")+': '+(your>-1? NUMS[your]+' '+esc(q.opts[your]) : '—')+'</div>')+
+      '<div class="ans ok ko">'+TF("To'g'ri javob","Правильный ответ","Correct answer")+': '+NUMS[q.a]+' '+esc(q.opts[q.a])+'</div>'+
       '<div class="exp">'+expOf(q)+'</div></div>';
   }
 
@@ -1018,7 +1021,7 @@
   }).catch(function(){ SERVER.ok = false; });
 
   // Qo'shimcha bo'limlar (features.js) uchun umumiy funksiyalar
-  document.querySelectorAll("[data-bank]").forEach(function(el){ el.textContent = BANK[el.dataset.bank].length+" ta savol bankda"; });
+  document.querySelectorAll("[data-bank]").forEach(function(el){ el.textContent = TF("{n} ta savol bankda","{n} вопросов в базе","{n} questions in the bank",{n:BANK[el.dataset.bank].length}); });
   window.HY = {
     $: $, esc: esc, toast: toast, go: go, back: back, api: api, speak: speak, haptic: haptic,
     tg: tg, inTG: inTG, ver: ver, CONFIG: CONFIG, SERVER: SERVER, WORDS: WORDS,
