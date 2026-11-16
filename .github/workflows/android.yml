@@ -88,20 +88,20 @@ jobs:
         run: echo "IS_DEMO=$(node -p "require('./mobile/app.config.json').demo === true")" >> "$GITHUB_ENV"
 
       - name: Demo APK'ni «demo» Release'ga chiqarish
-        if: env.IS_DEMO == 'true' && github.ref == 'refs/heads/main' && env.HAS_KEY == 'true'
+        if: github.ref == 'refs/heads/main' && env.HAS_KEY == 'true'
         run: cp "dist/PrepWay-$VERSION_NAME.apk" dist/PrepWay-demo.apk
 
       - name: Demo Release
-        if: env.IS_DEMO == 'true' && github.ref == 'refs/heads/main' && env.HAS_KEY == 'true'
+        if: github.ref == 'refs/heads/main' && env.HAS_KEY == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: demo
           target_commitish: ${{ github.sha }}
-          name: Prep Way — Demo versiya
+          name: Prep Way — sinov versiyasi
           prerelease: true
           make_latest: false
           body: |
-            **Prep Way demo versiyasi (Android).** Internetsiz va kirishsiz ishlaydi, AI javoblari namunaviy.
+            **Prep Way sinov versiyasi (Android).** Ro'yxatdan o'tish shart emas. Komiko AI serverga ulangan; internet bo'lmasa, oflayn rejimda ishlaydi.
 
             O'rnatish: pastdagi **PrepWay-demo.apk** faylini telefoningizda yuklab oling va oching.
             Telefon so'rasa, «Noma'lum manbalardan o'rnatish»ga ruxsat bering.

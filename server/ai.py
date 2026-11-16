@@ -51,7 +51,10 @@ def _cli():
     if not config.GEMINI_API_KEY:
         raise AIError("Server sozlanmagan: GEMINI_API_KEY kiritilmagan.")
     if _client is None:
-        _client = genai.Client(api_key=config.GEMINI_API_KEY)
+        # Har bir so'rov uchun vaqt chegarasi (ms): band model uzoq kuttirmasin, zaxira modelga o'tamiz
+        _client = genai.Client(api_key=config.GEMINI_API_KEY,
+                               http_options=types.HttpOptions(timeout=config.GEMINI_TIMEOUT_MS,
+                                                              retry_options=types.HttpRetryOptions(attempts=1)))
     return _client
 
 
@@ -105,6 +108,13 @@ async def _json_call(parts: list, temperature: float = 0.4) -> dict:
                     log.warning("Model %s javob bermadi (%s) — %s ga o'tilmoqda", model, code, models[i + 1])
                     continue
                 raise _api_error_to_uz(e)
+            except Exception as e:  # vaqt tugashi (timeout) — keyingi modelga o'tamiz
+                if "timeout" in type(e).__name__.lower() and i < len(models) - 1:
+                    log.warning("Model %s vaqtida javob bermadi — %s ga o'tilmoqda", model, models[i + 1])
+                    continue
+                if "timeout" in type(e).__name__.lower():
+                    raise AIError("AI hozir band. Birozdan keyin qayta urinib ko'ring.")
+                raise
     log.warning("JSON o'qib bo'lmadi: %s", last)
     raise AIError("AI javobini o'qib bo'lmadi. Qayta urinib ko'ring.")
 

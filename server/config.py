@@ -25,9 +25,10 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 WEBAPP_URL = os.getenv("WEBAPP_URL", "").strip().rstrip("/")
 
 # Model nomlari vaqt o'tishi bilan yangilanadi: aistudio.google.com dagi ro'yxatni tekshirib, kerak bo'lsa o'zgartiring.
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
 # Asosiy model band bo'lsa (503/429) navbat bilan shu modellar sinab ko'riladi
-GEMINI_FALLBACK_MODELS = [x.strip() for x in os.getenv("GEMINI_FALLBACK_MODELS", "gemini-3.6-flash,gemini-3.5-flash-lite").split(",") if x.strip()]
+GEMINI_FALLBACK_MODELS = [x.strip() for x in os.getenv("GEMINI_FALLBACK_MODELS", "gemini-3.8-flash,gemini-3.5-flash-lite").split(",") if x.strip()]
+GEMINI_TIMEOUT_MS = _int("GEMINI_TIMEOUT_MS", 25000)
 GEMINI_TTS_MODEL = os.getenv("GEMINI_TTS_MODEL", "gemini-3.8-flash-lite-tts")
 TTS_VOICE = os.getenv("TTS_VOICE", "Kore")            # Komiko: ayol ovozi
 TTS_VOICE_MALE = os.getenv("TTS_VOICE_MALE", "Charon")  # Komiko: erkak ovozi

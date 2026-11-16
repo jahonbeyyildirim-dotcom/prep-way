@@ -1,6 +1,7 @@
 {
-  "demo": true,
-  "apiBase": "https://SIZNING-SERVERINGIZ.up.railway.app",
+  "demo": false,
+  "apiBase": "https://prepway-api.onrender.com",
   "googleWebClientId": "XXXXXXXXXXXX-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com",
-  "googleIosClientId": "XXXXXXXXXXXX-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.apps.googleusercontent.com"
+  "googleIosClientId": "XXXXXXXXXXXX-yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy.apps.googleusercontent.com",
+  "guest": true
 }
