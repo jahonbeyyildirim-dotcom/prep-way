@@ -34,8 +34,8 @@ async def main():
             await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(text="Ilova", web_app=WebAppInfo(url=config.WEBAPP_URL)))
         else:
             log.warning("WEBAPP_URL https:// bilan boshlanmaydi — menyu tugmasi o'rnatilmadi.")
-    elif not config.DEV_MODE:
-        raise SystemExit("BOT_TOKEN kiritilmagan. Sinash uchun DEV_MODE=1 bilan ishga tushiring.")
+    else:
+        log.warning("BOT_TOKEN yo'q — Telegram bot o'chirilgan, faqat mobil ilova API ishlaydi.")
 
     if not config.GEMINI_API_KEY and not config.AI_FAKE:
         log.warning("GEMINI_API_KEY kiritilmagan — AI funksiyalari ishlamaydi.")

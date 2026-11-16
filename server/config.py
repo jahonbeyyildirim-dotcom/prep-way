@@ -57,6 +57,8 @@ CORS_ORIGINS = [x.strip() for x in os.getenv("CORS_ORIGINS", "https://localhost,
 
 # DEV_MODE=1 — Telegramsiz, brauzerda sinash uchun (initData tekshirilmaydi). Ishchi serverda YOQMANG.
 DEV_MODE = os.getenv("DEV_MODE", "0") == "1"
+# Mehmon rejimi: mobil ilova ro'yxatdan o'tmasdan qurilma ID si bilan kiradi (demo va tanlov uchun)
+GUEST_LOGIN = os.getenv("GUEST_LOGIN", "1") == "1"
 # AI_FAKE=1 — Gemini kalitisiz sinash: AI o'rniga namunaviy javoblar qaytadi.
 AI_FAKE = os.getenv("AI_FAKE", "0") == "1"
 

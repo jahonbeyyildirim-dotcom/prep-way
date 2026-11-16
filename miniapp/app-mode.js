@@ -14,6 +14,8 @@
 
   // DEMO rejim: serversiz, kirishsiz (app.config.json → "demo": true)
   var demo = !!cfg.demo && !(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData);
+  // MEHMON rejimi: server bor, lekin ro'yxatdan o'tish shart emas (app.config.json → "guest": true)
+  var guest = !demo && !!cfg.guest && native;
   var PW = window.PW = {
     native: native,
     demo: demo,
@@ -21,7 +23,9 @@
     token: lsGet(TKEY),
     user: user,
     showLogin: showLogin,
-    sessionExpired: function () { lsSet(TKEY, null); PW.token = null; showLogin("Sessiya tugadi. Qaytadan kiring."); },
+    guest: guest,
+    guestPending: null,
+    sessionExpired: function () { lsSet(TKEY, null); PW.token = null; if (guest) guestLogin(); else showLogin("Sessiya tugadi. Qaytadan kiring."); },
     logout: function () {
       lsSet(TKEY, null); lsSet(UKEY, null);
       try { var SL = C.Plugins.SocialLogin; SL && SL.logout && SL.logout({ provider: "google" }).catch(function () {}); } catch (e) {}
@@ -143,5 +147,20 @@
   if (acc) acc.onclick = showAccount;
   var hello = document.getElementById("hello");
   if (hello && user && user.name) hello.textContent = "Salom, " + user.name + "!";
-  if (!PW.token) showLogin();
+  function guestLogin() {
+    var dev = lsGet("pwDevice");
+    if (!dev) {
+      dev = "d"; for (var i = 0; i < 31; i++) dev += "0123456789abcdef"[Math.floor(Math.random() * 16)];
+      lsSet("pwDevice", dev);
+    }
+    var name = ""; try { name = (JSON.parse(lsGet("pwProfile") || "{}").name) || ""; } catch (e) {}
+    PW.guestPending = fetch(apiBase + "/api/auth/guest", { method: "POST", headers: { "Content-Type": "application/json" },
+                                                         body: JSON.stringify({ device_id: dev, name: name }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) { if (!j.token) throw new Error(j.error || "guest"); lsSet(TKEY, j.token); PW.token = j.token; PW.guestPending = null; })
+      .catch(function () { PW.guestPending = null; PW.offline = true; });
+    return PW.guestPending;
+  }
+  if (guest) { if (!PW.token) guestLogin(); }
+  else if (!PW.token) showLogin();
 })();

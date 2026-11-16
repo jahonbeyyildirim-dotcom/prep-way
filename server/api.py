@@ -15,7 +15,7 @@ def jerr(msg: str, status: int = 400):
     return web.json_response({"error": msg}, status=status)
 
 
-PUBLIC_API = {"/api/auth/google"}
+PUBLIC_API = {"/api/auth/google", "/api/auth/guest"}
 
 
 def _cors(req, resp):
@@ -94,6 +94,18 @@ async def auth_google(req):
     uid = auth.google_uid(info["sub"])
     return web.json_response({"token": auth.make_session(uid, info["name"], info["email"]),
                               "user": {"name": info["name"], "email": info["email"]}})
+
+
+async def auth_guest(req):
+    """Mobil ilova: ro'yxatdan o'tmasdan kirish (qurilma ID si bo'yicha)."""
+    if not config.GUEST_LOGIN:
+        return jerr("Mehmon rejimi o'chirilgan.", 403)
+    body = await req.json()
+    dev = str(body.get("device_id") or "").strip()
+    if not (16 <= len(dev) <= 80) or not all(c.isalnum() or c in "-_" for c in dev):
+        return jerr("Qurilma ID si noto'g'ri.")
+    name = str(body.get("name") or "").strip()[:40]
+    return web.json_response({"token": auth.make_session(auth.guest_uid(dev), name, ""), "user": {"name": name, "email": ""}})
 
 
 async def delete_me(req):
@@ -314,6 +326,7 @@ def make_app() -> web.Application:
     app = web.Application(middlewares=[cors_middleware, middleware], client_max_size=(config.MAX_UPLOAD_MB + 2) * 1024 * 1024)
     app.add_routes([
         web.post("/api/auth/google", auth_google),
+        web.post("/api/auth/guest", auth_guest),
         web.get("/api/me", me),
         web.delete("/api/me", delete_me),
         web.get("/privacy", privacy),

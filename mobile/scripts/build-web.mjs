@@ -10,7 +10,7 @@ const out = join(root, "www");
 const cfg = JSON.parse(readFileSync(join(root, "app.config.json"), "utf8"));
 
 if (cfg.demo) console.log("ℹ️  DEMO rejim: server va Google kirish ishlatilmaydi");
-for (const k of (cfg.demo ? [] : ["apiBase", "googleWebClientId", "googleIosClientId"])) {
+for (const k of (cfg.demo ? [] : cfg.guest ? ["apiBase"] : ["apiBase", "googleWebClientId", "googleIosClientId"])) {
   if (!cfg[k] || /SIZNING|XXXX/.test(cfg[k])) console.warn(`⚠️  app.config.json: "${k}" hali to'ldirilmagan`);
 }
 if (cfg.apiBase && !cfg.apiBase.startsWith("https://")) throw new Error("apiBase https:// bilan boshlanishi kerak");
@@ -24,7 +24,8 @@ writeFileSync(join(out, "app-config.js"),
     apiBase: (cfg.apiBase || "").replace(/\/$/, ""),
     googleWebClientId: cfg.googleWebClientId || "",
     googleIosClientId: cfg.googleIosClientId || "",
-    demo: !!cfg.demo
+    demo: !!cfg.demo,
+    guest: !!cfg.guest
   }, null, 2) + ";\n");
 
 // iPhone: Google kirishdan qaytish uchun "teskari" client ID URL sxemasi (Info.plist)

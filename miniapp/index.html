@@ -725,6 +725,7 @@
   function api(path, opt){
     opt = opt || {};
     if (window.PW && PW.demo && window.PW_DEMO_API) return PW_DEMO_API(path, opt);
+    if (window.PW && PW.guestPending) return PW.guestPending.then(function(){ return api(path, opt); });
     var headers = {};
     if (inTG) headers["X-Telegram-Init-Data"] = tg.initData;
     else if (window.PW && PW.native && PW.token) headers["Authorization"] = "Bearer " + PW.token;

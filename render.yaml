@@ -1,0 +1,20 @@
+# Render.com Blueprint: Prep Way API serveri (bepul tarif).
+# Render → New → Blueprint → shu repozitoriyni tanlang → GEMINI_API_KEY ni kiriting.
+services:
+  - type: web
+    name: prepway-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /privacy
+    autoDeploy: true
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false          # Render panelida o'zingiz kiritasiz (maxfiy)
+      - key: SECRET_KEY
+        generateValue: true  # sessiya tokenlari uchun tasodifiy kalit
+      - key: GUEST_LOGIN
+        value: "1"
+      - key: DATA_DIR
+        value: /data

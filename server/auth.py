@@ -62,6 +62,11 @@ def _unb64(s: str) -> bytes:
     return base64.urlsafe_b64decode(s + "=" * (-len(s) % 4))
 
 
+def guest_uid(device_id: str) -> int:
+    """Mehmon (qurilma) foydalanuvchisi uchun barqaror manfiy ID."""
+    return -int(hashlib.sha256(f"guest:{device_id}".encode()).hexdigest()[:13], 16)
+
+
 def make_session(uid: int, name: str = "", email: str = "") -> str:
     payload = _b64(json.dumps({"uid": uid, "name": name[:60], "email": email[:120],
                                "exp": int(time.time()) + SESSION_DAYS * 86400}).encode())
