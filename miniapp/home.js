@@ -479,7 +479,8 @@
       '<div class="note" style="font-weight:700;margin-bottom:6px">⏱ ' + esc(T({ uz: "Kunlik maqsad", ru: "Цель на день", en: "Daily goal" })) + '</div><div class="onb-speed" style="justify-content:flex-start">' +
       [5, 10, 20, 30].map(function (m) { return '<button data-dm="' + m + '" class="' + ((p.daily || 10) === m ? "on" : "") + '">' + m + ' ' + esc(T({ uz: "daq", ru: "мин", en: "min" })) + '</button>'; }).join("") + '</div>' +
       '<div style="height:12px"></div>' +
-      '<button class="lsn" id="stRedo"><span class="n">🔄</span><span style="flex:1"><b>' + esc(T({ uz: "Tanishuv savollarini qaytadan", ru: "Пройти знакомство заново", en: "Redo the intro questions" })) + '</b><div class="s">' + esc(T({ uz: "Darajani qayta aniqlash", ru: "Заново определить уровень", en: "Re-check your level" })) + '</div></span>›</button>');
+      '<button class="lsn" id="stRedo"><span class="n">🔄</span><span style="flex:1"><b>' + esc(T({ uz: "Tanishuv savollarini qaytadan", ru: "Пройти знакомство заново", en: "Redo the intro questions" })) + '</b><div class="s">' + esc(T({ uz: "Darajani qayta aniqlash", ru: "Заново определить уровень", en: "Re-check your level" })) + '</div></span>›</button>' +
+      '<p class="note" style="font-size:11.5px;margin-top:14px;opacity:.75">' + esc(T({ uz: "Chizmalar", ru: "Рисунки", en: "Drawings" })) + ': OpenMoji — CC BY-SA 4.0</p>');
     $("stVoice").onclick = function () { K.closeSheet(); K.voicePicker(); };
     $("stRedo").onclick = function () { K.closeSheet(); startOnboarding(); };
     document.querySelectorAll("#kSheet [data-sl]").forEach(function (b) { b.onclick = function () { I.setLang(b.dataset.sl); }; });
