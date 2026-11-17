@@ -455,5 +455,173 @@ window.PW_QSETS = { eps: [], topik: [
        exp:"<b>-고 싶어서요</b> — sabab: dizaynni chuqurroq o'rganmoqchi. 유학 — chet elda o'qish."},
       {id:"t334", ask:"들은 내용과 같은 것을 고르십시오.", opts:["여자는 다음 달에 유학을 갑니다.", "여자는 이탈리아에서 일할 겁니다.", "남자는 유학을 갑니다.", "여자는 1년 동안 공부할 겁니다."], a:0,
        exp:"Keyingi oy <b>Italiyaga o'qishga</b> ketadi, 2 yildan keyin qaytadi. -다면서요? — «...ekan-da?»"}
+     ]},
+    {id:"s66", type:"T-L8", sec:"listen", audio:"여자: 손님 여러분, 잠시 후 오후 1시부터 3층 식당가에서 김치 만들기 행사를 시작합니다. 참가비는 무료이고 만든 김치는 가지고 가실 수 있습니다. 많은 참여 바랍니다.",
+     qs:[
+      {id:"t361", ask:"여자가 왜 이 이야기를 하고 있는지 고르십시오.", opts:["김치 만들기 행사를 알리려고", "김치를 팔려고", "식당을 소개하려고", "길을 알려 주려고"], a:0,
+       exp:"Ayol <b>tadbir haqida xabar berib, qatnashishga chaqiryapti</b>. 참여 — ishtirok."},
+      {id:"t362", ask:"들은 내용과 같은 것을 고르십시오.", opts:["만든 김치는 가지고 갈 수 있습니다.", "행사는 돈을 내야 합니다.", "행사는 1층에서 합니다.", "행사는 오전에 합니다."], a:0,
+       exp:"<b>가지고 가실 수 있습니다</b> — olib ketish mumkin. Bepul, 3-qavat, soat 13:00."}
+     ]},
+    {id:"s67", type:"T-L8", sec:"listen", audio:"여자: 승객 여러분, 지금 앞에서 사고가 나서 버스가 잠시 멈추겠습니다. 10분쯤 후에 다시 출발하겠습니다. 급한 분은 여기에서 내리셔서 지하철을 이용하시기 바랍니다.",
+     qs:[
+      {id:"t363", ask:"여자가 왜 이 이야기를 하고 있는지 고르십시오.", opts:["버스가 늦게 출발하는 것을 알리려고", "지하철 표를 팔려고", "사고를 신고하려고", "승객을 찾으려고"], a:0,
+       exp:"Avtobus <b>to'xtab, kechikib jo'nashi</b> haqida e'lon. 멈추다 — to'xtamoq."},
+      {id:"t364", ask:"들은 내용과 같은 것을 고르십시오.", opts:["버스는 10분쯤 후에 출발합니다.", "버스가 고장 났습니다.", "승객들은 모두 내려야 합니다.", "지하철역에서 사고가 났습니다."], a:0,
+       exp:"<b>10분쯤 후에 다시 출발</b> — 10 daqiqadan keyin. Faqat shoshayotganlar tushadi."}
+     ]},
+    {id:"s68", type:"T-L8", sec:"listen", audio:"여자: 학생 여러분, 이번 주 금요일은 도서관 정기 휴일입니다. 책을 반납하실 분은 목요일까지 반납해 주십시오. 토요일부터는 평소처럼 오전 9시에 문을 엽니다.",
+     qs:[
+      {id:"t365", ask:"여자가 왜 이 이야기를 하고 있는지 고르십시오.", opts:["도서관 휴일을 알리려고", "책을 사려고", "학생을 모집하려고", "시험 날짜를 알리려고"], a:0,
+       exp:"<b>정기 휴일</b> — muntazam dam olish kuni haqida xabar. 반납하다 — qaytarmoq."},
+      {id:"t366", ask:"들은 내용과 같은 것을 고르십시오.", opts:["금요일에는 도서관이 문을 닫습니다.", "토요일에는 도서관이 쉽니다.", "책은 금요일까지 반납합니다.", "도서관은 오전 10시에 엽니다."], a:0,
+       exp:"Juma — dam olish. Kitoblar <b>payshanbagacha</b>, shanbadan soat 9 da ochiladi."}
+     ]},
+    {id:"s69", type:"T-L9", sec:"listen", audio:"남자: 수미 씨, 요리 잘해요?\n여자: 아니요, 잘 못해요. 그래서 요즘 인터넷으로 요리를 배워요.\n남자: 어떤 요리를 배웠어요?\n여자: 어제는 된장찌개를 만들었어요. 생각보다 쉬웠어요.",
+     qs:[
+      {id:"t367", ask:"두 사람이 무엇에 대해 이야기하고 있는지 고르십시오.", opts:["요리 배우기", "식당 소개", "인터넷 쇼핑", "장보기"], a:0,
+       exp:"Gap <b>ovqat pishirishni o'rganish</b> haqida."},
+      {id:"t368", ask:"들은 내용과 같은 것을 고르십시오.", opts:["여자는 인터넷으로 요리를 배웁니다.", "여자는 요리를 잘합니다.", "남자는 된장찌개를 만들었습니다.", "된장찌개는 만들기 어려웠습니다."], a:0,
+       exp:"<b>인터넷으로</b> — internet orqali o'rganadi; 된장찌개 o'ylagandan oson bo'lgan."}
+     ]},
+    {id:"s70", type:"T-L9", sec:"listen", audio:"여자: 민수 씨, 휴대폰 바꿨어요?\n남자: 네, 지난번 휴대폰이 자주 꺼져서 새로 샀어요.\n여자: 사진도 잘 나와요?\n남자: 네, 카메라가 정말 좋아요. 배터리도 오래가요.",
+     qs:[
+      {id:"t369", ask:"두 사람이 무엇에 대해 이야기하고 있는지 고르십시오.", opts:["새 휴대폰", "사진 찍는 곳", "휴대폰 가게 위치", "배터리 값"], a:0,
+       exp:"Ikkalasi <b>yangi telefon</b> haqida gaplashyapti."},
+      {id:"t370", ask:"들은 내용과 같은 것을 고르십시오.", opts:["남자는 휴대폰을 새로 샀습니다.", "새 휴대폰은 자주 꺼집니다.", "여자는 휴대폰을 바꿨습니다.", "새 휴대폰은 배터리가 빨리 닳습니다."], a:0,
+       exp:"Eskisi o'chib qolgani uchun <b>yangisini olgan</b>. 오래가다 — uzoq chidamoq."}
+     ]},
+    {id:"s71", type:"T-L9", sec:"listen", audio:"남자: 이번 토요일에 우리 집에서 집들이를 해요. 올 수 있어요?\n여자: 그럼요. 몇 시까지 가면 돼요?\n남자: 저녁 6시까지 오세요. 다른 친구들도 와요.\n여자: 좋아요. 휴지를 사 갈게요.",
+     qs:[
+      {id:"t371", ask:"두 사람이 무엇에 대해 이야기하고 있는지 고르십시오.", opts:["집들이 초대", "휴지 사기", "친구 소개", "저녁 메뉴"], a:0,
+       exp:"<b>집들이</b> — yangi uyga ko'chganda mehmon chaqirish; erkak taklif qilyapti."},
+      {id:"t372", ask:"들은 내용과 같은 것을 고르십시오.", opts:["여자는 토요일에 남자 집에 갈 겁니다.", "집들이는 여자 집에서 합니다.", "남자는 휴지를 삽니다.", "집들이에는 여자만 옵니다."], a:0,
+       exp:"Ayol <b>shanba kuni boradi</b> va qog'oz sochiq olib boradi (Koreyada odatiy sovg'a)."}
+     ]},
+    {id:"s72", type:"T-L10", sec:"listen", audio:"여자: 선생님, 왜 매일 자전거로 출근하세요?\n남자: 처음에는 건강 때문에 시작했어요. 그런데 타 보니까 길이 안 막혀서 버스보다 빨라요.\n여자: 비 오는 날은 어떻게 하세요?\n남자: 그런 날은 지하철을 타요.",
+     qs:[
+      {id:"t373", ask:"남자가 처음에 자전거를 타기 시작한 이유를 고르십시오.", opts:["건강 때문에", "길이 막혀서", "버스가 없어서", "돈이 없어서"], a:0,
+       exp:"<b>처음에는 건강 때문에</b> — avvaliga sog'lig'i uchun boshlagan."},
+      {id:"t374", ask:"들은 내용과 같은 것을 고르십시오.", opts:["남자는 비가 오면 지하철을 탑니다.", "남자는 버스로 출근합니다.", "자전거는 버스보다 느립니다.", "남자는 비가 와도 자전거를 탑니다."], a:0,
+       exp:"Yomg'irli kunlarda <b>metroga chiqadi</b>. Velosiped avtobusdan tez."}
+     ]},
+    {id:"s73", type:"T-L10", sec:"listen", audio:"남자: 지나 씨, 왜 이사를 하려고 해요?\n여자: 지금 집이 회사에서 너무 멀어서요. 출근하는 데 1시간 반이나 걸려요.\n남자: 새 집은 찾았어요?\n여자: 네, 회사 근처에 작은 방을 하나 찾았어요.",
+     qs:[
+      {id:"t375", ask:"여자가 이사하려는 이유를 고르십시오.", opts:["집이 회사에서 멀어서", "집이 너무 작아서", "월세가 비싸서", "이웃이 시끄러워서"], a:0,
+       exp:"<b>-아/어서요</b>: uy ishxonadan <b>juda uzoq</b>, 1,5 soat ketadi."},
+      {id:"t376", ask:"들은 내용과 같은 것을 고르십시오.", opts:["여자는 회사 근처에 방을 찾았습니다.", "여자는 아직 집을 못 찾았습니다.", "지금 집은 회사에서 가깝습니다.", "새 집은 아주 큽니다."], a:0,
+       exp:"Ishxona yaqinidan <b>kichik xona topdi</b>. -(이)나 — «naqd» (ko'plikni ta'kidlash)."}
+     ]},
+    {id:"s74", type:"T-L10", sec:"listen", audio:"여자: 민호 씨, 요즘 왜 아침을 안 먹어요?\n남자: 아침에 늦게 일어나서 먹을 시간이 없어요.\n여자: 그래도 조금이라도 먹어야 해요. 바나나나 우유라도 드세요.\n남자: 네, 내일부터는 바나나를 먹을게요.",
+     qs:[
+      {id:"t377", ask:"남자가 아침을 안 먹는 이유를 고르십시오.", opts:["늦게 일어나서", "배가 아파서", "살을 빼고 싶어서", "음식이 없어서"], a:0,
+       exp:"<b>늦게 일어나서</b> — kech turgani uchun vaqt yo'q."},
+      {id:"t378", ask:"들은 내용과 같은 것을 고르십시오.", opts:["남자는 내일부터 바나나를 먹을 겁니다.", "남자는 아침을 꼭 먹습니다.", "여자는 아침을 안 먹습니다.", "남자는 우유를 싫어합니다."], a:0,
+       exp:"<b>-(으)ㄹ게요</b> — va'da: ertadan banan yeydi. -(이)라도 — hech bo'lmasa."}
+     ]},
+    {id:"s75", type:"T-R6", slot:"49", sec:"read", text:"저는 한국에 와서 처음으로 눈을 봤습니다. 우리 고향은 겨울에도 따뜻해서 눈이 오지 않습니다. 하얀 눈이 내리는 것을 보고 정말 ( ㉠ ). 그날 친구들과 눈사람도 만들었습니다.",
+     qs:[
+      {id:"t379", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["신기했습니다", "무서웠습니다", "슬펐습니다", "피곤했습니다"], a:0,
+       exp:"Qorni birinchi ko'rgan — <b>ajoyib, g'aroyib</b> tuyulgan: <b>신기하다</b>."},
+      {id:"t380", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 한국에서 처음 눈을 봤습니다.", "우리 고향은 겨울에 눈이 많이 옵니다.", "저는 혼자 눈사람을 만들었습니다.", "우리 고향은 겨울에 춥습니다."], a:0,
+       exp:"<b>처음으로 눈을 봤습니다</b> — qorni Koreyada birinchi ko'rdi. Vatanda qish iliq."}
+     ]},
+    {id:"s76", type:"T-R6", slot:"49", sec:"read", text:"우리 회사에는 매달 마지막 금요일에 '생일 파티'가 있습니다. 그 달에 생일인 직원들을 위해 케이크를 준비하고 다 같이 노래를 부릅니다. 이 시간이 있어서 직원들이 서로 더 ( ㉠ ) 지냅니다.",
+     qs:[
+      {id:"t381", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["가깝게", "멀게", "늦게", "바쁘게"], a:0,
+       exp:"Birgalikdagi bayram — xodimlar bir-biri bilan <b>yaqinroq</b> munosabatda: <b>가깝게 지내다</b>."},
+      {id:"t382", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["생일 파티는 한 달에 한 번 있습니다.", "생일 파티는 매주 금요일에 합니다.", "직원들은 각자 케이크를 삽니다.", "생일인 사람만 파티에 갑니다."], a:0,
+       exp:"<b>매달 마지막 금요일</b> — har oyning oxirgi jumasi, ya'ni oyiga bir marta."}
+     ]},
+    {id:"s77", type:"T-R6", slot:"49", sec:"read", text:"저는 지난 주말에 처음으로 한국 사우나에 갔습니다. 사우나에는 뜨거운 물과 차가운 물이 있었습니다. 뜨거운 물에 들어가니까 몸이 아주 ( ㉠ ). 다음에는 동료들과 같이 가려고 합니다.",
+     qs:[
+      {id:"t383", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["편해졌습니다", "추워졌습니다", "무거워졌습니다", "아팠습니다"], a:0,
+       exp:"Issiq suvda tana <b>yengillashdi, rohatlandi</b>: <b>편해지다</b>."},
+      {id:"t384", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 지난 주말에 사우나에 갔습니다.", "사우나에는 차가운 물만 있었습니다.", "저는 동료들과 같이 갔습니다.", "저는 사우나에 자주 갑니다."], a:0,
+       exp:"O'tgan dam olish kuni <b>birinchi marta</b> borgan; keyingi safar hamkasblar bilan."}
+     ]},
+    {id:"s78", type:"T-R6", slot:"51", sec:"read", text:"한국에서는 버스나 지하철을 탈 때 교통카드를 많이 사용합니다. 교통카드는 편의점에서 사고 돈을 충전할 수 있습니다. 교통카드를 쓰면 현금으로 낼 때보다 요금이 조금 ( ㉠ ). 그리고 갈아탈 때 할인도 받을 수 있습니다.",
+     qs:[
+      {id:"t385", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["쌉니다", "비쌉니다", "많습니다", "깁니다"], a:0,
+       exp:"Karta afzalligi: naqd puldan <b>arzonroq</b>. 충전하다 — to'ldirmoq."},
+      {id:"t386", ask:"무엇에 대한 이야기인지 맞는 것을 고르십시오.", opts:["교통카드의 좋은 점", "편의점에서 일하는 방법", "버스를 기다리는 곳", "지하철 노선"], a:0,
+       exp:"Matn <b>transport kartasining afzalliklari</b> haqida."}
+     ]},
+    {id:"s79", type:"T-R6", slot:"51", sec:"read", text:"한국의 여름에는 '삼계탕'을 먹는 사람이 많습니다. 삼계탕은 닭 안에 쌀과 인삼을 넣고 끓인 음식입니다. 더운 여름에 뜨거운 삼계탕을 먹으면 ( ㉠ ) 생긴다고 생각합니다. 특히 '복날'에는 삼계탕 식당에 사람이 아주 많습니다.",
+     qs:[
+      {id:"t387", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["힘이", "돈이", "시간이", "친구가"], a:0,
+       exp:"Issiq kunda samgyetang yesa <b>kuch-quvvat</b> paydo bo'ladi: <b>힘이 생기다</b>."},
+      {id:"t388", ask:"무엇에 대한 이야기인지 맞는 것을 고르십시오.", opts:["여름에 먹는 삼계탕", "닭을 키우는 방법", "인삼 값", "식당 예약 방법"], a:0,
+       exp:"Matn <b>yozda yeyiladigan samgyetang</b> haqida. 복날 — yozning eng issiq kunlari."}
+     ]},
+    {id:"s80", type:"T-R6", slot:"51", sec:"read", text:"요즘은 집에서 일하는 사람들이 많아졌습니다. 집에서 일하면 출퇴근 시간이 없어서 시간을 ( ㉠ ) 쓸 수 있습니다. 하지만 일과 생활을 나누기 어렵다는 사람도 있습니다.",
+     qs:[
+      {id:"t389", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["아껴", "버려", "빌려", "잊어"], a:0,
+       exp:"Yo'lga vaqt ketmaydi — vaqtni <b>tejab</b> ishlatish mumkin: <b>아껴 쓰다</b>."},
+      {id:"t390", ask:"무엇에 대한 이야기인지 맞는 것을 고르십시오.", opts:["집에서 일하는 것", "출퇴근 버스", "회사를 찾는 방법", "집을 청소하는 방법"], a:0,
+       exp:"Mavzu: <b>uydan ishlash</b>ning yaxshi va yomon tomonlari."}
+     ]},
+    {id:"s81", type:"T-R6", slot:"53", sec:"read", text:"저는 회사 동료들과 매주 수요일 저녁에 배드민턴을 칩니다. 처음에는 공을 잘 치지 못했지만 동료들이 친절하게 ( ㉠ ). 지금은 동료들과 경기도 할 수 있을 만큼 잘 칩니다.",
+     qs:[
+      {id:"t391", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["가르쳐 주었습니다", "배워 주었습니다", "싸워 주었습니다", "잊어 주었습니다"], a:0,
+       exp:"Hamkasblar <b>o'rgatib berishdi</b>: <b>가르쳐 주다</b>. 배우다 — o'zi o'rganmoq (bu yerda mos emas)."},
+      {id:"t392", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 동료들과 배드민턴을 칩니다.", "저는 처음부터 배드민턴을 잘 쳤습니다.", "배드민턴은 토요일에 칩니다.", "동료들은 배드민턴을 못 칩니다."], a:0,
+       exp:"Har chorshanba kechqurun <b>hamkasblar bilan badminton</b>. -(으)ㄹ 만큼 — ...darajada."}
+     ]},
+    {id:"s82", type:"T-R6", slot:"53", sec:"read", text:"저는 매달 월급의 일부를 고향에 보냅니다. 처음에는 은행에 가서 보냈지만 수수료가 비쌌습니다. 그래서 요즘은 수수료가 ( ㉠ ) 송금 앱을 사용합니다. 돈도 더 빨리 도착합니다.",
+     qs:[
+      {id:"t393", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["싼", "비싼", "많은", "무거운"], a:0,
+       exp:"Bank komissiyasi qimmat edi, shuning uchun komissiyasi <b>arzon</b> ilova: <b>싼</b>."},
+      {id:"t394", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["요즘 저는 송금 앱을 사용합니다.", "은행 수수료는 쌌습니다.", "송금 앱은 돈이 늦게 도착합니다.", "저는 돈을 보내지 않습니다."], a:0,
+       exp:"<b>송금 앱</b> — pul o'tkazish ilovasi; pul tezroq yetadi. 수수료 — komissiya."}
+     ]},
+    {id:"s83", type:"T-R6", slot:"53", sec:"read", text:"어제 퇴근하는 길에 할머니 한 분이 무거운 짐을 들고 계셨습니다. 그래서 제가 할머니 집까지 짐을 들어 ( ㉠ ). 할머니께서 고맙다고 하시면서 사과를 주셨습니다.",
+     qs:[
+      {id:"t395", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["드렸습니다", "받았습니다", "샀습니다", "주셨습니다"], a:0,
+       exp:"Kattaga xizmat — <b>-아/어 드리다</b>: yukini ko'tarib berdim."},
+      {id:"t396", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 할머니의 짐을 들어 드렸습니다.", "할머니께서 제 짐을 들어 주셨습니다.", "저는 할머니께 사과를 드렸습니다.", "저는 아침에 할머니를 만났습니다."], a:0,
+       exp:"Men buvining yukini ko'tardim, <b>buvi menga olma berdi</b>. 퇴근하는 길에 — ishdan qaytayotib."}
+     ]},
+    {id:"s84", type:"T-R6", slot:"55", sec:"read", text:"저는 한국 노래를 좋아합니다. 노래를 들으면 기분이 좋아집니다. ( ㉠ ) 가사를 이해하기는 아직 어렵습니다. 그래서 요즘은 가사를 찾아서 공부합니다.",
+     qs:[
+      {id:"t397", ask:"( ㉠ )에 들어갈 알맞은 말을 고르십시오.", opts:["하지만", "그래서", "그리고", "그러면"], a:0,
+       exp:"Yoqtiraman, <b>lekin</b> so'zlarini tushunish qiyin — <b>하지만</b>."},
+      {id:"t398", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 가사를 찾아서 공부합니다.", "저는 가사를 다 이해합니다.", "저는 한국 노래를 싫어합니다.", "노래를 들으면 기분이 나빠집니다."], a:0,
+       exp:"<b>가사</b> — qo'shiq matni; uni topib o'rganadi."}
+     ]},
+    {id:"s85", type:"T-R6", slot:"55", sec:"read", text:"이번 주말에 친구와 부산에 가기로 했습니다. 기차표는 이미 샀습니다. ( ㉠ ) 아직 호텔은 예약하지 못했습니다. 오늘 저녁에 인터넷으로 호텔을 찾아보려고 합니다.",
+     qs:[
+      {id:"t399", ask:"( ㉠ )에 들어갈 알맞은 말을 고르십시오.", opts:["그런데", "그래서", "그러니까", "그러면"], a:0,
+       exp:"Chipta bor, <b>biroq</b> mehmonxona yo'q — <b>그런데</b>."},
+      {id:"t400", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["기차표는 샀지만 호텔은 아직 예약하지 않았습니다.", "호텔을 예약했습니다.", "혼자 부산에 갑니다.", "기차표를 아직 사지 않았습니다."], a:0,
+       exp:"<b>이미</b> — allaqachon (chipta), <b>아직</b> — hali (mehmonxona yo'q)."}
+     ]},
+    {id:"s86", type:"T-R6", slot:"55", sec:"read", text:"저는 운동을 싫어했습니다. 그런데 회사 건강 검진에서 운동을 하라는 말을 들었습니다. ( ㉠ ) 매일 저녁 회사 근처 공원을 걷기 시작했습니다. 지금은 걷는 것이 즐겁습니다.",
+     qs:[
+      {id:"t401", ask:"( ㉠ )에 들어갈 알맞은 말을 고르십시오.", opts:["그래서", "하지만", "그런데", "그렇지만"], a:0,
+       exp:"Shifokor aytdi → <b>shuning uchun</b> yura boshladim — <b>그래서</b> (sabab-natija)."},
+      {id:"t402", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 매일 저녁 공원을 걷습니다.", "저는 원래 운동을 좋아했습니다.", "저는 아침에 공원을 걷습니다.", "건강 검진을 받지 않았습니다."], a:0,
+       exp:"Har kuni <b>kechqurun bog'da yuradi</b>. 원래 — aslida, avvaldan."}
+     ]},
+    {id:"s87", type:"T-R6", slot:"59", sec:"read", text:"저는 다음 달에 한국어 능력 시험을 봅니다. ( ㉠ ) 그래서 요즘 퇴근 후에 매일 두 시간씩 공부합니다. ( ㉡ ) 특히 듣기가 어려워서 한국 뉴스를 자주 듣습니다. ( ㉢ ) 시험이 끝나면 고향 친구들과 여행을 가고 싶습니다. ( ㉣ )",
+     qs:[
+      {id:"t403", ask:"다음 문장이 들어갈 곳으로 가장 알맞은 것을 고르십시오.\n\n처음에는 뉴스가 너무 빨라서 거의 알아듣지 못했습니다.", opts:["㉠", "㉡", "㉢", "㉣"], a:2,
+       exp:"Gap yangiliklar haqida — «yangiliklarni tinglayman» dan keyin: ㉢. 알아듣다 — eshitib tushunmoq."},
+      {id:"t404", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 요즘 퇴근 후에 공부합니다.", "저는 지난달에 시험을 봤습니다.", "저는 읽기가 제일 어렵습니다.", "저는 뉴스를 듣지 않습니다."], a:0,
+       exp:"<b>퇴근 후에 매일 두 시간씩</b> — ishdan keyin har kuni 2 soatdan. Imtihon keyingi oy."}
+     ]},
+    {id:"s88", type:"T-R6", slot:"59", sec:"read", text:"우리 동네에는 매주 일요일에 벼룩시장이 열립니다. ( ㉠ ) 사람들은 쓰지 않는 물건을 가지고 와서 싸게 팝니다. ( ㉡ ) 저도 지난주에 작아진 옷을 가지고 가서 팔았습니다. ( ㉢ ) 그 돈으로 필요한 책을 샀습니다. ( ㉣ )",
+     qs:[
+      {id:"t405", ask:"다음 문장이 들어갈 곳으로 가장 알맞은 것을 고르십시오.\n\n벼룩시장은 오래된 물건을 사고파는 곳입니다.", opts:["㉠", "㉡", "㉢", "㉣"], a:0,
+       exp:"Ta'rif gapi — bozor nomi tilga olingandan <b>darhol keyin</b>: ㉠. 벼룩시장 — «burga bozori», eski buyumlar bozori."},
+      {id:"t406", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["벼룩시장은 일요일마다 열립니다.", "벼룩시장에서는 새 물건만 팝니다.", "저는 벼룩시장에서 옷을 샀습니다.", "저는 책을 팔았습니다."], a:0,
+       exp:"<b>매주 일요일</b> = 일요일마다. Men kiyim sotib, kitob oldim."}
+     ]},
+    {id:"s89", type:"T-R6", slot:"59", sec:"read", text:"저는 어제 처음으로 한국 친구의 결혼식에 갔습니다. ( ㉠ ) 결혼식은 생각보다 짧아서 30분 만에 끝났습니다. ( ㉡ ) 결혼식이 끝난 후에는 다 같이 식사를 했습니다. ( ㉢ ) 친구가 아주 행복해 보여서 저도 기뻤습니다. ( ㉣ )",
+     qs:[
+      {id:"t407", ask:"다음 문장이 들어갈 곳으로 가장 알맞은 것을 고르십시오.\n\n우리 고향의 결혼식은 보통 하루 종일 하기 때문에 조금 놀랐습니다.", opts:["㉠", "㉡", "㉢", "㉣"], a:1,
+       exp:"Hayrat sababi — to'y qisqa bo'lgani: «30 daqiqada tugadi» dan keyin — ㉡."},
+      {id:"t408", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["결혼식은 30분 만에 끝났습니다.", "결혼식은 하루 종일 했습니다.", "결혼식 후에 바로 집에 갔습니다.", "저는 결혼식에 자주 갑니다."], a:0,
+       exp:"<b>30분 만에 끝났습니다</b> — 30 daqiqada tugadi. Keyin hamma birga ovqatlandi."}
      ]}
   ] };
