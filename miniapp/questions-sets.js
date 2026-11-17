@@ -273,5 +273,187 @@ window.PW_QSETS = { eps: [], topik: [
        exp:"<b>-거든요</b> — sabab tushuntirish: ishxona yaqiniga <b>ko'chib o'tgani uchun</b>."},
       {id:"t282", ask:"들은 내용과 같은 것을 고르십시오.", opts:["남자는 지금 걸어서 출근합니다.", "남자는 지금도 버스를 두 번 탑니다.", "여자는 회사 근처에 삽니다.", "남자는 출근하는 데 한 시간이 걸립니다."], a:0,
        exp:"<b>걸어서 10분</b> — piyoda 10 daqiqa. Avval ikki marta avtobus almashtirib, bir soatdan ko'p ketardi."}
+     ]},
+    {id:"s40", type:"T-R6", slot:"49", sec:"read", text:"저는 주말마다 시장에 갑니다. 시장은 마트보다 물건 값이 싸고 사람들도 친절합니다. 특히 과일 가게 아주머니는 제가 갈 때마다 과일을 하나씩 더 ( ㉠ ). 그래서 저는 시장에 가는 것이 즐겁습니다.",
+     qs:[
+      {id:"t283", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["주십니다", "사십니다", "파십니다", "드십니다"], a:0,
+       exp:"Opa har safar bittadan ortiqcha meva <b>beradi</b>: <b>주다</b> → 주십니다 (hurmat)."},
+      {id:"t284", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["시장은 마트보다 값이 쌉니다.", "저는 마트에 자주 갑니다.", "과일 가게 아주머니는 불친절합니다.", "저는 시장에 가는 것이 싫습니다."], a:0,
+       exp:"<b>마트보다 값이 싸다</b> — supermarketdan arzon. 친절하다 — xushmuomala."}
+     ]},
+    {id:"s41", type:"T-R6", slot:"49", sec:"read", text:"우리 동네에는 오래된 빵집이 있습니다. 이 빵집은 30년 동안 같은 자리에서 빵을 만들었습니다. 아침 7시에 문을 열면 사람들이 ( ㉠ ) 서서 빵을 기다립니다. 저도 주말 아침에는 이 빵집에서 빵을 삽니다.",
+     qs:[
+      {id:"t285", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["줄을", "길을", "자리를", "문을"], a:0,
+       exp:"<b>줄을 서다</b> — navbatga turmoq. 30 yillik novvoyxona juda mashhur."},
+      {id:"t286", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["이 빵집은 30년 동안 빵을 만들었습니다.", "빵집은 오후에 문을 엽니다.", "이 빵집은 새로 생겼습니다.", "저는 평일 아침에 빵을 삽니다."], a:0,
+       exp:"<b>30년 동안</b> — 30 yil davomida, bir joyda. Ertalab 7 da ochiladi, men dam olish kuni olaman."}
+     ]},
+    {id:"s42", type:"T-R6", slot:"51", sec:"read", text:"한국에서는 설날에 가족들이 모두 모여서 떡국을 먹습니다. 떡국을 한 그릇 먹으면 나이를 한 살 더 먹는다고 ( ㉠ ). 그리고 어른들께 세배를 하면 어른들은 아이들에게 세뱃돈을 주십니다.",
+     qs:[
+      {id:"t287", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["말합니다", "먹습니다", "만듭니다", "기다립니다"], a:0,
+       exp:"<b>-다고 말하다</b> — «... deb aytadi» (ko'chirma gap). Tteokguk yesang, bir yosh ulg'ayasan deyishadi."},
+      {id:"t288", ask:"무엇에 대한 이야기인지 맞는 것을 고르십시오.", opts:["설날에 하는 일", "떡국 만드는 방법", "나이를 묻는 방법", "용돈을 쓰는 방법"], a:0,
+       exp:"Tteokguk, 세배 (ta'zim), 세뱃돈 — <b>Yangi yil (설날) odatlari</b>."}
+     ]},
+    {id:"s43", type:"T-R6", slot:"51", sec:"read", text:"요즘은 휴대폰으로 많은 일을 할 수 있습니다. 은행에 가지 않아도 휴대폰으로 돈을 보낼 수 있고 가게에 가지 않아도 물건을 살 수 있습니다. 그래서 생활이 아주 ( ㉠ ). 하지만 휴대폰을 너무 오래 보면 눈이 나빠질 수 있으니까 조심해야 합니다.",
+     qs:[
+      {id:"t289", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["편리해졌습니다", "불편해졌습니다", "조용해졌습니다", "어려워졌습니다"], a:0,
+       exp:"Hamma narsa telefonda — hayot <b>qulay bo'ldi</b>: <b>편리하다</b> + -아/어지다 (o'zgarish)."},
+      {id:"t290", ask:"무엇에 대한 이야기인지 맞는 것을 고르십시오.", opts:["휴대폰으로 할 수 있는 일", "휴대폰을 사는 방법", "은행에서 일하는 방법", "눈이 나빠지는 이유"], a:0,
+       exp:"Matn <b>telefon orqali qilish mumkin bo'lgan ishlar</b> haqida."}
+     ]},
+    {id:"s44", type:"T-R6", slot:"53", sec:"read", text:"저는 회사에 다니면서 저녁에는 대학원에서 공부를 합니다. 일과 공부를 같이 하는 것은 쉽지 않습니다. 그래서 주말에도 도서관에 가서 공부를 합니다. 힘들지만 내년에 졸업을 ( ㉠ ) 열심히 하고 있습니다.",
+     qs:[
+      {id:"t291", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["하려고", "해서", "하면", "하지만"], a:0,
+       exp:"Maqsad: <b>-(으)려고</b> — «...ish uchun». Kelasi yil bitirish uchun tirishyapti."},
+      {id:"t292", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 일을 하면서 공부를 합니다.", "저는 낮에 대학원에 다닙니다.", "저는 주말에 쉽니다.", "저는 작년에 졸업했습니다."], a:0,
+       exp:"Kunduzi ishlaydi, <b>kechqurun</b> magistraturada o'qiydi. 대학원 — magistratura."}
+     ]},
+    {id:"s45", type:"T-R6", slot:"53", sec:"read", text:"지난주에 우리 반 친구 아나 씨가 고향으로 돌아갔습니다. 아나 씨는 우리 반에서 한국어를 제일 잘했습니다. 그래서 모르는 것이 있으면 친구들이 아나 씨에게 자주 ( ㉠ ). 우리는 아나 씨에게 반 친구들의 사진으로 만든 앨범을 선물했습니다.",
+     qs:[
+      {id:"t293", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["물어봤습니다", "가르쳤습니다", "주었습니다", "보냈습니다"], a:0,
+       exp:"Bilmagan narsani Anadan <b>so'rashgan</b>: <b>물어보다</b>."},
+      {id:"t294", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["아나 씨는 한국어를 잘했습니다.", "아나 씨는 지난주에 한국에 왔습니다.", "친구들은 아나 씨에게 꽃을 선물했습니다.", "아나 씨는 모르는 것을 친구들에게 물어봤습니다."], a:0,
+       exp:"Ana sinfda koreys tilini <b>eng yaxshi</b> bilgan. Unga albom sovg'a qilishdi."}
+     ]},
+    {id:"s46", type:"T-R6", slot:"55", sec:"read", text:"저는 작년에 한국 회사에 취직했습니다. 회사 일은 재미있지만 처음에는 한국어 때문에 힘들었습니다. ( ㉠ ) 동료들이 천천히 말해 주고 많이 도와주었습니다. 지금은 회사 생활에 잘 적응했습니다.",
+     qs:[
+      {id:"t295", ask:"( ㉠ )에 들어갈 알맞은 말을 고르십시오.", opts:["하지만", "그래서", "그러면", "그러니까"], a:0,
+       exp:"Qiyin edi, <b>lekin</b> hamkasblar yordam berdi — qarama-qarshilik: <b>하지만</b>."},
+      {id:"t296", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["동료들이 저를 많이 도와주었습니다.", "저는 회사 일이 재미없습니다.", "저는 지금도 회사 생활이 힘듭니다.", "저는 올해 회사에 취직했습니다."], a:0,
+       exp:"<b>도와주었습니다</b> — yordam berishdi. 취직하다 — ishga kirmoq, 적응하다 — moslashmoq."}
+     ]},
+    {id:"s47", type:"T-R6", slot:"55", sec:"read", text:"저는 매일 일기를 한국어로 씁니다. 처음에는 한 문장을 쓰는 데도 시간이 오래 걸렸습니다. ( ㉠ ) 매일 쓰니까 지금은 10분이면 일기를 다 쓸 수 있습니다. 일기를 쓰면서 새로 배운 단어도 다시 써 봅니다.",
+     qs:[
+      {id:"t297", ask:"( ㉠ )에 들어갈 알맞은 말을 고르십시오.", opts:["그런데", "그래서", "그리고", "그러니까"], a:0,
+       exp:"Avval sekin edi, <b>biroq</b> har kuni yozib hozir tez — <b>그런데</b> (qarama-qarshilik)."},
+      {id:"t298", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 한국어로 일기를 씁니다.", "저는 일주일에 한 번 일기를 씁니다.", "지금도 일기를 쓰는 데 한 시간이 걸립니다.", "저는 일기에 새 단어를 쓰지 않습니다."], a:0,
+       exp:"<b>매일 일기를 한국어로</b> — har kuni koreyscha kundalik. Hozir 10 daqiqada yozadi."}
+     ]},
+    {id:"s48", type:"T-R6", slot:"59", sec:"read", text:"저는 지난달에 처음으로 혼자 여행을 갔습니다. ( ㉠ ) 처음에는 혼자라서 조금 무서웠습니다. ( ㉡ ) 하지만 여행지에서 만난 사람들이 친절하게 길을 알려 주었습니다. ( ㉢ ) 다음에도 또 혼자 여행을 가고 싶습니다. ( ㉣ )",
+     qs:[
+      {id:"t299", ask:"다음 문장이 들어갈 곳으로 가장 알맞은 것을 고르십시오.\n\n그래서 여행을 즐겁게 할 수 있었습니다.", opts:["㉠", "㉡", "㉢", "㉣"], a:2,
+       exp:"<b>그래서</b> — odamlar yordam bergani natijasi; undan keyin «yana bormoqchiman» — ㉢."},
+      {id:"t300", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 혼자 여행을 갔습니다.", "저는 친구와 같이 여행을 갔습니다.", "여행지 사람들은 불친절했습니다.", "저는 다시는 혼자 여행을 가지 않을 겁니다."], a:0,
+       exp:"<b>처음으로 혼자</b> — birinchi marta yolg'iz sayohat. 여행지 — sayohat joyi."}
+     ]},
+    {id:"s49", type:"T-R6", slot:"59", sec:"read", text:"우리 집 근처에 큰 공원이 새로 생겼습니다. ( ㉠ ) 공원에는 산책길과 운동 기구가 있습니다. ( ㉡ ) 그래서 아침이나 저녁에 운동하는 사람이 많습니다. ( ㉢ ) 저도 요즘 퇴근 후에 공원에서 한 시간씩 걷습니다. ( ㉣ )",
+     qs:[
+      {id:"t301", ask:"다음 문장이 들어갈 곳으로 가장 알맞은 것을 고르십시오.\n\n걷기 시작한 후로 몸이 많이 가벼워졌습니다.", opts:["㉠", "㉡", "㉢", "㉣"], a:3,
+       exp:"Gap mening yurishim natijasi — «men ham yuraman» dan keyin, matn oxirida: ㉣."},
+      {id:"t302", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["공원에는 운동 기구가 있습니다.", "공원은 오래되었습니다.", "저는 아침에 공원에서 걷습니다.", "공원에는 운동하는 사람이 적습니다."], a:0,
+       exp:"<b>운동 기구</b> — sport anjomlari. Bog' yangi, men ishdan keyin (kechqurun) yuraman."}
+     ]},
+    {id:"s50", type:"T-R6", slot:"61", sec:"read", text:"요즘 한국에서는 반려동물을 키우는 사람이 많습니다. 반려동물은 외로움을 줄여 주고 생활을 즐겁게 해 줍니다. 하지만 반려동물을 키우려면 시간과 돈이 많이 ( ㉠ ). 그래서 키우기 전에 잘 생각해야 합니다.",
+     qs:[
+      {id:"t303", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["듭니다", "남습니다", "생깁니다", "모입니다"], a:0,
+       exp:"<b>시간과 돈이 들다</b> — vaqt va pul ketadi. 들다 — sarflanmoq."},
+      {id:"t304", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["반려동물은 외로움을 줄여 줍니다.", "반려동물을 키우는 사람이 줄었습니다.", "반려동물은 돈이 들지 않습니다.", "반려동물을 키우기 전에 생각할 필요가 없습니다."], a:0,
+       exp:"<b>외로움을 줄여 주다</b> — yolg'izlikni kamaytiradi. 반려동물 — uy hayvoni."}
+     ]},
+    {id:"s51", type:"T-R6", slot:"61", sec:"read", text:"저는 한국 드라마를 보면서 한국어를 공부합니다. 처음에는 한국어 자막을 보면서 드라마를 봤습니다. 이제는 자막이 없어도 내용을 ( ㉠ ) 이해할 수 있습니다. 드라마에 나오는 표현을 따라 하면 말하기 실력도 좋아집니다.",
+     qs:[
+      {id:"t305", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["거의", "전혀", "별로", "아직"], a:0,
+       exp:"<b>거의</b> — deyarli (tasdiq bilan). 전혀/별로 faqat inkor bilan ishlatiladi, 아직 — hali."},
+      {id:"t306", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["저는 드라마로 한국어를 공부합니다.", "저는 지금도 자막이 꼭 필요합니다.", "드라마 표현을 따라 하면 말하기가 나빠집니다.", "저는 처음에 영어 자막을 봤습니다."], a:0,
+       exp:"Drama ko'rib o'rganadi. Avval koreyscha subtitr bilan, hozir subtitrsiz. 자막 — subtitr."}
+     ]},
+    {id:"s52", type:"T-R6", slot:"63", sec:"read", text:"받는 사람: 박 선생님\n제목: 수업 결석\n\n선생님, 안녕하세요? 저는 2반 아지즈입니다.\n어제 저녁부터 열이 나고 목이 아파서 오늘 병원에 가야 합니다. 그래서 오늘 수업에 갈 수 없습니다. 죄송합니다. 오늘 숙제는 친구에게 물어보겠습니다.\n\n아지즈 드림",
+     qs:[
+      {id:"t307", ask:"왜 윗글을 썼는지 맞는 것을 고르십시오.", opts:["수업에 못 가는 것을 알리려고", "숙제를 내려고", "병원을 소개하려고", "친구를 찾으려고"], a:0,
+       exp:"<b>결석</b> — darsga kelmaslik. Xat maqsadi — <b>bugun kela olmasligini aytish</b>."},
+      {id:"t308", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["아지즈 씨는 오늘 병원에 갑니다.", "아지즈 씨는 오늘 수업에 갑니다.", "아지즈 씨는 어제 수업에 오지 않았습니다.", "선생님께 숙제를 물어볼 겁니다."], a:0,
+       exp:"Isitma va tomoq og'rig'i — <b>bugun shifoxonaga boradi</b>. Uy vazifasini do'stidan so'raydi."}
+     ]},
+    {id:"s53", type:"T-R6", slot:"63", sec:"read", text:"받는 사람: 행복마트 회원 여러분\n제목: 회원 할인 행사 안내\n\n안녕하세요. 행복마트입니다.\n12월 1일부터 7일까지 회원 할인 행사를 합니다. 이 기간에 회원 카드를 보여 주시면 모든 과일과 채소를 20% 싸게 살 수 있습니다. 회원 카드가 없으신 분은 계산대에서 바로 만들 수 있습니다. 많이 이용해 주십시오.",
+     qs:[
+      {id:"t309", ask:"왜 윗글을 썼는지 맞는 것을 고르십시오.", opts:["할인 행사를 알리려고", "회원 카드를 팔려고", "새 가게를 소개하려고", "계산 방법을 바꾸려고"], a:0,
+       exp:"Mavzu <b>할인 행사 안내</b> — chegirma aksiyasi haqida xabar."},
+      {id:"t310", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["회원 카드는 계산대에서 만들 수 있습니다.", "행사는 한 달 동안 합니다.", "모든 물건을 20% 싸게 팝니다.", "회원이 아닌 사람도 할인을 받습니다."], a:0,
+       exp:"<b>계산대에서 바로 만들 수 있습니다</b> — kartani kassada darhol ochish mumkin. Chegirma faqat meva-sabzavotga, 7 kun."}
+     ]},
+    {id:"s54", type:"T-R6", slot:"65", sec:"read", text:"한국에서는 아기가 태어난 지 1년이 되면 돌잔치를 합니다. 돌잔치에서는 아기 앞에 여러 가지 물건을 놓고 아기가 하나를 ( ㉠ ) 합니다. 아기가 연필을 잡으면 공부를 잘하고 돈을 잡으면 부자가 된다고 생각합니다.",
+     qs:[
+      {id:"t311", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["잡게", "먹게", "사게", "버리게"], a:0,
+       exp:"<b>-게 하다</b> — «...dirmoq»: chaqaloqqa bitta narsani <b>ushlattiradi</b>. 잡다 — ushlamoq."},
+      {id:"t312", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["돌잔치는 아기가 태어난 지 1년 후에 합니다.", "돌잔치는 어른의 생일입니다.", "아기가 연필을 잡으면 부자가 됩니다.", "돌잔치에서는 물건을 팝니다."], a:0,
+       exp:"<b>돌잔치</b> — chaqaloqning 1 yoshlik bayrami. Qalam — yaxshi o'qish, pul — boylik."}
+     ]},
+    {id:"s55", type:"T-R6", slot:"65", sec:"read", text:"잠을 잘 자려면 자기 전에 휴대폰을 보지 않는 것이 좋습니다. 휴대폰의 밝은 빛 때문에 잠이 잘 오지 않기 때문입니다. 그리고 매일 같은 시간에 자고 일어나면 몸이 ( ㉠ ) 쉽게 잠을 잘 수 있습니다.",
+     qs:[
+      {id:"t313", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["익숙해져서", "피곤해서", "아파서", "무거워서"], a:0,
+       exp:"Har kuni bir vaqtda uxlasa, tana <b>o'rganib qoladi</b>: <b>익숙해지다</b>."},
+      {id:"t314", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["자기 전에 휴대폰을 보지 않는 것이 좋습니다.", "휴대폰 빛은 잠에 도움이 됩니다.", "매일 다른 시간에 자는 것이 좋습니다.", "잠을 잘 자려면 휴대폰을 오래 봐야 합니다."], a:0,
+       exp:"Telefonning yorqin nuri uyquga xalaqit beradi — <b>uxlashdan oldin qaramang</b>."}
+     ]},
+    {id:"s56", type:"T-R6", slot:"67", sec:"read", text:"한국의 많은 회사에는 '회식' 문화가 있습니다. 회식은 일이 끝난 후에 동료들과 같이 식사를 하는 것입니다. 회식을 하면 동료들과 더 친해질 수 있습니다. 하지만 요즘은 술을 마시는 회식보다 점심 회식이나 공연을 보는 회식을 ( ㉠ ) 사람들이 많아지고 있습니다.",
+     qs:[
+      {id:"t315", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["좋아하는", "싫어하는", "만드는", "끝내는"], a:0,
+       exp:"<b>보다</b> qiyosi: ichkilikli o'tirishdan ko'ra tushlik yoki konsertni <b>yoqtiradiganlar</b> ko'paymoqda."},
+      {id:"t316", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["회식을 하면 동료들과 친해질 수 있습니다.", "회식은 일하기 전에 합니다.", "요즘은 술을 마시는 회식만 합니다.", "회식은 혼자 하는 식사입니다."], a:0,
+       exp:"<b>회식</b> — ishdan keyin hamkasblar bilan birga ovqatlanish; yaqinlashishga yordam beradi."}
+     ]},
+    {id:"s57", type:"T-R6", slot:"67", sec:"read", text:"한국에서는 쓰레기를 버릴 때 종량제 봉투를 사용해야 합니다. 종량제 봉투는 편의점이나 마트에서 살 수 있습니다. 봉투가 크면 값이 더 비쌉니다. 그래서 쓰레기를 ( ㉠ ) 사람들은 돈을 더 많이 내야 합니다. 이 제도 덕분에 쓰레기가 많이 줄었습니다.",
+     qs:[
+      {id:"t317", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["많이 버리는", "적게 버리는", "분리하는", "줍는"], a:0,
+       exp:"Katta paket qimmat — demak chiqindini <b>ko'p tashlaydiganlar</b> ko'proq to'laydi."},
+      {id:"t318", ask:"이 글의 내용과 같은 것을 고르십시오.", opts:["종량제 봉투는 편의점에서 살 수 있습니다.", "봉투가 크면 값이 쌉니다.", "이 제도 때문에 쓰레기가 늘었습니다.", "쓰레기는 아무 봉투에나 버려도 됩니다."], a:0,
+       exp:"<b>종량제 봉투</b> — chiqindi uchun pullik paket; do'kon va marketda sotiladi. 제도 — tizim."}
+     ]},
+    {id:"s58", type:"T-R6", slot:"69", sec:"read", text:"저는 우즈베키스탄에서 대학교를 졸업하고 한국에 왔습니다. 처음 1년 동안은 공장에서 일하면서 밤에 한국어를 공부했습니다. 한국어 실력이 좋아진 후에는 통역 일을 시작했습니다. 지금은 한국에 온 우즈베키스탄 사람들을 돕는 일을 하고 있습니다. 제가 처음 한국에 왔을 때 ( ㉠ ) 지금 다른 사람들을 도울 수 있어서 기쁩니다.",
+     qs:[
+      {id:"t319", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["힘들었기 때문에", "즐거웠기 때문에", "돈이 많았기 때문에", "한국어를 잘했기 때문에"], a:0,
+       exp:"O'zi avval <b>qiynalgani uchun</b> boshqalarga yordam berishdan xursand: <b>-기 때문에</b>."},
+      {id:"t320", ask:"이 글의 내용으로 알 수 있는 것을 고르십시오.", opts:["저는 지금 다른 사람들을 돕는 일을 합니다.", "저는 한국에서 대학교를 졸업했습니다.", "저는 지금도 공장에서 일합니다.", "저는 처음부터 통역 일을 했습니다."], a:0,
+       exp:"Hozir <b>koreyaga kelgan o'zbeklarga yordam beradi</b>. 통역 — tarjimonlik (og'zaki)."}
+     ]},
+    {id:"s59", type:"T-R6", slot:"69", sec:"read", text:"제 동생은 어렸을 때부터 동물을 아주 좋아했습니다. 길에서 다친 고양이를 보면 집에 데려와서 치료해 주었습니다. 그래서 가족들은 동생이 나중에 수의사가 될 거라고 생각했습니다. 동생은 열심히 공부해서 올해 대학교 수의학과에 들어갔습니다. 동생은 졸업 후에 ( ㉠ ) 동물 병원을 열고 싶어 합니다.",
+     qs:[
+      {id:"t321", ask:"㉠에 들어갈 알맞은 것을 고르십시오.", opts:["아픈 동물을 돌보는", "동물을 파는", "옷을 만드는", "음식을 파는"], a:0,
+       exp:"Veterinar bo'ladi — <b>kasal hayvonlarga qaraydigan</b> klinika: <b>돌보다</b> — parvarish qilmoq."},
+      {id:"t322", ask:"이 글의 내용으로 알 수 있는 것을 고르십시오.", opts:["동생은 지금 수의학을 공부합니다.", "동생은 동물을 싫어합니다.", "동생은 이미 동물 병원을 열었습니다.", "가족들은 동생이 의사가 되기를 바랐습니다."], a:0,
+       exp:"Bu yil <b>veterinariya fakultetiga</b> kirdi — hozir o'qiyapti. 수의사 — veterinar."}
+     ]},
+    {id:"s60", type:"T-L8", sec:"listen", audio:"여자: 회원 여러분께 알려 드립니다. 우리 수영장은 다음 주 월요일부터 수요일까지 청소를 합니다. 이 기간에는 수영장을 이용할 수 없습니다. 목요일부터는 다시 이용하실 수 있습니다. 감사합니다.",
+     qs:[
+      {id:"t323", ask:"여자가 왜 이 이야기를 하고 있는지 고르십시오.", opts:["수영장 청소 일정을 알리려고", "수영을 가르치려고", "회원을 모집하려고", "수영복을 팔려고"], a:0,
+       exp:"<b>알려 드립니다</b> — xabar beramiz: basseyn tozalash jadvali haqida."},
+      {id:"t324", ask:"들은 내용과 같은 것을 고르십시오.", opts:["목요일부터 수영장을 다시 이용할 수 있습니다.", "수영장은 다음 주 내내 쉽니다.", "월요일에는 수영할 수 있습니다.", "청소는 이번 주에 합니다."], a:0,
+       exp:"Dushanba–chorshanba yopiq, <b>payshanbadan</b> yana ochiq."}
+     ]},
+    {id:"s61", type:"T-L8", sec:"listen", audio:"여자: 여러분, 오늘 박물관 견학에 대해 말씀드리겠습니다. 버스는 오전 9시에 학교 앞에서 출발합니다. 박물관 안에서는 사진을 찍을 수 없습니다. 점심은 박물관 식당에서 먹고 오후 3시에 학교로 돌아옵니다.",
+     qs:[
+      {id:"t325", ask:"여자가 왜 이 이야기를 하고 있는지 고르십시오.", opts:["견학 일정을 안내하려고", "사진 찍는 방법을 가르치려고", "식당을 소개하려고", "버스표를 팔려고"], a:0,
+       exp:"<b>견학</b> — ekskursiya. O'qituvchi <b>ekskursiya tartibini tushuntiryapti</b>."},
+      {id:"t326", ask:"들은 내용과 같은 것을 고르십시오.", opts:["박물관 안에서는 사진을 찍으면 안 됩니다.", "버스는 박물관 앞에서 출발합니다.", "점심은 학교에서 먹습니다.", "오후 9시에 학교로 돌아옵니다."], a:0,
+       exp:"<b>사진을 찍을 수 없습니다</b> — rasmga olish mumkin emas. Avtobus maktab oldidan 9 da jo'naydi."}
+     ]},
+    {id:"s62", type:"T-L9", sec:"listen", audio:"여자: 민수 씨, 이번 주말에 뭐 할 거예요?\n남자: 친구 결혼식에 가요. 그런데 무슨 선물을 하면 좋을지 모르겠어요.\n여자: 요즘은 선물 대신 돈을 많이 줘요. 아니면 신혼부부에게 필요한 그릇은 어때요?\n남자: 좋은 생각이네요. 그릇으로 해야겠어요.",
+     qs:[
+      {id:"t327", ask:"두 사람이 무엇에 대해 이야기하고 있는지 고르십시오.", opts:["결혼 선물", "주말 날씨", "그릇 값", "결혼식 장소"], a:0,
+       exp:"Ular <b>to'yga qanday sovg'a qilish</b> haqida gaplashyapti."},
+      {id:"t328", ask:"들은 내용과 같은 것을 고르십시오.", opts:["남자는 주말에 결혼식에 갑니다.", "여자는 결혼을 합니다.", "남자는 돈을 선물할 겁니다.", "남자는 선물을 이미 샀습니다."], a:0,
+       exp:"Erkak dam olish kuni <b>do'stining to'yiga</b> boradi va idish sovg'a qilmoqchi. 신혼부부 — yangi turmush qurganlar."}
+     ]},
+    {id:"s63", type:"T-L9", sec:"listen", audio:"남자: 지난번에 추천해 준 한국어 책 샀어요?\n여자: 네, 샀어요. 그런데 생각보다 어려워요.\n남자: 그럼 처음에는 듣기 파일을 들으면서 읽어 보세요. 훨씬 쉬워요.\n여자: 아, 듣기 파일도 있어요? 오늘 해 볼게요.",
+     qs:[
+      {id:"t329", ask:"두 사람이 무엇에 대해 이야기하고 있는지 고르십시오.", opts:["한국어 책 공부 방법", "책을 사는 곳", "듣기 시험 날짜", "서점 위치"], a:0,
+       exp:"Gap kitobni <b>qanday o'qish kerakligi</b> haqida: audio bilan birga o'qish."},
+      {id:"t330", ask:"들은 내용과 같은 것을 고르십시오.", opts:["여자는 책이 어렵다고 생각합니다.", "남자는 책을 아직 사지 않았습니다.", "책에는 듣기 파일이 없습니다.", "여자는 듣기 파일을 이미 들었습니다."], a:0,
+       exp:"<b>생각보다 어려워요</b> — o'ylagandan qiyin. Audio faylni bugun sinab ko'radi."}
+     ]},
+    {id:"s64", type:"T-L10", sec:"listen", audio:"여자: 사장님, 이 식당은 왜 점심시간에만 문을 열어요?\n남자: 제가 아침마다 시장에 가서 신선한 재료를 사거든요. 그날 산 재료로 그날만 음식을 만들어요.\n여자: 그래서 음식이 이렇게 맛있군요.\n남자: 네, 재료가 다 떨어지면 일찍 문을 닫기도 해요.",
+     qs:[
+      {id:"t331", ask:"남자가 점심시간에만 문을 여는 이유를 고르십시오.", opts:["그날 산 재료로만 음식을 만들어서", "저녁에 다른 일을 해서", "손님이 적어서", "시장이 멀어서"], a:0,
+       exp:"<b>-거든요</b> sababni tushuntiradi: faqat <b>o'sha kuni olingan mahsulotdan</b> pishiradi."},
+      {id:"t332", ask:"들은 내용과 같은 것을 고르십시오.", opts:["남자는 아침마다 시장에 갑니다.", "식당은 저녁에도 문을 엽니다.", "재료가 없어도 문을 닫지 않습니다.", "여자는 식당 사장입니다."], a:0,
+       exp:"<b>아침마다 시장에</b> — har tong bozorga. 재료가 떨어지다 — mahsulot tugamoq."}
+     ]},
+    {id:"s65", type:"T-L10", sec:"listen", audio:"남자: 수미 씨, 회사를 그만둔다면서요?\n여자: 네, 다음 달에 유학을 가거든요. 디자인을 더 공부하고 싶어서요.\n남자: 어느 나라로 가요?\n여자: 이탈리아요. 2년 동안 공부하고 돌아올 거예요.",
+     qs:[
+      {id:"t333", ask:"여자가 회사를 그만두는 이유를 고르십시오.", opts:["디자인을 더 공부하고 싶어서", "회사 일이 힘들어서", "이사를 가야 해서", "결혼을 해서"], a:0,
+       exp:"<b>-고 싶어서요</b> — sabab: dizaynni chuqurroq o'rganmoqchi. 유학 — chet elda o'qish."},
+      {id:"t334", ask:"들은 내용과 같은 것을 고르십시오.", opts:["여자는 다음 달에 유학을 갑니다.", "여자는 이탈리아에서 일할 겁니다.", "남자는 유학을 갑니다.", "여자는 1년 동안 공부할 겁니다."], a:0,
+       exp:"Keyingi oy <b>Italiyaga o'qishga</b> ketadi, 2 yildan keyin qaytadi. -다면서요? — «...ekan-da?»"}
      ]}
   ] };
