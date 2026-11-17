@@ -100,12 +100,21 @@
     "E-R1": T({ exam: "eps", sec: "read", ko: "그림을 보고 알맞은 단어를 고르십시오.",
       uz: "Rasmga qarang va mos so'zni tanlang.", ru: "Посмотрите на картинку и выберите подходящее слово.", en: "Look at the picture and choose the right word.",
       ex: { pic: "🧢", opts: ["모자", "안경", "양말", "가방"], a: 0 } }),
+    "E-R1S": T({ exam: "eps", sec: "read", ko: "그림을 보고 알맞은 문장을 고르십시오.",
+      uz: "Rasmga qarang va mos gapni tanlang.", ru: "Посмотрите на картинку и выберите подходящее предложение.", en: "Look at the picture and choose the matching sentence.",
+      ex: { pic: "📖", opts: ["책을 읽고 있습니다.", "밥을 먹고 있습니다.", "잠을 자고 있습니다.", "운동을 하고 있습니다."], a: 0 } }),
     "E-R2": T({ exam: "eps", sec: "read", ko: "다음 표지판은 무슨 뜻입니까? 알맞은 것을 고르십시오.",
       uz: "Bu belgi nimani anglatadi? Mosini tanlang.", ru: "Что означает этот знак? Выберите подходящее.", en: "What does this sign mean? Choose the right answer.",
       ex: { sign: "주차 금지", opts: ["차를 세우면 안 됩니다.", "차를 닦으십시오.", "천천히 가십시오.", "여기에서 타십시오."], a: 0 } }),
     "E-R3": T({ exam: "eps", sec: "read", ko: "(    )에 들어갈 가장 알맞은 것을 고르십시오.",
       uz: "Qavs ichiga eng mos keladiganini tanlang.", ru: "Выберите то, что лучше всего подходит в скобки.", en: "Choose what best fits in the blank.",
       ex: { q: "목이 말라요. 물을 (    ).", opts: ["마셔요", "입어요", "타요", "써요"], a: 0 } }),
+    "E-R9": T({ exam: "eps", sec: "read", ko: "밑줄 친 부분과 의미가 같은 것을 고르십시오.",
+      uz: "Tagiga chizilgan so'z bilan ma'nodosh variantni tanlang.", ru: "Выберите слово, близкое по значению к подчёркнутому.", en: "Choose the word closest in meaning to the underlined part.",
+      ex: { q: "저는 [[매주]] 토요일에 쉽니다.", opts: ["주마다", "가끔", "작년에", "아까"], a: 0 } }),
+    "E-R10": T({ exam: "eps", sec: "read", ko: "밑줄 친 부분과 의미가 반대인 것을 고르십시오.",
+      uz: "Tagiga chizilgan so'zga zid ma'noli variantni tanlang.", ru: "Выберите слово, противоположное по значению подчёркнутому.", en: "Choose the word opposite in meaning to the underlined part.",
+      ex: { q: "방이 [[넓습니다]].", opts: ["좁습니다", "큽니다", "밝습니다", "깨끗합니다"], a: 0 } }),
     "E-R4": T({ exam: "eps", sec: "read", ko: "다음 대화의 (    )에 들어갈 가장 알맞은 것을 고르십시오.",
       uz: "Dialogdagi qavs ichiga eng mos javobni tanlang.", ru: "Выберите лучшую реплику для пропуска в диалоге.", en: "Choose the best line for the blank in the conversation.",
       ex: { q: "가: 어디에 가요?\n나: (    )", opts: ["은행에 가요.", "은행이에요.", "은행이 커요.", "은행에서 왔어요."], a: 0 } }),
@@ -121,6 +130,9 @@
     "E-L1": T({ exam: "eps", sec: "listen", ko: "다음을 듣고 들은 내용과 관계있는 그림을 고르십시오.",
       uz: "Tinglang va eshitganingizga mos rasmni tanlang.", ru: "Прослушайте и выберите картинку, связанную с услышанным.", en: "Listen and choose the picture related to what you hear.",
       ex: { audio: "모자", opts: ["🧢", "👓", "🧦", "👜"], a: 0 } }),
+    "E-L6": T({ exam: "eps", sec: "listen", hideOpts: true, ko: "그림을 보고 알맞은 대답을 고르십시오.",
+      uz: "Rasmga qarang, variantlarni tinglang va mosini tanlang.", ru: "Посмотрите на картинку, прослушайте варианты и выберите подходящий.", en: "Look at the picture, listen to the options and choose the right one.",
+      ex: { pic: "☕", opts: ["커피입니다.", "우유입니다.", "물입니다.", "주스입니다."], a: 0 } }),
     "E-L2": T({ exam: "eps", sec: "listen", ko: "다음 질문을 듣고 알맞은 대답을 고르십시오.",
       uz: "Savolni tinglang va mos javobni tanlang.", ru: "Прослушайте вопрос и выберите подходящий ответ.", en: "Listen to the question and choose the right answer.",
       ex: { q: "가: 이름이 뭐예요?\n나: ____________", opts: ["아지즈예요.", "스물다섯 살이에요.", "회사원이에요.", "우즈베키스탄에서 왔어요."], a: 0 } }),
@@ -129,7 +141,9 @@
     "E-L4": T({ exam: "eps", sec: "listen", ko: "다음 대화를 듣고 질문에 알맞은 대답을 고르십시오.",
       uz: "Dialogni tinglang va savolga mos javobni tanlang.", ru: "Прослушайте диалог и выберите ответ на вопрос.", en: "Listen to the conversation and answer the question." }),
     "E-L5": T({ exam: "eps", sec: "listen", ko: "다음을 듣고 들은 내용과 같은 것을 고르십시오.",
-      uz: "Tinglang va eshitganingizga mos gapni tanlang.", ru: "Прослушайте и выберите то, что совпадает с услышанным.", en: "Listen and choose the statement that matches what you hear." })
+      uz: "Tinglang va eshitganingizga mos gapni tanlang.", ru: "Прослушайте и выберите то, что совпадает с услышанным.", en: "Listen and choose the statement that matches what you hear." }),
+    "E-L7": T({ exam: "eps", sec: "listen", ko: "다음 이야기를 듣고 질문에 알맞은 대답을 고르십시오.",
+      uz: "Hikoyani tinglang va savolga mos javobni tanlang.", ru: "Прослушайте рассказ и выберите ответ на вопрос.", en: "Listen to the talk and choose the answer to the question." })
   };
 
   // Eski ko'rsatmalar → tur (savol fayllaridagi inst bo'yicha)
@@ -156,7 +170,7 @@
     }
   };
   // E-L4 da savolning o'zi (masalan "여기는 어디입니까?") alohida ko'rsatiladi
-  var ASK_KEEP = { "E-L4": true, "T-RX": false };
+  var ASK_KEEP = { "E-L4": true, "E-L7": true, "T-RX": false };
 
   // Haqiqiy format mock tartibi
   var MOCK = {
@@ -168,8 +182,8 @@
       ["T-R6@59", 1, "set"], ["T-R6@61", 1, "set"], ["T-R6@63", 1, "set"], ["T-R6@65", 1, "set"], ["T-R6@67", 1, "set"], ["T-R6@69", 1, "set"]
     ] },
     eps: { minutes: 50, parts: [
-      ["E-R1", 4], ["E-R2", 3], ["E-R3", 5], ["E-R4", 2], ["E-R5", 1], ["E-R6", 2], ["E-R7", 2], ["E-R8", 1],
-      ["E-L1", 4], ["E-L2", 5], ["E-L3", 2], ["E-L4", 6], ["E-L5", 3]
+      ["E-R1", 3], ["E-R1S", 2], ["E-R2", 2], ["E-R3", 4], ["E-R9", 2], ["E-R10", 1], ["E-R4", 2], ["E-R5", 1], ["E-R6", 1], ["E-R7", 1], ["E-R8", 1],
+      ["E-L1", 3], ["E-L6", 3], ["E-L2", 4], ["E-L3", 2], ["E-L4", 4], ["E-L5", 2], ["E-L7", 2]
     ] }
   };
 

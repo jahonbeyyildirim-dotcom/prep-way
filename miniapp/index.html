@@ -96,6 +96,7 @@
   .bogi-btn{background:none;border:1.5px dashed var(--line,#d9d4c7);border-radius:10px;padding:4px 10px;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px;cursor:pointer}
   .bogi{border:1.5px dashed var(--line,#d9d4c7);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:14.5px;white-space:pre-line}
   .bogi .bo{display:block;margin-top:2px}
+  u.ul{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;font-weight:700}
   .bogi .bo.ok{font-weight:800;color:var(--green)}
   .passage{white-space:pre-line;font-size:18px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
   .sign{display:inline-block;border:3px solid var(--red);color:var(--red);font-weight:700;font-size:28px;padding:8px 22px;border-radius:12px;background:#fff}
@@ -943,9 +944,11 @@
     if (cur.left<=0){ toast(TF("Vaqt tugadi!","Время вышло!","Time's up!")); finish(); return; }
     cur.left--;
   }
+  // Matn: [[so'z]] → tagiga chizilgan
+  function fmtP(s){ return esc(s).replace(/\[\[(.+?)\]\]/g, '<u class="ul">$1</u>'); }
   function bogiHTML(e){
     var FILLED = ["❶","❷","❸","❹"], s = "";
-    if (e.q) s += '<div>'+esc(e.q)+'</div>';
+    if (e.q) s += '<div>'+fmtP(e.q)+'</div>';
     if (e.sign) s += '<div style="text-align:center"><span class="sign">'+esc(e.sign)+'</span></div>';
     if (e.pic) s += '<div style="font-size:34px;text-align:center">'+esc(e.pic)+'</div>';
     if (e.audio) s += '<div>🎧 '+esc(e.audio)+'</div>';
@@ -968,16 +971,18 @@
     if (!q.grp) h += qno;
     if (q.sign) h += '<div class="passage" style="text-align:center"><span class="sign ko">'+esc(q.sign)+'</span></div>';
     if (q.pic) h += '<div class="passage qpic">'+esc(q.pic)+'</div>';
-    if (q.text) h += '<div class="passage ko">'+esc(q.text)+'</div>';
-    if (q.audio) h += '<div class="audio"><button class="play" id="playBtn" aria-label="Tinglash">▶</button><div><div style="font-weight:700">Audioni tinglang</div><button class="btn ghost" style="padding:6px 10px;font-size:13px;margin-top:4px" id="showScript">Matnni ko\'rsatish</button></div></div><div class="script ko" id="script" hidden>'+esc(q.audio)+'</div>';
+    if (q.text) h += '<div class="passage ko">'+fmtP(q.text)+'</div>';
+    // Variantlar faqat ovozda (EPS: rasmga qarab tinglash)
+    var hide = T && T.hideOpts, aud = q.audio || (hide ? q.opts.map(function(o, i){ return (i+1)+"번. "+o; }).join("\n") : "");
+    if (aud) h += '<div class="audio"><button class="play" id="playBtn" aria-label="Tinglash">▶</button><div><div style="font-weight:700">Audioni tinglang</div><button class="btn ghost" style="padding:6px 10px;font-size:13px;margin-top:4px" id="showScript">Matnni ko\'rsatish</button></div></div><div class="script ko" id="script" hidden>'+esc(aud)+'</div>';
     if (q.grp) h += qno;
     h += '<div class="opts">';
-    q.opts.forEach(function(o,k){ h += '<button class="opt ko'+(isPicOpt(o)?' pic':'')+(cur.ans[cur.i]===k?' sel':'')+'" data-k="'+k+'"><span class="n">'+(k+1)+'</span>'+esc(o)+'</button>'; });
+    q.opts.forEach(function(o,k){ h += '<button class="opt ko'+(isPicOpt(o)?' pic':'')+(cur.ans[cur.i]===k?' sel':'')+'" data-k="'+k+'"><span class="n">'+(k+1)+'</span>'+(hide ? '🎧 '+(k+1)+'번' : esc(o))+'</button>'; });
     h += '</div>';
     $("qCard").innerHTML = h;
     if ($("bogiBtn")) $("bogiBtn").onclick = function(){ var b = $("bogi"); b.hidden = !b.hidden; this.innerHTML = "&lt;보기&gt; " + (b.hidden ? "▾" : "▴"); };
-    if (q.audio){
-      $("playBtn").onclick = function(){ speakDialog(q.audio); };
+    if (aud){
+      $("playBtn").onclick = function(){ if (hide) speak(aud); else speakDialog(aud); };
       $("showScript").onclick = function(){ var s=$("script"); s.hidden=!s.hidden; this.textContent = s.hidden?"Matnni ko'rsatish":"Matnni yashirish"; };
     }
     $("qCard").querySelectorAll(".opt").forEach(function(b){
@@ -1038,7 +1043,7 @@
   function secName(sec){ return sec==="listen" ? TF("Tinglash","Аудирование","Listening") : TF("O'qish","Чтение","Reading"); }
   function reviewCard(q, your, label){
     var good = your===q.a;
-    var body = q.text || q.sign || q.pic || ("🎧 "+q.audio);
+    var body = (q.text || q.sign || q.pic || ("🎧 "+q.audio)).replace(/\[\[(.+?)\]\]/g, "«$1»");
     return '<div class="card rv'+(good?'':' bad')+'"><div class="h"><span>'+esc(label)+' · '+secName(q.sec)+'</span><span style="color:'+(good?'var(--green)':'var(--red)')+'">'+(good?TF("✓ To'g'ri","✓ Верно","✓ Correct"):TF("✕ Xato","✕ Ошибка","✕ Wrong"))+'</span></div>'+
       '<div class="q ko" style="white-space:pre-line">'+esc(body)+'</div>'+
       (good ? '' : '<div class="ans no ko">'+TF("Sizning javobingiz","Ваш ответ","Your answer")+': '+(your>-1? NUMS[your]+' '+esc(q.opts[your]) : '—')+'</div>')+

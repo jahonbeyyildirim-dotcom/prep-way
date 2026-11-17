@@ -76,5 +76,5 @@ open(sp, "w", encoding="utf-8").write(ss)
 if allsets:
     idx = t.rstrip().rfind("\n};")
     t = t[:idx] + ",\n" + ",\n".join('  %s: [%s, %s]' % (sq[0], js(sq[5]), js(sq[6])) for sq in allsets) + t[idx:]
-    open(tp, "w", encoding="utf-8").write(t)
+open(tp, "w", encoding="utf-8").write(t)
 print("to'plamlar:", sum(len(v) for v in sets.values()), "|", "qo'shildi: EPS", len(eps), "TOPIK", len(top))
