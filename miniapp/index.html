@@ -89,7 +89,14 @@
   .qsec{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
   .qsec.read{color:var(--blue)} .qsec.listen{color:var(--red)}
   .qinst{font-size:18px;font-weight:700;margin:6px 0 2px}
-  .qinst-uz{font-size:13.5px;color:var(--muted);margin:0 0 14px}
+  .qinst-uz{font-size:13.5px;color:var(--muted);margin:0 0 10px}
+  .qhead{font-size:15.5px;line-height:1.45}
+  .qrange{color:var(--blue);font-weight:800;white-space:nowrap}
+  .qno{font-size:16px;margin:10px 0 8px;white-space:pre-line}
+  .bogi-btn{background:none;border:1.5px dashed var(--line,#d9d4c7);border-radius:10px;padding:4px 10px;font-size:13px;font-weight:700;color:var(--muted);margin:0 0 10px;cursor:pointer}
+  .bogi{border:1.5px dashed var(--line,#d9d4c7);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:14.5px;white-space:pre-line}
+  .bogi .bo{display:block;margin-top:2px}
+  .bogi .bo.ok{font-weight:800;color:var(--green)}
   .passage{white-space:pre-line;font-size:18px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
   .sign{display:inline-block;border:3px solid var(--red);color:var(--red);font-weight:700;font-size:28px;padding:8px 22px;border-radius:12px;background:#fff}
   .audio{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
@@ -283,7 +290,7 @@
         <div class="meta"><span class="chip">Tinglash + O'qish</span><span class="chip" data-bank="topik">Bankda savollar</span></div>
         <div class="exam-btns">
           <button class="btn ghost" data-start="topik:quick">⚡ Tezkor test<small>10 savol · 10 daqiqa</small></button>
-          <button class="btn" data-start="topik:full">📝 Katta mock<small>30 savol · 40 daqiqa</small></button>
+          <button class="btn" data-start="topik:full">📝 Haqiqiy imtihon<small>70 savol · 100 daqiqa</small></button>
         </div>
         <div class="exam-btns prac">
           <button class="btn ghost" data-start="topik:listen">🎧 Tinglash mashqi<small>10 savol · 15 daqiqa</small></button>
@@ -480,6 +487,8 @@
 <script src="demo-api.js"></script>
 <script src="questions.js"></script>
 <script src="questions-i18n.js"></script>
+<script src="questions-sets.js"></script>
+<script src="exam-format.js"></script>
 <script>
 (function(){
   // ---------- DATA ----------
@@ -560,11 +569,42 @@
   };
   var BANK = {}, QBYID = {};
   function pad3(n){ return ("00"+n).slice(-3); }
+  var FMT = window.PW_FORMAT || null, TORDER = {};
+  if (FMT) Object.keys(FMT.TYPES).forEach(function(t, i){ TORDER[t] = i; });
   Object.keys(EXAMS).forEach(function(k){
     var legacy = EXAMS[k].qs.map(function(q,i){ q.id = k.charAt(0)+pad3(i+1); return q; });
-    BANK[k] = legacy.concat((window.PW_QBANK && window.PW_QBANK[k]) || []);
-    BANK[k].forEach(function(q){ QBYID[q.id] = { exam: EXAMS[k].name, q: q }; });
+    // Juft savollar: bitta matn/audio + bir nechta savol
+    var flat = [];
+    ((window.PW_QSETS && window.PW_QSETS[k]) || []).forEach(function(S){
+      S.qs.forEach(function(sq, j){
+        var q = {}; for (var f in sq) q[f] = sq[f];
+        q.sec = S.sec; q.type = S.type; q.grp = S.id; q.gpos = j; q.inst = sq.ask; q.uz = "";
+        if (S.text) q.text = S.text; if (S.audio) q.audio = S.audio;
+        flat.push(q);
+      });
+    });
+    BANK[k] = legacy.concat((window.PW_QBANK && window.PW_QBANK[k]) || []).concat(flat);
+    BANK[k].forEach(function(q){ q.type = FMT ? FMT.typeOf(k, q) : null; QBYID[q.id] = { exam: EXAMS[k].name, q: q }; });
   });
+  // Savollarni birlik (unit) larga bo'lish: oddiy savol yoki juft savollar to'plami
+  function unitsOf(list){
+    var m = {}, out = [];
+    list.forEach(function(q){
+      if (q.grp){ if (!m[q.grp]){ m[q.grp] = []; out.push(m[q.grp]); } m[q.grp].push(q); }
+      else out.push([q]);
+    });
+    out.forEach(function(u){ u.sort(function(a,b){ return (a.gpos||0)-(b.gpos||0); }); });
+    return out;
+  }
+  function pickUnits(list, n, seen, used){
+    var us = shuffle(unitsOf(list.filter(function(q){ return !used[q.id]; })));
+    function sc(u){ return Math.max.apply(null, u.map(function(q){ return seen[q.id]||0; })); }
+    us.sort(function(x, y){ return sc(x) - sc(y); });
+    var res = [], c = 0;
+    for (var i=0; i<us.length && c<n; i++){ if (c + us[i].length > n && c > 0) continue; res = res.concat(us[i]); c += us[i].length; }
+    res.forEach(function(q){ used[q.id] = 1; });
+    return res;
+  }
   function shuffle(a){ for (var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
   function isPicOpt(o){ return !/[A-Za-z0-9\uAC00-\uD7A3]/.test(o); }
 
@@ -837,21 +877,49 @@
   var cur = null; // {key, exam, i, ans[], left, tid}
   function startTest(key){
     var parts = String(key).split(":"), k = parts[0], mode = ({full:1, listen:1, read:1})[parts[1]] ? parts[1] : "quick";
-    var M = MODES[k], cfg = M[mode], qs = [];
-    M.order.forEach(function(sec){
-      var seen = seenMap();
-      var pool = shuffle(BANK[k].filter(function(q){ return q.sec===sec; }))
-        .sort(function(x, y){ return (seen[x.id]||0) - (seen[y.id]||0); });
-      qs = qs.concat(pool.slice(0, Math.min(cfg[sec], pool.length)));
-    });
+    var M = MODES[k], cfg = M[mode], qs = [], seen = seenMap(), used = {}, minutes = cfg.min;
+    var mock = mode === "full" && FMT && FMT.MOCK[k];
+    if (mock){
+      // Haqiqiy imtihon tartibi: har bir tur o'z o'rnida va o'z sonida
+      minutes = mock.minutes;
+      mock.parts.forEach(function(p){
+        var need = p[2] === "set" ? p[1]*2 : p[1];
+        qs = qs.concat(pickUnits(BANK[k].filter(function(q){ return q.type === p[0]; }), need, seen, used));
+      });
+    } else {
+      M.order.forEach(function(sec){
+        var part = pickUnits(BANK[k].filter(function(q){ return q.sec===sec; }), cfg[sec], seen, used);
+        // Imtihondagidek: turlar rasmiy tartibda, juft savollar birga
+        var idx = {}; part.forEach(function(q, i){ idx[q.id] = i; });
+        part.sort(function(a, b){
+          var ta = TORDER[a.type] == null ? 999 : TORDER[a.type], tb = TORDER[b.type] == null ? 999 : TORDER[b.type];
+          if (ta !== tb) return ta - tb;
+          if (a.grp && a.grp === b.grp) return a.gpos - b.gpos;
+          return idx[a.id] - idx[b.id];
+        });
+        qs = qs.concat(part);
+      });
+    }
     // Variantlar tartibini aralashtirish: javob har safar boshqa joyda. perm[ko'rsatilgan] = asl indeks.
     qs = qs.map(function(q){
-      var perm = shuffle(q.opts.map(function(_,i){ return i; })), v = {};
+      // ㉠~㉣ kabi joy variantlari va tartibli variantlar aralashtirilmaydi
+      var fixed = q.fixed || /^[㉠㉡㉢㉣]$/.test(q.opts[0]);
+      var perm = q.opts.map(function(_,i){ return i; }); if (!fixed) perm = shuffle(perm);
+      var v = {};
       for (var f in q) v[f] = q[f];
       v.opts = perm.map(function(i){ return q.opts[i]; }); v.a = perm.indexOf(q.a); v.perm = perm;
       return v;
     });
-    var ex = { name: M.name+({full:TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: cfg.min, qs: qs };
+    // Raqamlar oralig'i: ketma-ket bir xil tur (juft savollarda — bitta to'plam) → [a~b]
+    for (var i=0, st=0; i<qs.length; i++){
+      var key = qs[i].grp || qs[i].type || ("x"+i);
+      if (i===0 || key !== (qs[i-1].grp || qs[i-1].type || ("x"+(i-1)))) st = i;
+      qs[i].rk = key + "@" + st;
+    }
+    var rng = {};
+    qs.forEach(function(q, i){ var r = rng[q.rk] || (rng[q.rk] = [i+1, i+1]); r[1] = i+1; });
+    qs.forEach(function(q){ var r = rng[q.rk]; q.rng = r[0] === r[1] ? String(r[0]) : r[0] + "~" + r[1]; });
+    var ex = { name: M.name+({full: mock && k==="topik" ? TF(" · haqiqiy format"," · реальный формат"," · real format") : TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: minutes, qs: qs };
     cur = { key:key, exam:ex, i:0, ans:ex.qs.map(function(){return -1;}), left:ex.minutes*60, tid:null };
     $("tExam").textContent = ex.name;
     go("test");
@@ -872,21 +940,39 @@
     if (cur.left<=0){ toast(TF("Vaqt tugadi!","Время вышло!","Time's up!")); finish(); return; }
     cur.left--;
   }
+  function bogiHTML(e){
+    var FILLED = ["❶","❷","❸","❹"], s = "";
+    if (e.q) s += '<div>'+esc(e.q)+'</div>';
+    if (e.sign) s += '<div style="text-align:center"><span class="sign">'+esc(e.sign)+'</span></div>';
+    if (e.pic) s += '<div style="font-size:34px;text-align:center">'+esc(e.pic)+'</div>';
+    if (e.audio) s += '<div>🎧 '+esc(e.audio)+'</div>';
+    e.opts.forEach(function(o, i){ s += '<span class="bo'+(i===e.a?' ok':'')+'">'+(i===e.a?FILLED[i]:NUMS[i])+' '+esc(o)+'</span>'; });
+    return s;
+  }
   function renderQ(){
     stopDialog();
     var q = cur.exam.qs[cur.i], n = cur.exam.qs.length;
     $("tCount").textContent = (cur.i+1)+" / "+n;
     $("prog").style.width = ((cur.i+1)/n*100)+"%";
     var h = '<div class="qsec '+q.sec+'">'+(q.sec==="listen"?"🎧 Tinglash · 듣기":"📖 O'qish · 읽기")+'</div>';
-    h += '<div class="qinst ko">'+(cur.i+1)+'. '+esc(q.inst)+'</div><p class="qinst-uz">'+esc(q.uz)+'</p>';
+    var T = FMT && q.type ? FMT.TYPES[q.type] : null;
+    // Rasmiy sarlavha: ※ [a~b] ko'rsatma + 3 tilda tarjima + <보기>
+    h += '<div class="qinst qhead ko"><span class="qrange">※ ['+esc(q.rng || String(cur.i+1))+']</span> '+esc(T ? T.ko : q.inst)+'</div>';
+    h += '<p class="qinst-uz">'+esc(T ? (window.I18N ? I18N.pick(T) : T.uz) : q.uz)+'</p>';
+    if (T && T.ex) h += '<button class="bogi-btn ko" id="bogiBtn">&lt;보기&gt; ▾</button><div class="bogi ko" id="bogi" hidden>'+bogiHTML(T.ex)+'</div>';
+    var ask = T && (q.grp || FMT.ASK_KEEP[q.type]) ? q.inst : "";
+    var qno = '<div class="qno ko"><b>'+(cur.i+1)+'.</b> '+(ask ? esc(ask) : "")+'</div>';
+    if (!q.grp) h += qno;
     if (q.sign) h += '<div class="passage" style="text-align:center"><span class="sign ko">'+esc(q.sign)+'</span></div>';
     if (q.pic) h += '<div class="passage qpic">'+esc(q.pic)+'</div>';
     if (q.text) h += '<div class="passage ko">'+esc(q.text)+'</div>';
     if (q.audio) h += '<div class="audio"><button class="play" id="playBtn" aria-label="Tinglash">▶</button><div><div style="font-weight:700">Audioni tinglang</div><button class="btn ghost" style="padding:6px 10px;font-size:13px;margin-top:4px" id="showScript">Matnni ko\'rsatish</button></div></div><div class="script ko" id="script" hidden>'+esc(q.audio)+'</div>';
+    if (q.grp) h += qno;
     h += '<div class="opts">';
     q.opts.forEach(function(o,k){ h += '<button class="opt ko'+(isPicOpt(o)?' pic':'')+(cur.ans[cur.i]===k?' sel':'')+'" data-k="'+k+'"><span class="n">'+(k+1)+'</span>'+esc(o)+'</button>'; });
     h += '</div>';
     $("qCard").innerHTML = h;
+    if ($("bogiBtn")) $("bogiBtn").onclick = function(){ var b = $("bogi"); b.hidden = !b.hidden; this.innerHTML = "&lt;보기&gt; " + (b.hidden ? "▾" : "▴"); };
     if (q.audio){
       $("playBtn").onclick = function(){ speakDialog(q.audio); };
       $("showScript").onclick = function(){ var s=$("script"); s.hidden=!s.hidden; this.textContent = s.hidden?"Matnni ko'rsatish":"Matnni yashirish"; };
