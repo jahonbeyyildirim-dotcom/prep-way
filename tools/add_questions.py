@@ -57,7 +57,8 @@ for key, lst in sets.items():
     for S in lst:
         kind = "text" if S.get("text") else "audio"
         qs = ",\n".join('      {id:%s, ask:%s, opts:%s, a:%d,\n       exp:%s}' % (js(sq[0]), js(sq[1]), js(sq[2]), sq[3], js(sq[4])) for sq in S["qs"])
-        body.append('    {id:%s, type:%s, sec:%s, %s:%s,\n     qs:[\n%s\n     ]}' % (js(S["id"]), js(S["type"]), js(S["sec"]), kind, js(S[kind]), qs))
+        slot = (', slot:%s' % js(S["slot"])) if S.get("slot") else ''
+        body.append('    {id:%s, type:%s%s, sec:%s, %s:%s,\n     qs:[\n%s\n     ]}' % (js(S["id"]), js(S["type"]), slot, js(S["sec"]), kind, js(S[kind]), qs))
         allsets.extend(S["qs"])
     m = re.search(r"\b%s: \[" % key, ss); assert m, key
     # massiv oxiriga qo'shish
