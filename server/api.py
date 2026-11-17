@@ -15,7 +15,7 @@ def jerr(msg: str, status: int = 400):
     return web.json_response({"error": msg}, status=status)
 
 
-PUBLIC_API = {"/api/auth/google", "/api/auth/guest"}
+PUBLIC_API = {"/api/auth/google", "/api/auth/guest", "/api/health"}
 
 
 def _cors(req, resp):
@@ -307,6 +307,13 @@ async def lesson(req):
 
 
 # ---------------------------------------------------------------- sahifa
+async def health(_req):
+    """Kunlik tekshiruv (GitHub Actions): server va baza tirikmi."""
+    from . import persist
+    db = await persist.ping()
+    return web.json_response({"ok": True, "db": db})
+
+
 async def privacy(_req):
     return web.FileResponse(config.MINIAPP_DIR / "privacy.html", headers={"Cache-Control": "no-cache"})
 
@@ -331,6 +338,7 @@ def make_app() -> web.Application:
         web.get("/api/me", me),
         web.delete("/api/me", delete_me),
         web.get("/privacy", privacy),
+        web.get("/api/health", health),
         web.post("/api/speech", speech),
         web.post("/api/chat", chat),
         web.post("/api/tts", tts),

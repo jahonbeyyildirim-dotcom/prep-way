@@ -1,0 +1,18 @@
+# Har kuni serverni uyg'otadi va bazaga bitta so'rov yuboradi.
+# Supabase bepul loyihasi bir hafta ishlatilmasa "uxlab qoladi" — bu uni faol saqlaydi.
+name: Server va bazani faol saqlash
+on:
+  schedule:
+    - cron: "17 2 * * *"   # har kuni 02:17 UTC (07:17 Toshkent)
+  workflow_dispatch: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: /api/health so'rovi
+        run: |
+          for i in 1 2 3; do
+            out=$(curl -s --max-time 120 https://prepway-api.onrender.com/api/health) && echo "$out" && echo "$out" | grep -q '"ok": true' && exit 0
+            echo "Qayta urinish ($i)..."; sleep 30
+          done
+          echo "Server javob bermadi"; exit 1

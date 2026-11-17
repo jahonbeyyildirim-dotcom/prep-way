@@ -124,3 +124,15 @@ async def flush(timeout: float = 10) -> None:
             await asyncio.wait_for(_queue.join(), timeout)
         except asyncio.TimeoutError:
             log.warning("Ba'zi yozuvlar bazaga yetib bormadi.")
+
+
+async def ping() -> bool | None:
+    """Baza ishlayaptimi (None — baza ulanmagan). Kunlik tekshiruv bazani "uxlab qolish"dan saqlaydi."""
+    if _pool is None:
+        return None
+    try:
+        async with _pool.acquire() as c:
+            return await c.fetchval("SELECT 1") == 1
+    except Exception as e:
+        log.warning("Baza tekshiruvida xato: %s", e)
+        return False
