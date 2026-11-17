@@ -578,7 +578,7 @@
     ((window.PW_QSETS && window.PW_QSETS[k]) || []).forEach(function(S){
       S.qs.forEach(function(sq, j){
         var q = {}; for (var f in sq) q[f] = sq[f];
-        q.sec = S.sec; q.type = S.type; q.grp = S.id; q.gpos = j; q.inst = sq.ask; q.uz = "";
+        q.sec = S.sec; q.type = S.type; q.grp = S.id; q.gpos = j; q.inst = sq.ask; q.uz = ""; if (S.slot) q.slot = S.slot;
         if (S.text) q.text = S.text; if (S.audio) q.audio = S.audio;
         flat.push(q);
       });
@@ -883,8 +883,11 @@
       // Haqiqiy imtihon tartibi: har bir tur o'z o'rnida va o'z sonida
       minutes = mock.minutes;
       mock.parts.forEach(function(p){
-        var need = p[2] === "set" ? p[1]*2 : p[1];
-        qs = qs.concat(pickUnits(BANK[k].filter(function(q){ return q.type === p[0]; }), need, seen, used));
+        var need = p[2] === "set" ? p[1]*2 : p[1], tp = p[0].split("@");
+        var got = pickUnits(BANK[k].filter(function(q){ return q.type === tp[0] && (!tp[1] || q.slot === tp[1]); }), need, seen, used);
+        // Bu o'rin uchun to'plam qolmagan bo'lsa — shu turdagi boshqa to'plam
+        if (got.length < need && tp[1]) got = got.concat(pickUnits(BANK[k].filter(function(q){ return q.type === tp[0]; }), need - got.length, seen, used));
+        qs = qs.concat(got);
       });
     } else {
       M.order.forEach(function(sec){
