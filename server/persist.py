@@ -50,8 +50,10 @@ async def init() -> None:
             _pool = await asyncpg.create_pool(DSN, min_size=1, max_size=3, command_timeout=30,
                                               statement_cache_size=0)  # Neon pooler (PgBouncer) uchun
             break
-        except Exception as e:  # Neon uyqudan uyg'onishi bir necha soniya olishi mumkin
+        except Exception as e:  # baza uyqudan uyg'onishi bir necha soniya olishi mumkin
             log.warning("Bazaga ulanib bo'lmadi (%s/5): %s", attempt + 1, e)
+            if isinstance(e, (asyncpg.InvalidPasswordError, asyncpg.InvalidAuthorizationSpecificationError)):
+                break  # parol/foydalanuvchi xato — qayta urinish foyda bermaydi
             await asyncio.sleep(3 * (attempt + 1))
     if _pool is None:
         log.error("Baza ishlamayapti — fayl rejimida davom etamiz.")
