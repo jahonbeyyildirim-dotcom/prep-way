@@ -1,0 +1,120 @@
+# 10-to'plam: EPS-TOPIK ning kam savolli turlari → har biri kamida 14 ta
+def QT(i, sec, typ, ins, kind, content, opts, a, uz, ru, en):
+    return (i, sec, ins[0], ins[1], kind, content, opts, a, uz, ru, en, typ)
+R8 = ("다음 글의 중심 생각을 고르십시오.", "Matnning asosiy fikrini tanlang.")
+L3 = ("다음을 듣고 이어지는 말로 알맞은 것을 고르십시오.", "Tinglang va keyin aytiladigan gapni tanlang.")
+R5 = ("다음 설명에 맞는 것을 고르십시오.", "Tavsifga mos keladiganini tanlang.")
+R7 = ("다음 글의 내용과 같은 것을 고르십시오.", "Matn mazmuniga mos keladiganini tanlang.")
+R6 = ("다음 글을 읽고 질문에 답하십시오.", "Matnni o'qing va savolga javob bering.")
+R4 = ("다음 대화의 (    )에 들어갈 가장 알맞은 것을 고르십시오.", "Dialogdagi qavs ichiga eng mos javobni tanlang.")
+L5 = ("다음을 듣고 들은 내용과 같은 것을 고르십시오.", "Tinglang va eshitganingizga mos gapni tanlang.")
+R2 = ("다음 표지판은 무슨 뜻입니까? 알맞은 것을 고르십시오.", "Bu belgi nimani anglatadi? Mosini tanlang.")
+MU, MR, ME = "Asosiy fikr odatda birinchi yoki oxirgi gapda: ", "Главная мысль обычно в первом или последнем предложении: ", "The main idea is usually in the first or last sentence: "
+
+EPS = [
+ # ---------- Markaziy fikr ----------
+ QT("e261","read","E-R8",R8,"text","한국에서는 일할 때 인사가 아주 중요합니다. 아침에 출근하면 먼저 동료들에게 인사를 합니다. 인사를 잘하면 동료들과 쉽게 친해질 수 있습니다.",["인사를 잘하는 것이 중요합니다.","아침에 일찍 출근해야 합니다.","동료들은 친절합니다.","한국 사람들은 바쁩니다."],0,
+   MU+"<b>salomlashish juda muhim</b>. 인사 — salom, 친해지다 — do'stlashmoq.", MR+"<b>приветствие очень важно</b>. 인사 — приветствие, 친해지다 — сблизиться.", ME+"<b>greeting people matters</b>. 인사 — greeting, 친해지다 — to get close."),
+ QT("e262","read","E-R8",R8,"text","작업장에서는 항상 안전모와 안전화를 착용해야 합니다. 귀찮다고 착용하지 않으면 큰 사고가 날 수 있습니다.",["작업장에서는 보호 장비를 꼭 착용해야 합니다.","안전화는 비쌉니다.","작업장은 귀찮은 곳입니다.","사고는 자주 나지 않습니다."],0,
+   MU+"<b>himoya vositalarini doim kiyish</b> shart. 귀찮다 — erinchoqlik, malol kelmoq.", MR+"<b>средства защиты носить обязательно</b>. 귀찮다 — лень, хлопотно.", ME+"<b>always wear protective gear</b>. 귀찮다 — bothersome."),
+ QT("e263","read","E-R8",R8,"text","돈을 모으려면 계획을 세워서 써야 합니다. 월급을 받으면 먼저 저금할 돈을 정하고 남은 돈으로 생활하는 것이 좋습니다.",["계획을 세워서 돈을 써야 합니다.","월급이 적습니다.","돈을 많이 써야 합니다.","은행에 자주 가야 합니다."],0,
+   MU+"<b>pulni reja bilan sarflash</b>. 계획을 세우다 — reja tuzmoq, 저금하다 — jamg'armoq.", MR+"<b>тратить деньги по плану</b>. 계획을 세우다 — составить план, 저금하다 — копить.", ME+"<b>spend money with a plan</b>. 계획을 세우다 — to make a plan, 저금하다 — to save."),
+ QT("e264","read","E-R8",R8,"text","외국어를 배울 때는 그 나라 문화도 같이 배우는 것이 좋습니다. 문화를 알면 말의 뜻을 더 잘 이해할 수 있기 때문입니다.",["외국어와 문화를 같이 배우는 것이 좋습니다.","외국어는 배우기 어렵습니다.","문화는 중요하지 않습니다.","여행을 많이 가야 합니다."],0,
+   MU+"<b>til bilan birga madaniyatni ham o'rganish</b>. -기 때문입니다 — chunki.", MR+"<b>учить язык вместе с культурой</b>. -기 때문입니다 — потому что.", ME+"<b>learn the culture along with the language</b>. -기 때문입니다 — because."),
+ QT("e265","read","E-R8",R8,"text","몸이 아프면 참지 말고 바로 병원에 가야 합니다. 작은 병도 늦게 치료하면 더 큰 병이 될 수 있습니다.",["아프면 바로 병원에 가야 합니다.","병원은 비쌉니다.","작은 병은 괜찮습니다.","약을 많이 먹어야 합니다."],0,
+   MU+"<b>kasal bo'lsangiz darhol shifoxonaga boring</b>. 참다 — chidamoq, 치료하다 — davolamoq.", MR+"<b>заболели — сразу к врачу</b>. 참다 — терпеть, 치료하다 — лечить.", ME+"<b>if you're ill, see a doctor right away</b>. 참다 — to put up with, 치료하다 — to treat."),
+ QT("e266","read","E-R8",R8,"text","같은 방을 쓰는 사람과 잘 지내려면 서로 규칙을 정하는 것이 좋습니다. 청소 순서나 조용히 해야 하는 시간을 미리 정하면 문제가 생기지 않습니다.",["함께 사는 사람과 규칙을 정하는 것이 좋습니다.","혼자 사는 것이 좋습니다.","청소는 매일 해야 합니다.","방이 넓어야 합니다."],0,
+   MU+"<b>xonadosh bilan qoidalar kelishib olish</b>. 규칙 — qoida, 순서 — navbat.", MR+"<b>договориться с соседом о правилах</b>. 규칙 — правило, 순서 — очерёдность.", ME+"<b>agree on rules with your roommate</b>. 규칙 — rule, 순서 — order, turn."),
+ QT("e267","read","E-R8",R8,"text","잠을 충분히 자지 않으면 일할 때 실수를 많이 하게 됩니다. 그래서 일하기 전날에는 일찍 자는 것이 좋습니다.",["일하기 전에는 충분히 자야 합니다.","실수를 해도 괜찮습니다.","밤에 일하는 것이 좋습니다.","잠을 적게 자야 합니다."],0,
+   MU+"<b>ishdan oldin yetarlicha uxlash</b>. 충분히 — yetarlicha, 전날 — oldingi kun.", MR+"<b>высыпаться перед работой</b>. 충분히 — достаточно, 전날 — накануне.", ME+"<b>get enough sleep before work</b>. 충분히 — enough, 전날 — the day before."),
+ QT("e268","read","E-R8",R8,"text","기계에 문제가 생기면 혼자 고치려고 하지 말고 바로 관리자에게 알려야 합니다. 잘 모르고 만지면 다칠 수 있습니다.",["기계에 문제가 생기면 관리자에게 알려야 합니다.","기계는 혼자 고쳐야 합니다.","관리자는 바쁩니다.","기계를 자주 만져야 합니다."],0,
+   MU+"<b>buzilishni rahbarga xabar qilish</b>. 관리자 — mas'ul shaxs, 만지다 — tegmoq.", MR+"<b>о поломке сообщать начальнику</b>. 관리자 — ответственный, 만지다 — трогать.", ME+"<b>report machine problems to a supervisor</b>. 관리자 — manager, 만지다 — to touch."),
+ QT("e269","read","E-R8",R8,"text","한국 생활에 빨리 적응하려면 한국 사람들과 많이 이야기하는 것이 좋습니다. 처음에는 실수를 해도 계속 이야기하면 한국어 실력도 늘고 친구도 생깁니다.",["한국 사람들과 많이 이야기하는 것이 좋습니다.","실수를 하면 안 됩니다.","고향 친구만 만나야 합니다.","한국어는 책으로만 배워야 합니다."],0,
+   MU+"<b>koreyslar bilan ko'p gaplashish</b>. 적응하다 — moslashmoq, 실력이 늘다 — mahorat oshmoq.", MR+"<b>больше общаться с корейцами</b>. 적응하다 — адаптироваться, 실력이 늘다 — уровень растёт.", ME+"<b>talk with Koreans a lot</b>. 적응하다 — to adapt, 실력이 늘다 — skills improve."),
+ QT("e270","read","E-R8",R8,"text","물건을 살 때 영수증을 꼭 받아 두는 것이 좋습니다. 영수증이 있으면 물건에 문제가 있을 때 바꾸거나 돈을 돌려받을 수 있습니다.",["물건을 사면 영수증을 받아 두는 것이 좋습니다.","물건을 바꾸면 안 됩니다.","영수증은 필요 없습니다.","비싼 물건만 사야 합니다."],0,
+   MU+"<b>chekni olib qo'yish</b> foydali. 돌려받다 — qaytarib olmoq.", MR+"<b>сохранять чек</b>. 돌려받다 — получить обратно.", ME+"<b>keep the receipt</b>. 돌려받다 — to get back."),
+ # ---------- Keyin aytiladigan gap ----------
+ QT("e271","listen","E-L3",L3,"audio","많이 다치셨어요?",["아니요, 조금 다쳤어요. 괜찮아요.","네, 많이 먹었어요.","아니요, 다치세요.","네, 다쳐 주세요."],0,
+   "<b>다치다</b> — jarohatlanmoq. Javob: «Yo'q, ozgina, hechqisi yo'q».","<b>다치다</b> — пораниться. Ответ: «Нет, чуть-чуть, всё в порядке».","<b>다치다</b> — to get hurt. Reply: \"No, just a little. I'm fine.\""),
+ QT("e272","listen","E-L3",L3,"audio","제가 도와 드릴까요?",["네, 감사합니다. 이것 좀 들어 주세요.","아니요, 도와줬어요.","네, 도와요.","제가 도와 드릴게요."],0,
+   "Yordam taklifiga: <b>네, 감사합니다</b> + iltimos. -아/어 드릴까요? — «...ib beraymi?»","На предложение помощи: <b>네, 감사합니다</b> + просьба. -아/어 드릴까요? — «помочь вам?»","To an offer of help: <b>네, 감사합니다</b> + a request. -아/어 드릴까요? — \"shall I … for you?\""),
+ QT("e273","listen","E-L3",L3,"audio","다음 주에 휴가라서 고향에 다녀올 거예요.",["그래요? 잘 다녀오세요.","어서 오세요.","처음 뵙겠습니다.","잘 먹겠습니다."],0,
+   "Ketib qaytadigan odamga: <b>잘 다녀오세요</b> — yaxshi borib keling. 다녀오다 — borib kelmoq.","Тому, кто уезжает и вернётся: <b>잘 다녀오세요</b>. 다녀오다 — съездить.","To someone going and coming back: <b>잘 다녀오세요</b>. 다녀오다 — to go and return."),
+ QT("e274","listen","E-L3",L3,"audio","이 일은 처음이라서 잘 모르겠어요.",["걱정하지 마세요. 제가 가르쳐 드릴게요.","네, 처음 뵙겠습니다.","잘 모르겠어요.","일이 끝났어요."],0,
+   "Yangi ishchiga: <b>걱정하지 마세요</b> — xavotir olmang, o'rgataman.","Новичку: <b>걱정하지 마세요</b> — не волнуйтесь, научу.","To a newcomer: <b>걱정하지 마세요</b> — don't worry, I'll teach you."),
+ QT("e275","listen","E-L3",L3,"audio","저 시험에 합격했어요!",["축하해요! 정말 잘됐네요.","괜찮아요. 다음에 잘하면 돼요.","미안해요.","실례합니다."],0,
+   "<b>합격하다</b> — imtihondan o'tmoq → <b>축하해요</b>. 괜찮아요… — yiqilganda aytiladi.","<b>합격하다</b> — сдать экзамен → <b>축하해요</b>. 괜찮아요… — говорят при провале.","<b>합격하다</b> — to pass → <b>축하해요</b>. 괜찮아요… is said after failing."),
+ QT("e276","listen","E-L3",L3,"audio","오늘 정말 수고 많으셨습니다.",["네, 수고하셨습니다.","네, 잘 먹겠습니다.","아니요, 처음이에요.","축하합니다."],0,
+   "Ish oxirida: <b>수고하셨습니다</b> — «charchamang, rahmat» deb javob qaytariladi.","В конце работы отвечают тем же: <b>수고하셨습니다</b> — «спасибо за труд».","At the end of work, reply in kind: <b>수고하셨습니다</b> — \"thanks for your hard work\"."),
+ QT("e277","listen","E-L3",L3,"audio","여기에서 사진을 찍어도 돼요?",["아니요, 여기에서는 안 돼요.","네, 사진이에요.","아니요, 사진기가 있어요.","네, 찍었어요."],0,
+   "<b>-아/어도 돼요?</b> — ruxsat so'rash. Taqiq: <b>안 돼요</b>.","<b>-아/어도 돼요?</b> — просьба о разрешении. Запрет: <b>안 돼요</b>.","<b>-아/어도 돼요?</b> asks permission. Refusal: <b>안 돼요</b>."),
+ QT("e278","listen","E-L3",L3,"audio","죄송하지만 좀 천천히 말씀해 주시겠어요?",["네, 다시 천천히 말할게요.","네, 빨리 말할게요.","아니요, 말하지 마세요.","천천히 드세요."],0,
+   "Sekinroq gapirish so'raldi → <b>천천히 말할게요</b>. Bu iborani ishda tez-tez ishlating!","Просят говорить медленнее → <b>천천히 말할게요</b>. Полезная фраза на работе!","Asked to speak slowly → <b>천천히 말할게요</b>. A very useful phrase at work!"),
+ QT("e279","listen","E-L3",L3,"audio","저녁에 같이 삼겹살 먹으러 갈래요?",["좋아요. 몇 시에 만날까요?","네, 삼겹살이에요.","아니요, 삼겹살이 아니에요.","잘 먹었습니다."],0,
+   "Taklif <b>-(으)ㄹ래요?</b> → rozilik va vaqt so'rash: 좋아요. 몇 시에 만날까요?","Приглашение <b>-(으)ㄹ래요?</b> → согласие и вопрос о времени.","An invitation <b>-(으)ㄹ래요?</b> → accept and ask the time."),
+ # ---------- Tavsif ----------
+ QT("e280","read","E-R5",R5,"text","아플 때 의사를 만나서 치료를 받는 곳입니다.",["병원","약국","은행","학교"],0,"Shifokor davolaydigan joy — <b>병원</b>. Dori sotiladigan joy — 약국.","Место, где лечит врач, — <b>병원</b>. Где продают лекарства — 약국.","Where a doctor treats you — <b>병원</b>. Where medicine is sold — 약국."),
+ QT("e281","read","E-R5",R5,"text","비행기를 타고 내리는 곳입니다.",["공항","기차역","항구","정류장"],0,"<b>공항</b> — aeroport. 항구 — port, 정류장 — avtobus bekati.","<b>공항</b> — аэропорт. 항구 — порт, 정류장 — остановка.","<b>공항</b> — airport. 항구 — port, 정류장 — bus stop."),
+ QT("e282","read","E-R5",R5,"text","돈을 내고 물건을 산 후에 받는 종이입니다.",["영수증","통장","여권","편지"],0,"<b>영수증</b> — chek, kvitansiya.","<b>영수증</b> — чек, квитанция.","<b>영수증</b> — receipt."),
+ QT("e283","read","E-R5",R5,"text","더울 때 방을 시원하게 해 주는 기계입니다.",["에어컨","냉장고","세탁기","난로"],0,"Xonani salqin qiladi — <b>에어컨</b>. 난로 — isitgich (zid).","Охлаждает комнату — <b>에어컨</b>. 난로 — обогреватель.","Cools the room — <b>에어컨</b>. 난로 — heater."),
+ QT("e284","read","E-R5",R5,"text","회사에서 한 달 동안 일하고 받는 돈입니다.",["월급","용돈","세금","요금"],0,"<b>월급</b> — oylik maosh. 용돈 — cho'ntak puli, 세금 — soliq, 요금 — to'lov.","<b>월급</b> — зарплата. 용돈 — карманные, 세금 — налог, 요금 — плата.","<b>월급</b> — monthly salary. 용돈 — pocket money, 세금 — tax, 요금 — fee."),
+ QT("e285","read","E-R5",R5,"text","다른 나라 돈을 한국 돈으로 바꾸는 것입니다.",["환전","저금","송금","계산"],0,"<b>환전</b> — valyuta almashtirish. 송금 — pul o'tkazmasi, 저금 — jamg'arma.","<b>환전</b> — обмен валюты. 송금 — перевод, 저금 — сбережения.","<b>환전</b> — currency exchange. 송금 — remittance, 저금 — savings."),
+ QT("e286","read","E-R5",R5,"text","높은 곳에 올라갈 때 밟고 올라가는 물건입니다.",["사다리","망치","장갑","가위"],0,"Balandga chiqish uchun — <b>사다리</b> (narvon). 밟다 — bosmoq.","Чтобы забраться наверх, — <b>사다리</b> (лестница). 밟다 — наступать.","To climb up high — <b>사다리</b> (ladder). 밟다 — to step on."),
+ # ---------- Matnga mos ----------
+ QT("e287","read","E-R7",R7,"text","저는 매일 아침 6시에 일어나서 기숙사 식당에서 아침을 먹습니다. 그리고 7시 30분에 회사 버스를 타고 출근합니다.",["저는 회사 버스를 타고 출근합니다.","저는 아침을 먹지 않습니다.","저는 7시에 일어납니다.","저는 걸어서 출근합니다."],0,
+   "Ishga <b>kompaniya avtobusida</b> boradi. Soat 6 da turadi, yotoqxonada nonushta qiladi.","На работу едет <b>на корпоративном автобусе</b>. Встаёт в 6, завтракает в общежитии.","He goes to work <b>by company bus</b>. Up at 6, breakfast in the dorm."),
+ QT("e288","read","E-R7",R7,"text","우리 공장은 일주일에 5일 일하고 토요일과 일요일에는 쉽니다. 하지만 일이 많을 때는 토요일에도 일합니다.",["일이 많으면 토요일에도 일합니다.","공장은 일요일에도 일합니다.","공장은 매일 쉽니다.","토요일에는 항상 일합니다."],0,
+   "<b>일이 많을 때는</b> — ish ko'p bo'lganda shanba ham ishlanadi. Odatda haftasiga 5 kun.","<b>일이 많을 때는</b> — когда много работы, работают и в субботу. Обычно 5 дней.","<b>일이 많을 때는</b> — when it's busy, they work Saturdays too. Normally 5 days."),
+ QT("e289","read","E-R7",R7,"text","제 동료 아지즈 씨는 한국어를 아주 잘합니다. 그래서 새로 온 외국인 근로자들을 많이 도와줍니다.",["아지즈 씨는 새 근로자들을 도와줍니다.","아지즈 씨는 한국어를 못합니다.","아지즈 씨는 새로 온 근로자입니다.","아지즈 씨는 도움을 받습니다."],0,
+   "Aziz koreys tilini yaxshi biladi va <b>yangi ishchilarga yordam beradi</b>.","Азиз хорошо знает корейский и <b>помогает новым работникам</b>.","Aziz speaks Korean well and <b>helps new workers</b>."),
+ QT("e290","read","E-R7",R7,"text","이번 달 월급날인 25일이 일요일이라서 월급이 하루 전인 24일에 나옵니다.",["이번 달 월급은 24일에 받습니다.","이번 달 월급은 26일에 받습니다.","월급날은 매달 24일입니다.","이번 달에는 월급이 없습니다."],0,
+   "25-sana yakshanba, shuning uchun bu oy maosh <b>bir kun oldin — 24-sanada</b>.","25-е — воскресенье, поэтому зарплата <b>на день раньше — 24-го</b>.","The 25th is a Sunday, so pay comes <b>a day early — on the 24th</b>."),
+ QT("e291","read","E-R7",R7,"text","저는 주말에 외국인 근로자 센터에서 한국어를 배웁니다. 수업료는 없고 선생님들도 아주 친절합니다.",["한국어 수업은 무료입니다.","수업료가 비쌉니다.","저는 평일에 공부합니다.","선생님들은 불친절합니다."],0,
+   "<b>수업료는 없고</b> — dars puli yo'q, ya'ni <b>bepul</b> (무료).","<b>수업료는 없고</b> — платы нет, то есть <b>бесплатно</b> (무료).","<b>수업료는 없고</b> — no fee, i.e. <b>free</b> (무료)."),
+ QT("e292","read","E-R7",R7,"text","회사 식당은 점심시간에만 문을 엽니다. 아침과 저녁은 기숙사에서 직접 만들어 먹어야 합니다.",["저녁은 기숙사에서 만들어 먹습니다.","회사 식당은 저녁에도 문을 엽니다.","아침은 회사 식당에서 먹습니다.","기숙사에서는 요리할 수 없습니다."],0,
+   "Oshxona faqat tushlikda ochiq; nonushta va kechki ovqat <b>yotoqxonada o'zlari pishiradi</b>.","Столовая открыта только в обед; завтрак и ужин <b>готовят сами в общежитии</b>.","The cafeteria opens only at lunch; breakfast and dinner are <b>cooked in the dorm</b>."),
+ QT("e293","read","E-R7",R7,"text","어제 공장에 새 기계가 들어왔습니다. 그래서 오늘 오전에는 기계 사용법을 배웠습니다.",["오늘 오전에 기계 사용법을 배웠습니다.","새 기계는 다음 주에 들어옵니다.","기계 사용법은 오후에 배웁니다.","기계가 고장 났습니다."],0,
+   "<b>사용법</b> — foydalanish usuli: bugun ertalab o'rganildi. Mashina kecha keldi.","<b>사용법</b> — способ использования: изучали сегодня утром. Станок привезли вчера.","<b>사용법</b> — how to use: learned this morning. The machine arrived yesterday."),
+ # ---------- E'lon ----------
+ QT("e294","read","E-R6",R6,"text","[분실물 안내]\n어제 회사 식당에서 검은색 지갑을 찾았습니다. 지갑을 잃어버린 분은 1층 사무실로 오십시오.\n\n질문: 지갑을 찾으려면 어디로 가야 합니까?",["1층 사무실","회사 식당","기숙사","경찰서"],0,
+   "<b>분실물</b> — yo'qolgan buyum. Hamyon <b>1-qavatdagi ofisda</b>.","<b>분실물</b> — потерянная вещь. Кошелёк — <b>в офисе на 1 этаже</b>.","<b>분실물</b> — lost item. The wallet is <b>at the 1st-floor office</b>."),
+ QT("e295","read","E-R6",R6,"text","[기숙사 안내]\n이번 주 금요일 오후 2시부터 4시까지 물이 나오지 않습니다. 필요한 물은 미리 받아 두십시오.\n\n질문: 금요일 오후에 무엇을 할 수 없습니까?",["물을 쓸 수 없습니다.","전기를 쓸 수 없습니다.","밖에 나갈 수 없습니다.","식당에 갈 수 없습니다."],0,
+   "<b>물이 나오지 않습니다</b> — suv kelmaydi. 미리 받아 두다 — oldindan to'ldirib qo'ymoq.","<b>물이 나오지 않습니다</b> — воды не будет. 미리 받아 두다 — набрать заранее.","<b>물이 나오지 않습니다</b> — no water. 미리 받아 두다 — to store some in advance."),
+ QT("e296","read","E-R6",R6,"text","[건강 교실]\n일시: 매주 수요일 저녁 7시\n장소: 외국인 근로자 센터 3층\n내용: 허리 운동, 스트레칭\n※ 운동복을 입고 오세요.\n\n질문: 건강 교실에 갈 때 무엇을 입어야 합니까?",["운동복","작업복","정장","한복"],0,
+   "※ belgisi — eslatma: <b>운동복</b> (sport kiyimi). 작업복 — ish kiyimi, 정장 — kostyum.","Знак ※ — примечание: <b>운동복</b> (спортивная форма). 작업복 — спецодежда, 정장 — костюм.","The ※ note says <b>운동복</b> (sportswear). 작업복 — work clothes, 정장 — suit."),
+ QT("e297","read","E-R6",R6,"text","[회식 안내]\n이번 주 목요일 저녁 7시에 회사 근처 '행복식당'에서 회식을 합니다. 참석하지 못하는 사람은 수요일까지 반장님께 말씀해 주십시오.\n\n질문: 회식에 못 가는 사람은 어떻게 해야 합니까?",["수요일까지 반장님께 말해야 합니다.","목요일에 식당에 전화해야 합니다.","돈을 내야 합니다.","아무것도 안 해도 됩니다."],0,
+   "<b>참석하다</b> — qatnashmoq. Bora olmasangiz — <b>chorshanbagacha brigadirga</b> ayting.","<b>참석하다</b> — присутствовать. Не можете — скажите <b>бригадиру до среды</b>.","<b>참석하다</b> — to attend. If you can't, tell <b>the team leader by Wednesday</b>."),
+ QT("e298","read","E-R6",R6,"text","[주차 안내]\n다음 주 월요일부터 회사 주차장 공사를 합니다. 공사 기간에는 회사 뒤 공터에 차를 세우십시오.\n\n질문: 다음 주에 차를 어디에 세워야 합니까?",["회사 뒤 공터","회사 주차장","기숙사 앞","길가"],0,
+   "<b>공사</b> — ta'mirlash ishlari, <b>공터</b> — bo'sh maydon. 차를 세우다 — mashinani qo'ymoq.","<b>공사</b> — строительные работы, <b>공터</b> — пустырь. 차를 세우다 — ставить машину.","<b>공사</b> — construction, <b>공터</b> — empty lot. 차를 세우다 — to park."),
+ QT("e299","read","E-R6",R6,"text","[택배 보관 안내]\n택배는 경비실에서 보관합니다. 경비실은 밤 10시에 문을 닫으니까 그 전에 찾아가십시오.\n\n질문: 택배는 언제까지 찾아가야 합니까?",["밤 10시 전","아침 10시 전","오후 1시 전","밤 12시 전"],0,
+   "<b>경비실</b> — qorovulxona, <b>택배</b> — posilka. Kechki 10 dan oldin olish kerak.","<b>경비실</b> — пост охраны, <b>택배</b> — посылка. Забрать до 10 вечера.","<b>경비실</b> — security office, <b>택배</b> — parcel. Pick it up before 10 p.m."),
+ # ---------- Dialogdagi bo'sh joy ----------
+ QT("e300","read","E-R4",R4,"text","가: 이 근처에 약국이 있어요?\n나: (    )",["네, 은행 옆에 있어요.","네, 약을 먹었어요.","아니요, 아파요.","약국에서 일해요."],0,
+   "<b>있어요?</b> — joy so'ralyapti: javobda manzil — <b>은행 옆</b>.","<b>있어요?</b> — спрашивают место: в ответе адрес — <b>은행 옆</b>.","<b>있어요?</b> asks about a place: answer with a location — <b>은행 옆</b>."),
+ QT("e301","read","E-R4",R4,"text","가: 무엇을 드시겠어요?\n나: (    )",["비빔밥 하나 주세요.","네, 먹었어요.","아니요, 배불러요.","식당에 가요."],0,
+   "<b>무엇을 드시겠어요?</b> — Nima yeysiz? Buyurtma: <b>비빔밥 하나 주세요</b>.","<b>무엇을 드시겠어요?</b> — Что будете есть? Заказ: <b>비빔밥 하나 주세요</b>.","<b>무엇을 드시겠어요?</b> — What would you like? Order: <b>비빔밥 하나 주세요</b>."),
+ QT("e302","read","E-R4",R4,"text","가: 내일 몇 시까지 출근해야 돼요?\n나: (    )",["8시까지 오세요.","공장으로 오세요.","버스를 타고 오세요.","친구하고 오세요."],0,
+   "<b>몇 시까지</b> — soat nechagacha? Javobda vaqt.","<b>몇 시까지</b> — к которому часу? В ответе время.","<b>몇 시까지</b> — by what time? The answer is a time."),
+ QT("e303","read","E-R4",R4,"text","가: 주말에 보통 뭐 해요?\n나: (    )",["친구들하고 축구를 해요.","주말이에요.","토요일에 왔어요.","네, 주말이 좋아요."],0,
+   "<b>뭐 해요?</b> — nima qilasiz? Javobda harakat: futbol o'ynayman.","<b>뭐 해요?</b> — что делаете? В ответе действие.","<b>뭐 해요?</b> — what do you do? Answer with an activity."),
+ QT("e304","read","E-R4",R4,"text","가: 이 서류를 누구에게 드릴까요?\n나: (    )",["사무실의 김 과장님께 드리세요.","서류가 많아요.","내일 드릴게요.","책상 위에 있어요."],0,
+   "<b>누구에게</b> — kimga? Javobda odam: 김 과장님께. <b>께</b> — 에게 ning hurmat shakli.","<b>누구에게</b> — кому? В ответе человек: 김 과장님께. <b>께</b> — вежливая форма 에게.","<b>누구에게</b> — to whom? Answer with a person: 김 과장님께. <b>께</b> — honorific 에게."),
+ # ---------- Eshitilganga mos ----------
+ QT("e305","listen","E-L5",L5,"audio","남자: 나디라 씨, 내일 아침에 회의가 있어요. 8시까지 회의실로 오세요.\n여자: 네, 알겠습니다.",["내일 아침에 회의가 있습니다.","회의는 오후에 합니다.","여자는 회의에 가지 않습니다.","회의는 식당에서 합니다."],0,
+   "<b>회의실</b> — majlislar zali; majlis ertaga ertalab soat 8 da.","<b>회의실</b> — переговорная; собрание завтра в 8 утра.","<b>회의실</b> — meeting room; the meeting is tomorrow at 8 a.m."),
+ QT("e306","listen","E-L5",L5,"audio","여자: 지난주에 산 이 신발이 너무 작아요. 큰 걸로 바꿀 수 있어요?\n남자: 네, 영수증 있으시면 바꿔 드릴게요.",["여자는 신발을 바꾸고 싶어 합니다.","신발이 너무 큽니다.","여자는 오늘 신발을 샀습니다.","영수증이 없어도 바꿀 수 있습니다."],0,
+   "Poyabzal kichik — <b>kattasiga almashtirmoqchi</b>. Chek kerak.","Обувь мала — хочет <b>обменять на больший размер</b>. Нужен чек.","The shoes are too small — she wants <b>a bigger size</b>. A receipt is needed."),
+ QT("e307","listen","E-L5",L5,"audio","남자: 이번 겨울에 고향에 가요?\n여자: 아니요, 비행기표가 너무 비싸서 봄에 가려고 해요.",["여자는 봄에 고향에 갈 겁니다.","여자는 겨울에 고향에 갑니다.","비행기표가 쌉니다.","남자는 고향에 갑니다."],0,
+   "Chipta qimmat, shuning uchun <b>bahorda</b> boradi. -(으)려고 하다 — niyat.","Билеты дорогие, поэтому поедет <b>весной</b>. -(으)려고 하다 — намерение.","Tickets are expensive, so she'll go <b>in spring</b>. -(으)려고 하다 — intention."),
+ QT("e308","listen","E-L5",L5,"audio","여자: 기계에서 이상한 냄새가 나요.\n남자: 그래요? 그럼 기계를 끄고 바로 반장님께 알립시다.",["두 사람은 기계를 끌 겁니다.","기계에서 소리가 납니다.","남자는 기계를 고칩니다.","여자는 반장님입니다."],0,
+   "<b>냄새가 나다</b> — hid chiqmoq. <b>-(으)ㅂ시다</b> — «...aylik»: mashinani o'chirib, xabar beramiz.","<b>냄새가 나다</b> — пахнуть. <b>-(으)ㅂ시다</b> — «давайте»: выключим и сообщим.","<b>냄새가 나다</b> — to smell. <b>-(으)ㅂ시다</b> — \"let's\": turn it off and report it."),
+ # ---------- Belgilar ----------
+ QT("e309","read","E-R2",R2,"sign","음식물 반입 금지",["음식을 가지고 들어가면 안 됩니다.","음식을 사 오십시오.","음식을 버리십시오.","여기에서 음식을 파십시오."],0,
+   "<b>반입</b> — olib kirish, <b>금지</b> — taqiq: ovqat olib kirish mumkin emas.","<b>반입</b> — внос, <b>금지</b> — запрет: вносить еду нельзя.","<b>반입</b> — bringing in, <b>금지</b> — ban: no food allowed inside."),
+ QT("e310","read","E-R2",R2,"sign","고온 주의",["뜨거우니까 조심하십시오.","추우니까 옷을 입으십시오.","물을 마시십시오.","창문을 여십시오."],0,
+   "<b>고온</b> — yuqori harorat: «Issiq, ehtiyot bo'ling». 뜨겁다 — qaynoq.","<b>고온</b> — высокая температура: «Горячо, осторожно». 뜨겁다 — горячий.","<b>고온</b> — high temperature: \"Hot, be careful\". 뜨겁다 — hot to the touch."),
+ QT("e311","read","E-R2",R2,"sign","지게차 주의",["지게차가 다니니까 조심하십시오.","지게차를 타십시오.","지게차를 고치십시오.","지게차를 사십시오."],0,
+   "<b>지게차</b> — yuklagich. Bu yerda yuklagich yuradi — ehtiyot bo'ling.","<b>지게차</b> — погрузчик. Здесь ездят погрузчики — осторожно.","<b>지게차</b> — forklift. Forklifts operate here — be careful."),
+ QT("e312","read","E-R2",R2,"sign","사용 중",["지금 다른 사람이 쓰고 있습니다.","지금 비어 있습니다.","고장 났습니다.","청소를 하고 있습니다."],0,
+   "<b>사용 중</b> — «Band» (hozir foydalanilmoqda). 비어 있다 — bo'sh.","<b>사용 중</b> — «Занято». 비어 있다 — свободно.","<b>사용 중</b> — \"In use, occupied\". 비어 있다 — vacant."),
+]
