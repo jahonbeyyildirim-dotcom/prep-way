@@ -75,11 +75,11 @@ async def add_book(uid: int, data: bytes, filename: str) -> dict:
     d = storage.book_dir(uid, book_id)
     d.mkdir(parents=True, exist_ok=True)
     src = d / f"source{ext}"
-    src.write_bytes(data)
+    storage.save_bytes(src, data)
     meta = {"id": book_id, "filename": filename, "ext": ext, "mime": ALLOWED[ext], "created": int(time.time())}
 
     if not await storage.take(uid, "ai"):
-        shutil.rmtree(d, ignore_errors=True)
+        storage.rmtree(d)
         raise AIError("Bugungi AI limiti tugadi. Ertaga qayta urinib ko'ring yoki Premium oling.")
     try:
         if text is None and not config.AI_FAKE:
@@ -87,12 +87,12 @@ async def add_book(uid: int, data: bytes, filename: str) -> dict:
         # 2-bosqich: AI tekshiruvi — bu haqiqatan koreys tiliga oid materialmi?
         res = await ai.analyze_book(meta, text)
     except Exception:
-        shutil.rmtree(d, ignore_errors=True)
+        storage.rmtree(d)
         await storage.give_back(uid, "ai")
         raise
 
     if not res.get("is_korean_material"):
-        shutil.rmtree(d, ignore_errors=True)
+        storage.rmtree(d)
         reason = str(res.get("reason_uz") or "").strip()
         raise AIError(NOT_KOREAN + (f" (AI izohi: {reason})" if reason else ""))
 
@@ -149,4 +149,4 @@ async def get_lesson(uid: int, book_id: str, n: int) -> dict:
 def delete_book(uid: int, book_id: str) -> None:
     d = storage.book_dir(uid, book_id)
     if d.exists():
-        shutil.rmtree(d, ignore_errors=True)
+        storage.rmtree(d)

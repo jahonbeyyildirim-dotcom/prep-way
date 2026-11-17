@@ -1,7 +1,7 @@
-"""Oddiy fayl asosidagi saqlash (JSON). Boshlang'ich bosqich uchun yetarli.
+"""Oddiy fayl asosidagi saqlash (JSON).
 
-Foydalanuvchilar ko'payganda (bir necha ming) buni SQLite yoki PostgreSQL ga o'tkazing.
-Serverda DATA_DIR doimiy diskda bo'lishi kerak, aks holda qayta ishga tushganda ma'lumotlar o'chadi.
+Har bir yozuv persist.py orqali Postgres bazasiga ham nusxalanadi (DATABASE_URL berilgan bo'lsa),
+shuning uchun bepul hostingda server qayta ishga tushsa ham ma'lumotlar yo'qolmaydi.
 """
 import asyncio
 import json
@@ -9,7 +9,7 @@ import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-from . import config
+from . import config, persist
 
 _lock = asyncio.Lock()
 PREMIUM_FILE = config.DATA_DIR / "premium_users.json"
@@ -33,6 +33,20 @@ def _write(path: Path, data) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     tmp.replace(path)
+    persist.save(path)
+
+
+def save_bytes(path: Path, data: bytes) -> None:
+    """Ikkilik faylni (masalan, kitob PDF) yozadi va bazaga nusxalaydi."""
+    path.write_bytes(data)
+    persist.save(path)
+
+
+def rmtree(path: Path) -> None:
+    """Papkani diskdan va bazadan o'chiradi."""
+    import shutil
+    shutil.rmtree(path, ignore_errors=True)
+    persist.remove(path)
 
 
 # ---------- Premium ----------
@@ -115,11 +129,12 @@ def book_dir(uid: int, book_id: str) -> Path:
 
 def list_books(uid: int) -> list[dict]:
     out = []
-    for d in sorted(user_books_dir(uid).iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+    for d in user_books_dir(uid).iterdir():
         meta = _read(d / "meta.json", None)
         if meta:
             out.append({k: meta.get(k) for k in ("id", "title", "level", "lesson_count", "created", "filename")})
-    return out
+    # Yangi kitob birinchi (bazadan tiklangandan keyin ham to'g'ri tartib)
+    return sorted(out, key=lambda m: m.get("created") or 0, reverse=True)
 
 
 def read_meta(uid: int, book_id: str) -> dict | None:
@@ -138,13 +153,12 @@ def read_lesson(uid: int, book_id: str, n: int) -> dict | None:
 
 async def delete_user(uid: int) -> None:
     """Foydalanuvchining barcha ma'lumotlarini o'chiradi."""
-    import shutil
     async with _lock:
         for path in (PREMIUM_FILE, USAGE_FILE):
             data = _read(path, {})
             if data.pop(str(uid), None) is not None:
                 _write(path, data)
-    shutil.rmtree(BOOKS_DIR / str(uid), ignore_errors=True)
+    rmtree(BOOKS_DIR / str(uid))
 
 
 def write_lesson(uid: int, book_id: str, n: int, lesson: dict) -> None:

@@ -18,3 +18,5 @@ services:
         value: "1"
       - key: DATA_DIR
         value: /data
+      - key: DATABASE_URL
+        sync: false          # Neon Postgres manzili — panelda o'zingiz kiritasiz (maxfiy)

@@ -9,13 +9,14 @@ import logging
 
 from aiohttp import web
 
-from . import api, config
+from . import api, config, persist
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("main")
 
 
 async def main():
+    await persist.init()   # bazadan fayllarni tiklash (DATABASE_URL bo'lsa)
     app = api.make_app()
     bot = dp = None
     if config.BOT_TOKEN:
@@ -51,6 +52,7 @@ async def main():
         else:
             await asyncio.Event().wait()
     finally:
+        await persist.flush()
         await runner.cleanup()
 
 
