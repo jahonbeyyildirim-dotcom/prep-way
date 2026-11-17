@@ -1,7 +1,12 @@
 """Mini App uchun HTTP API (aiohttp) va Mini App sahifasini tarqatish."""
+import asyncio
 import json
 import logging
+import tempfile
+import time
+from pathlib import Path
 
+import aiohttp
 from aiohttp import web
 
 from . import ai, auth, books, config, korean, storage
@@ -318,6 +323,50 @@ async def privacy(_req):
     return web.FileResponse(config.MINIAPP_DIR / "privacy.html", headers={"Cache-Control": "no-cache"})
 
 
+async def install_page(_req):
+    """Telefonga o'rnatish sahifasi: yuklab olish tugmasi va bosqichma-bosqich yo'riqnoma."""
+    return web.FileResponse(config.MINIAPP_DIR / "yuklab.html", headers={"Cache-Control": "no-cache"})
+
+
+APK_SRC = "https://github.com/jahonbeyyildirim-dotcom/prep-way/releases/download/demo/PrepWay-demo.apk"
+_APK_CACHE = Path(tempfile.gettempdir()) / "PrepWay.apk"
+_apk_lock = asyncio.Lock()
+
+
+async def _fresh_apk() -> Path | None:
+    """GitHub'dagi eng so'nggi APK'ni nusxasini saqlab turadi (10 daqiqada bir yangilanadi)."""
+    async with _apk_lock:
+        if _APK_CACHE.is_file() and time.time() - _APK_CACHE.stat().st_mtime < 600:
+            return _APK_CACHE
+        tmp = _APK_CACHE.with_suffix(".part")
+        try:
+            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=180)) as s:
+                async with s.get(APK_SRC) as r:
+                    if r.status != 200:
+                        raise RuntimeError(f"GitHub {r.status}")
+                    with open(tmp, "wb") as f:
+                        async for chunk in r.content.iter_chunked(1 << 16):
+                            f.write(chunk)
+            if tmp.stat().st_size < 1_000_000:
+                raise RuntimeError("APK juda kichik")
+            tmp.replace(_APK_CACHE)
+        except Exception as e:  # GitHub ishlamasa eski nusxa (bo'lsa) beriladi
+            log.warning("APK yangilanmadi: %s", e)
+            tmp.unlink(missing_ok=True)
+        return _APK_CACHE if _APK_CACHE.is_file() else None
+
+
+async def apk_file(_req):
+    path = await _fresh_apk()
+    if path is None:
+        raise web.HTTPFound(APK_SRC)
+    return web.FileResponse(path, headers={
+        "Content-Type": "application/vnd.android.package-archive",
+        "Content-Disposition": 'attachment; filename="PrepWay.apk"',
+        "Cache-Control": "no-cache",
+    })
+
+
 async def index(_req):
     return web.FileResponse(config.MINIAPP_DIR / "index.html", headers={"Cache-Control": "no-cache"})
 
@@ -351,6 +400,9 @@ def make_app() -> web.Application:
         web.get("/api/books/{bid}", book_get),
         web.delete("/api/books/{bid}", book_delete),
         web.post("/api/books/{bid}/lessons/{n}", lesson),
+        web.get("/yuklab", install_page),
+        web.get("/download", install_page),
+        web.get("/PrepWay.apk", apk_file),
         web.get("/", index),
         web.get("/{name}", static_file),
     ])

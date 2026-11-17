@@ -103,7 +103,9 @@ jobs:
           body: |
             **Prep Way sinov versiyasi (Android).** Ro'yxatdan o'tish shart emas. Komiko AI serverga ulangan; internet bo'lmasa, oflayn rejimda ishlaydi.
 
-            O'rnatish: pastdagi **PrepWay-demo.apk** faylini telefoningizda yuklab oling va oching.
+            📱 **Eng oson yo'l:** telefoningizda **Chrome** brauzerida https://prepway-api.onrender.com/yuklab sahifasini oching — u yerda yuklab olish tugmasi va bosqichma-bosqich yo'riqnoma bor.
+
+            Yoki pastdagi **PrepWay-demo.apk** faylini Chrome'da yuklab oling va «Файлы → Загрузки» papkasidan oching (Telegram ichida ochmang).
             Telefon so'rasa, «Noma'lum manbalardan o'rnatish»ga ruxsat bering.
 
             Versiya: ${{ env.VERSION_NAME }}

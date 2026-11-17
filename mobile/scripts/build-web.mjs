@@ -18,7 +18,7 @@ if (cfg.apiBase && !cfg.apiBase.startsWith("https://")) throw new Error("apiBase
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 // PDF fayllar ilovaga qo'shilmaydi (internetdan ochiladi) — APK hajmi kichik qoladi
-cpSync(src, out, { recursive: true, filter: (p) => !/[\\/]pdf([\\/]|$)/.test(p.slice(src.length)) });
+cpSync(src, out, { recursive: true, filter: (p) => !/[\\/](pdf([\\/]|$)|yuklab\.html$)/.test(p.slice(src.length)) });
 writeFileSync(join(out, "app-config.js"),
   "window.PW_CONFIG = " + JSON.stringify({
     apiBase: (cfg.apiBase || "").replace(/\/$/, ""),
