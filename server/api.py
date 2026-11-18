@@ -9,7 +9,7 @@ from pathlib import Path
 import aiohttp
 from aiohttp import web
 
-from . import ai, auth, books, config, korean, storage
+from . import dictsvc, ai, auth, books, config, korean, storage
 from .ai import AIError
 
 log = logging.getLogger("api")
@@ -239,12 +239,27 @@ async def dict_lookup(req):
     q = str(body.get("q") or "").strip()
     if not q:
         return jerr("So'z kiritilmadi.")
+    hit = await dictsvc.cache_get(q)
+    if hit and hit.get("entries"):  # umumiy keshda bor — AI limiti sarflanmaydi
+        return web.json_response({**hit, "cached": True})
     await _take_ai(uid)
     try:
-        return web.json_response(await ai.dict_lookup(q, str(body.get("lang") or "uz")))
+        res = await dictsvc.lookup(q, str(body.get("lang") or "uz"))
     except Exception:
         await storage.give_back(uid, "ai")
         raise
+    if not res.get("entries"):
+        await storage.give_back(uid, "ai")
+    return web.json_response(res)
+
+
+async def dict_words(req):
+    """Umumiy lug'atga qo'shilgan so'zlar (ilova oflayn lug'atini kengaytirish uchun)."""
+    try:
+        since = float(req.query.get("since", "0") or 0)
+    except ValueError:
+        since = 0.0
+    return web.json_response(await dictsvc.community_words(since))
 
 
 async def advice(req):
@@ -316,7 +331,7 @@ async def health(_req):
     """Kunlik tekshiruv (GitHub Actions): server va baza tirikmi."""
     from . import persist
     db = await persist.ping()
-    return web.json_response({"ok": True, "db": db})
+    return web.json_response({"ok": True, "db": db, "deepl": dictsvc.deepl_enabled()})
 
 
 async def privacy(_req):
@@ -394,6 +409,7 @@ def make_app() -> web.Application:
         web.post("/api/advice", advice),
         web.post("/api/homework", homework),
         web.post("/api/dict", dict_lookup),
+        web.get("/api/dict/words", dict_words),
         web.post("/api/words", words),
         web.get("/api/books", books_list),
         web.post("/api/books", books_add),

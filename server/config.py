@@ -22,6 +22,7 @@ def _int(name: str, default: int) -> int:
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+DEEPL_API_KEY = os.getenv("DEEPL_API_KEY", "").strip()   # ixtiyoriy: lug'at uchun DeepL tarjimasi
 WEBAPP_URL = os.getenv("WEBAPP_URL", "").strip().rstrip("/")
 
 # Model nomlari vaqt o'tishi bilan yangilanadi: aistudio.google.com dagi ro'yxatni tekshirib, kerak bo'lsa o'zgartiring.

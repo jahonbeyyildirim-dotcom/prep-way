@@ -15,7 +15,18 @@
     tabiat: { uz: "Tabiat, ob-havo", ru: "Природа, погода", en: "Nature, weather" }, his: { uz: "His-tuyg'u", ru: "Чувства", en: "Feelings" },
     savol: { uz: "So'roq so'z", ru: "Вопросительное слово", en: "Question word" }, son: { uz: "Son", ru: "Число", en: "Number" },
     til: { uz: "Til, o'qish", ru: "Язык, учёба", en: "Language, study" }, six: { uz: "6 daqiqa koreys", ru: "6 минут корейского", en: "6-Minute Korean" },
-    card: { uz: "So'z kartochkasi", ru: "Карточка слов", en: "Word card" }, ai: { uz: "AI tarjima", ru: "Перевод ИИ", en: "AI translation" }
+    card: { uz: "So'z kartochkasi", ru: "Карточка слов", en: "Word card" }, ai: { uz: "AI tarjima", ru: "Перевод ИИ", en: "AI translation" },
+    net: { uz: "Yangi so'zlar (AI · DeepL)", ru: "Новые слова (ИИ · DeepL)", en: "New words (AI · DeepL)" },
+    zavod: { uz: "Zavod, ishlab chiqarish", ru: "Завод, производство", en: "Factory, production" },
+    xavfsizlik: { uz: "Mehnat xavfsizligi", ru: "Охрана труда", en: "Work safety" },
+    qishloq: { uz: "Qishloq xo'jaligi, baliqchilik", ru: "Сельское хозяйство, рыболовство", en: "Farming, fishing" },
+    qurilish: { uz: "Qurilish", ru: "Строительство", en: "Construction" },
+    qonun: { uz: "Mehnat qonuni, viza", ru: "Трудовое право, виза", en: "Labor law, visa" },
+    idora: { uz: "Idora, hujjatlar", ru: "Офис, документы", en: "Office, documents" },
+    uy: { uz: "Uy-ro'zg'or, dam olish", ru: "Быт, досуг", en: "Home, leisure" },
+    oila: { uz: "Oila", ru: "Семья", en: "Family" }, kiyim: { uz: "Kiyim", ru: "Одежда", en: "Clothes" },
+    rang: { uz: "Ranglar", ru: "Цвета", en: "Colors" }, ravish: { uz: "Ravish", ru: "Наречие", en: "Adverb" },
+    aloqa: { uz: "Aloqa, telefon", ru: "Связь, телефон", en: "Phone, communication" }
   };
 
   // ---------- Lug'atni yig'ish ----------
@@ -36,6 +47,38 @@
     var t = I.word(w.ko, w.uz);
     add({ ko: w.ko, rom: w.rom, uz: w.uz, ru: t.ru || "", en: t.en || "", tag: "card", ex: w.ex ? [[w.ex, w.exuz || "", "", ""]] : null });
   });
+
+  // ---------- AI va DeepL orqali qo'shilgan so'zlar (umumiy lug'at) ----------
+  var NKEY = "pwDictNet", NSYNC = "pwDictNetSync";
+  function netLoad() { try { return JSON.parse(localStorage.getItem(NKEY) || "[]"); } catch (e) { return []; } }
+  function netSave(list) { try { localStorage.setItem(NKEY, JSON.stringify(list.slice(-4000))); } catch (e) {} }
+  function slim(e) {
+    var o = { ko: e.ko, rom: e.rom || "", uz: e.uz || "", ru: e.ru || "", en: e.en || "", tag: "net", src: e.src || "ai" };
+    if (e.dl) o.dl = e.dl;
+    if (e.ex_ko) o.ex = [[e.ex_ko, e.ex_uz || "", e.ex_ru || "", e.ex_en || ""]]; else if (e.ex) o.ex = e.ex;
+    return o;
+  }
+  function learn(list) {  // yangi so'zlarni lug'atga va telefonga saqlaydi
+    var have = netLoad(), byKo = {}, added = 0;
+    have.forEach(function (x) { byKo[x.ko] = 1; });
+    list.forEach(function (e) {
+      if (!e || !e.ko) return;
+      var o = slim(e);
+      if (!BY[o.ko]) { add(o); added++; }
+      if (!byKo[o.ko]) { byKo[o.ko] = 1; have.push(o); }
+    });
+    netSave(have);
+    return added;
+  }
+  netLoad().forEach(function (e) { add(e); });
+  function sync() {  // serverdagi umumiy lug'atdan yangi so'zlarni olib keladi (12 soatda bir marta)
+    var st = {}; try { st = JSON.parse(localStorage.getItem(NSYNC) || "{}"); } catch (e) {}
+    if (st.at && Date.now() - st.at < 12 * 3600 * 1000) return;
+    H.api("/api/dict/words?since=" + (st.until || 0)).then(function (r) {
+      learn(r.words || []);
+      try { localStorage.setItem(NSYNC, JSON.stringify({ at: Date.now(), until: r.until || st.until || 0 })); } catch (e) {}
+    }).catch(function () {});
+  }
 
   // ---------- Qidiruv ----------
   var PARTICLES = ["에서는", "에게서", "에서", "에게", "한테", "으로", "까지", "부터", "하고", "이랑", "랑", "은", "는", "이", "가", "을", "를", "에", "도", "만", "의", "와", "과", "로", "요"];
@@ -99,7 +142,12 @@
     var tag = TAGS[e.tag] ? I.pick(TAGS[e.tag]) : "";
     var h = '<div class="dc"><div class="dc-h"><span class="ko dc-ko">' + esc(e.ko) + '</span>' + (e.rom ? '<span class="note">[' + esc(e.rom) + ']</span>' : '') +
       '<button class="mini" data-say="' + esc(e.ko) + '">🔊</button><button class="dc-star' + (isSaved(e.ko) ? " on" : "") + '" data-star="' + esc(e.ko) + '">' + (isSaved(e.ko) ? "★" : "☆") + '</button></div>' +
-      '<div class="dc-m">' + I.tri({ uz: e.uz, ru: e.ru, en: e.en }) + '</div>' + (tag ? '<span class="dc-tag">' + esc(tag) + '</span>' : '');
+      '<div class="dc-m">' + I.tri({ uz: e.uz, ru: e.ru, en: e.en }) + '</div>';
+    var dl = e.dl && (e.dl[LG] || e.dl.uz || e.dl.en);
+    if (dl && dl !== I.pick({ uz: e.uz, ru: e.ru, en: e.en })) h += '<div class="note dc-dl">DeepL: ' + esc(dl) + '</div>';
+    var srcB = e.src ? String(e.src).split("+").map(function (x) { return x === "deepl" ? "DeepL" : x === "ai" ? "Gemini AI" : x; }).join(" · ") : "";
+    if (tag) h += '<span class="dc-tag">' + esc(tag) + '</span>';
+    if (srcB) h += '<span class="dc-tag dc-src">' + esc(srcB) + '</span>';
     if (e.use) h += '<div class="sw-u">📍 ' + esc(I.pick(e.use)) + '</div>';
     if (e.ex && e.ex.length) h += '<div class="sw-ex">' + e.ex.slice(0, 2).map(function (x) {
       var EX = { uz: 1, ru: 2, en: 3 }, main = x[EX[LG]] || x[1];
@@ -164,7 +212,8 @@
     if (box) box.insertAdjacentHTML("beforeend", '<div class="loading" style="margin-top:8px">' + K.avatar(24, "live talking") + ' ' + esc(T({ uz: "Komiko tarjima qilyapti…", ru: "Комико переводит…", en: "Komiko is translating…" })) + '</div>');
     H.api("/api/dict", { json: { q: q, lang: LG } }).then(function (r) {
       if (tok !== aiTok) return;
-      var list = (r.entries || []).map(function (e) { var o = { ko: e.ko, rom: e.rom, uz: e.uz, ru: e.ru, en: e.en, tag: "ai" }; if (e.ex_ko) o.ex = [[e.ex_ko, e.ex_uz || "", e.ex_ru || "", e.ex_en || ""]]; return o; });
+      var list = (r.entries || []).map(function (e) { var o = slim(e); o.tag = "ai"; return o; });
+      learn(r.entries || []);
       $("dRes").innerHTML = list.length ? list.map(card).join("") : '<div class="card empty">🔎 ' + esc(T({ uz: "Topilmadi.", ru: "Не найдено.", en: "Not found." })) + '</div>';
       bind($("dRes"));
     }).catch(function () { if (tok === aiTok && box) box.querySelector(".loading").remove(); });
@@ -181,6 +230,7 @@
   var searchCache = {};
   var tmr = null;
   function open(q) {
+    sync();
     var el = $("dict");
     if (!el) {
       el = document.createElement("div"); el.id = "dict"; el.className = "dict";
