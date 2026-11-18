@@ -233,6 +233,34 @@ async def homework(req):
         raise
 
 
+async def write_grade(req):
+    """TOPIK II yozish (51–54) javobini AI baholaydi."""
+    uid = req["uid"]
+    try:
+        body = await req.json()
+        no = int(body.get("no"))
+    except Exception:
+        return jerr("Noto'g'ri so'rov.")
+    if no not in ai.WRITE_RUBRIC:
+        return jerr("Savol raqami 51–54 bo'lishi kerak.")
+    answer = body.get("answer")
+    if isinstance(answer, list):
+        answer = [str(a)[:300] for a in answer[:2]]
+        if not any(a.strip() for a in answer):
+            return jerr("Javob bo'sh.")
+    else:
+        answer = str(answer or "")[:3000]
+        if len(answer.strip()) < 20:
+            return jerr("Javob juda qisqa.")
+    await _take_ai(uid)
+    try:
+        return web.json_response(await ai.grade_writing(no, str(body.get("task") or "")[:3000], str(body.get("model") or "")[:3000],
+                                                        answer, int(body.get("chars") or 0)))
+    except Exception:
+        await storage.give_back(uid, "ai")
+        raise
+
+
 async def dict_lookup(req):
     uid = req["uid"]
     body = await req.json()
@@ -414,6 +442,7 @@ def make_app() -> web.Application:
         web.post("/api/tts", tts),
         web.post("/api/advice", advice),
         web.post("/api/homework", homework),
+        web.post("/api/write", write_grade),
         web.post("/api/dict", dict_lookup),
         web.get("/api/dict/words", dict_words),
         web.post("/api/words", words),

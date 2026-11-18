@@ -143,7 +143,60 @@
     "E-L5": T({ exam: "eps", sec: "listen", ko: "다음을 듣고 들은 내용과 같은 것을 고르십시오.",
       uz: "Tinglang va eshitganingizga mos gapni tanlang.", ru: "Прослушайте и выберите то, что совпадает с услышанным.", en: "Listen and choose the statement that matches what you hear." }),
     "E-L7": T({ exam: "eps", sec: "listen", ko: "다음 이야기를 듣고 질문에 알맞은 대답을 고르십시오.",
-      uz: "Hikoyani tinglang va savolga mos javobni tanlang.", ru: "Прослушайте рассказ и выберите ответ на вопрос.", en: "Listen to the talk and choose the answer to the question." })
+      uz: "Hikoyani tinglang va savolga mos javobni tanlang.", ru: "Прослушайте рассказ и выберите ответ на вопрос.", en: "Listen to the talk and choose the answer to the question." }),
+
+    // ===================== TOPIK II · 듣기 (1~50, 60 daqiqa) =====================
+    "U-L1": T({ exam: "topik2", sec: "listen", range: "4~8",
+      ko: "다음을 듣고 이어질 수 있는 말로 가장 알맞은 것을 고르십시오.",
+      uz: "Tinglang va keyin aytilishi mumkin bo'lgan eng mos gapni tanlang.", ru: "Прослушайте и выберите наиболее подходящее продолжение.", en: "Listen and choose the most suitable thing to say next." }),
+    "U-L2": T({ exam: "topik2", sec: "listen", range: "9~12",
+      ko: "다음을 듣고 여자가 이어서 할 행동으로 가장 알맞은 것을 고르십시오.",
+      uz: "Tinglang: ayol bundan keyin nima qiladi?", ru: "Прослушайте: что женщина сделает дальше?", en: "Listen: what will the woman do next?" }),
+    "U-L3": T({ exam: "topik2", sec: "listen", range: "13~16",
+      ko: "다음을 듣고 들은 내용과 같은 것을 고르십시오.",
+      uz: "Tinglang va eshitganingizga mos gapni tanlang.", ru: "Прослушайте и выберите то, что совпадает с услышанным.", en: "Listen and choose what matches what you heard." }),
+    "U-L4": T({ exam: "topik2", sec: "listen", range: "17~20",
+      ko: "다음을 듣고 남자의 중심 생각으로 가장 알맞은 것을 고르십시오.",
+      uz: "Tinglang va erkakning asosiy fikrini tanlang.", ru: "Прослушайте и выберите главную мысль мужчины.", en: "Listen and choose the man's main idea." }),
+    "U-L5": T({ exam: "topik2", sec: "listen", range: "21~50", set: true,
+      ko: "다음을 듣고 물음에 답하십시오.", uz: "Tinglang va savollarga javob bering.", ru: "Прослушайте и ответьте на вопросы.", en: "Listen and answer the questions." }),
+
+    // ===================== TOPIK II · 읽기 (1~50, 70 daqiqa) =====================
+    "U-R1": T({ exam: "topik2", sec: "read", range: "1~2",
+      ko: "(    )에 들어갈 가장 알맞은 것을 고르십시오.",
+      uz: "Qavs ichiga eng mos keladiganini tanlang (grammatika).", ru: "Выберите то, что лучше всего подходит в скобки (грамматика).", en: "Choose what best fits the blank (grammar)." }),
+    "U-R2": T({ exam: "topik2", sec: "read", range: "3~4",
+      ko: "밑줄 친 부분과 의미가 가장 비슷한 것을 고르십시오.",
+      uz: "Tagiga chizilgan qismga ma'nosi eng yaqin variantni tanlang.", ru: "Выберите вариант, наиболее близкий по смыслу к подчёркнутому.", en: "Choose the closest meaning to the underlined part." }),
+    "U-R3": T({ exam: "topik2", sec: "read", range: "5~8",
+      ko: "다음은 무엇에 대한 글인지 고르십시오.",
+      uz: "Bu matn nima haqida?", ru: "О чём этот текст?", en: "What is this text about?" }),
+    "U-R4": T({ exam: "topik2", sec: "read", range: "9~12",
+      ko: "다음 글 또는 도표의 내용과 같은 것을 고르십시오.",
+      uz: "Matn yoki jadval mazmuniga mos keladiganini tanlang.", ru: "Выберите то, что совпадает с текстом или таблицей.", en: "Choose what matches the text or chart." }),
+    "U-R5": T({ exam: "topik2", sec: "read", range: "13~15",
+      ko: "다음을 순서대로 맞게 배열한 것을 고르십시오.",
+      uz: "Gaplarni to'g'ri tartibda joylashtirilgan variantni tanlang.", ru: "Выберите правильный порядок предложений.", en: "Choose the correct order." }),
+    "U-R6": T({ exam: "topik2", sec: "read", range: "16~18",
+      ko: "다음을 읽고 (    )에 들어갈 내용으로 가장 알맞은 것을 고르십시오.",
+      uz: "O'qing va qavs ichiga mazmunan eng mos keladiganini tanlang.", ru: "Прочитайте и выберите наиболее подходящее по смыслу для пропуска.", en: "Read and choose the best content for the blank." }),
+    "U-R7": T({ exam: "topik2", sec: "read", range: "25~27",
+      ko: "다음은 신문 기사의 제목입니다. 가장 잘 설명한 것을 고르십시오.",
+      uz: "Bu gazeta maqolasining sarlavhasi. Uni eng yaxshi tushuntirgan variantni tanlang.", ru: "Это заголовок газетной статьи. Выберите лучшее объяснение.", en: "This is a newspaper headline. Choose the best explanation." }),
+    "U-R8": T({ exam: "topik2", sec: "read", range: "28~31",
+      ko: "다음을 읽고 (    )에 들어갈 내용으로 가장 알맞은 것을 고르십시오.",
+      uz: "Uzun matnni o'qing va qavs ichiga eng mos mazmunni tanlang.", ru: "Прочитайте текст и выберите наиболее подходящее для пропуска.", en: "Read the passage and choose the best content for the blank." }),
+    "U-R9": T({ exam: "topik2", sec: "read", range: "32~34",
+      ko: "다음을 읽고 내용이 같은 것을 고르십시오.",
+      uz: "O'qing va mazmuni mos keladiganini tanlang.", ru: "Прочитайте и выберите совпадающее по содержанию.", en: "Read and choose the statement that matches." }),
+    "U-R10": T({ exam: "topik2", sec: "read", range: "35~38",
+      ko: "다음 글의 주제로 가장 알맞은 것을 고르십시오.",
+      uz: "Matnning mavzusini (asosiy g'oyasini) tanlang.", ru: "Выберите тему текста.", en: "Choose the topic of the text." }),
+    "U-R11": T({ exam: "topik2", sec: "read", range: "39~41",
+      ko: "주어진 문장이 들어갈 곳으로 가장 알맞은 것을 고르십시오.",
+      uz: "<보기>dagi gap qaysi joyga eng mos tushadi?", ru: "Куда лучше всего вставить данное предложение?", en: "Where does the given sentence fit best?" }),
+    "U-R12": T({ exam: "topik2", sec: "read", range: "19~50", set: true,
+      ko: "다음을 읽고 물음에 답하십시오.", uz: "O'qing va savollarga javob bering.", ru: "Прочитайте и ответьте на вопросы.", en: "Read and answer the questions." })
   };
 
   // Eski ko'rsatmalar → tur (savol fayllaridagi inst bo'yicha)
@@ -180,6 +233,12 @@
       ["T-R1", 3], ["T-R2", 6], ["T-R3", 3], ["T-R4", 3], ["T-R5", 3],
       ["T-R6@49", 1, "set"], ["T-R6@51", 1, "set"], ["T-R6@53", 1, "set"], ["T-R6@55", 1, "set"], ["T-R7", 2],
       ["T-R6@59", 1, "set"], ["T-R6@61", 1, "set"], ["T-R6@63", 1, "set"], ["T-R6@65", 1, "set"], ["T-R6@67", 1, "set"], ["T-R6@69", 1, "set"]
+    ] },
+    // TOPIK II: haqiqiy tartibdagi qisqartirilgan mock (tinglash 20 + o'qish 28). To'liq imtihon: 50 + 50 savol, 130 daqiqa.
+    topik2: { minutes: 65, parts: [
+      ["U-L1", 3], ["U-L2", 3], ["U-L3", 3], ["U-L4", 3], ["U-L5", 4, "set"],
+      ["U-R1", 2], ["U-R2", 2], ["U-R3", 2], ["U-R4", 2], ["U-R5", 2], ["U-R6", 2], ["U-R12", 1, "set"],
+      ["U-R7", 2], ["U-R8", 2], ["U-R9", 2], ["U-R10", 2], ["U-R11", 2], ["U-R12", 2, "set"]
     ] },
     eps: { minutes: 50, parts: [
       ["E-R1", 3], ["E-R1S", 2], ["E-R2", 2], ["E-R3", 4], ["E-R9", 2], ["E-R10", 1], ["E-R4", 2], ["E-R5", 1], ["E-R6", 1], ["E-R7", 1], ["E-R8", 1],

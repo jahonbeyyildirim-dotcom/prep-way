@@ -118,6 +118,27 @@
   .exam-btns .btn small{font-weight:600;opacity:.8;font-size:12px}
   .exam-btns.prac{margin-top:8px}
   .exam-btns.prac .btn{padding:8px 8px;font-size:13px}
+  .exam h3 .lvl{font-size:13px;font-weight:700;color:var(--muted);margin-left:6px}
+  .exam.t2{border-color:#c9d6f2;background:linear-gradient(180deg,#f4f7fd,var(--card) 40%)}
+  .lvbox{margin:12px 0 4px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+  .lv-h{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted)} .lv-h b{color:var(--ink)}
+  .lv-big{font-size:22px;font-weight:800;margin:4px 0 10px;color:var(--blue)}
+  .lv-track{position:relative;height:10px;background:var(--line);border-radius:6px;margin:6px 0 22px}
+  .lv-track i{position:absolute;left:0;top:0;bottom:0;background:var(--blue);border-radius:6px}
+  .lv-m{position:absolute;top:-3px;width:2px;height:16px;background:var(--muted)} .lv-m.ok{background:var(--green)}
+  .lv-m em{position:absolute;top:17px;left:-6px;font-style:normal;font-size:11.5px;font-weight:800;color:var(--muted)} .lv-m.ok em{color:var(--green)}
+  .wr-card .passage{font-size:16px}
+  .wr-l{display:flex;align-items:center;gap:10px;margin:8px 0} .wr-l b{font-size:18px}
+  .wr-in{flex:1;min-width:0;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:16px;background:var(--card);color:var(--ink)}
+  .wr-ta{width:100%;box-sizing:border-box;padding:12px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;line-height:1.7;background:var(--card);color:var(--ink);resize:vertical}
+  .wr-cnt{text-align:right;font-size:13px;color:var(--muted);margin-top:4px}
+  .wr-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .wr-mt{white-space:pre-line;line-height:1.75;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .wr-sc{font-size:34px;font-weight:800;min-width:84px} .wr-sc small{font-size:16px;color:var(--muted)}
+  .wr-fix{padding:8px 0;border-bottom:1px dashed var(--line)} .wr-fix s{color:var(--red)} .wr-fix b{color:var(--green)}
+  .wr-rules{margin-top:14px} .wr-rules ul{margin:8px 0 0;padding-left:20px} .wr-rules li{margin:4px 0}
+  .gr-q{width:100%;box-sizing:border-box;padding:11px 12px;border:1.5px solid var(--line);border-radius:12px;font-size:15px;margin:0 0 12px;background:var(--card);color:var(--ink)}
+  .gr-it{margin-bottom:10px;padding:14px 16px;cursor:pointer} .gr-p{font-size:18px;color:var(--blue)} .gr-ex{font-size:15.5px;margin-bottom:2px}
   .opt{display:flex;align-items:center;gap:12px;text-align:left;width:100%;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:14px 16px;font-size:17px;color:var(--ink)}
   .opt:hover{border-color:var(--blue)}
   .opt .n{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:14px;font-weight:700;font-family:Manrope}
@@ -292,8 +313,8 @@
       </div>
       <div class="card exam">
         <span class="tag">O'qish · universitet · grant</span>
-        <h3>TOPIK I</h3>
-        <p>1–2-daraja: kundalik so'zlar, grammatika, qisqa matnlar va dialoglar.</p>
+        <h3>TOPIK I <small class="lvl">1–2-daraja</small></h3>
+        <p>Kundalik so'zlar, grammatika, qisqa matnlar va dialoglar. 80 ball — 1-daraja, 140 ball — 2-daraja.</p>
         <div class="meta"><span class="chip">Tinglash + O'qish</span><span class="chip" data-bank="topik">Bankda savollar</span></div>
         <div class="exam-btns">
           <button class="btn ghost" data-start="topik:quick">⚡ Tezkor test<small>10 savol · 10 daqiqa</small></button>
@@ -302,6 +323,24 @@
         <div class="exam-btns prac">
           <button class="btn ghost" data-start="topik:listen">🎧 Tinglash mashqi<small>10 savol · 15 daqiqa</small></button>
           <button class="btn ghost" data-start="topik:read">📖 O'qish mashqi<small>10 savol · 15 daqiqa</small></button>
+        </div>
+      </div>
+      <div class="card exam t2">
+        <span class="tag">Magistratura · ish · grant · F-2 viza</span>
+        <h3>TOPIK II <small class="lvl">3–6-daraja</small></h3>
+        <p>Tinglash, o'qish va yozish. 120 ball — 3, 150 — 4, 190 — 5, 230 — 6-daraja (300 balldan).</p>
+        <div class="meta"><span class="chip">Tinglash + Yozish + O'qish</span><span class="chip" data-bank="topik2">Bankda savollar</span></div>
+        <div class="exam-btns">
+          <button class="btn ghost" data-start="topik2:quick">⚡ Tezkor test<small>10 savol · 12 daqiqa</small></button>
+          <button class="btn" data-start="topik2:full">📝 Imtihon formati<small>48 savol · 65 daqiqa</small></button>
+        </div>
+        <div class="exam-btns prac">
+          <button class="btn ghost" data-start="topik2:listen">🎧 Tinglash<small>10 savol · 15 daq.</small></button>
+          <button class="btn ghost" data-start="topik2:read">📖 O'qish<small>10 savol · 18 daq.</small></button>
+        </div>
+        <div class="exam-btns prac">
+          <button class="btn ghost" data-go="write">✍️ Yozish 51–54<small>AI baholaydi</small></button>
+          <button class="btn ghost" data-go="t2gram">🧩 Grammatika<small>3–6-daraja</small></button>
         </div>
       </div>
     </div>
@@ -443,6 +482,10 @@
   <!-- 6 DAQIQA KOREYS -->
   <section class="view" id="v-six"></section>
 
+  <!-- TOPIK II: YOZISH va GRAMMATIKA -->
+  <section class="view" id="v-write"></section>
+  <section class="view" id="v-t2gram"></section>
+
   <!-- DAFTAR (kamera) -->
   <section class="view" id="v-hw"></section>
 
@@ -495,12 +538,14 @@
 <script src="questions.js"></script>
 <script src="questions-i18n.js"></script>
 <script src="questions-sets.js"></script>
+<script src="topik2.js"></script>
 <script src="exam-format.js"></script>
 <script src="pics/pics.js"></script>
 <script>
 (function(){
   // ---------- DATA ----------
   var EXAMS = {
+    topik2: { name:"TOPIK II", minutes:65, qs:[] },
     eps: { name:"EPS-TOPIK", minutes:8, qs:[
       {sec:"read", inst:"(    )에 알맞은 것을 고르십시오.", uz:"Qavs ichiga mos keladiganini tanlang.",
        text:"공장에서 일할 때 머리를 보호하기 위해 (    )을/를 씁니다.",
@@ -573,7 +618,8 @@
   // Savollar banki: eski 8 tadan savol + questions.js. Har bir savolning doimiy id si bor.
   var MODES = {
     eps:   { name:"EPS-TOPIK", order:["read","listen"], quick:{read:5, listen:5, min:10}, full:{read:20, listen:20, min:50}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:15} },
-    topik: { name:"TOPIK I",   order:["listen","read"], quick:{read:5, listen:5, min:10}, full:{read:18, listen:12, min:40}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:15} }
+    topik: { name:"TOPIK I",   order:["listen","read"], quick:{read:5, listen:5, min:10}, full:{read:18, listen:12, min:40}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:15} },
+    topik2:{ name:"TOPIK II",  order:["listen","read"], quick:{read:5, listen:5, min:12}, full:{read:28, listen:20, min:65}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:18} }
   };
   var BANK = {}, QBYID = {};
   function pad3(n){ return ("00"+n).slice(-3); }
@@ -681,6 +727,63 @@
     {ko:"실마리",rom:"silmari",uz:"(yechimning) uchi, kalit",t:"adv",ex:"사건 해결의 실마리를 찾았다.",exuz:"Voqeani hal qilishning uchini topdik."},
     {ko:"각광을 받다",rom:"gakgwangeul batda",uz:"diqqat markazida bo'lmoq",t:"adv",ex:"한국 음식이 세계적으로 각광을 받고 있다.",exuz:"Koreys taomlari dunyo bo'ylab e'tibor qozonmoqda."},
     {ko:"아랑곳하지 않다",rom:"arangotaji anta",uz:"parvo qilmaslik",t:"adv",ex:"그는 남의 시선에 아랑곳하지 않는다.",exuz:"U boshqalarning nigohiga parvo qilmaydi."},
+    {ko:"관심",rom:"gwansim",uz:"qiziqish, e'tibor",t:"mid",ex:"요즘 한국 문화에 관심이 많아요.",exuz:"Hozir Koreya madaniyatiga qiziqishim katta."},
+    {ko:"기회",rom:"gihoe",uz:"imkoniyat",t:"mid",ex:"좋은 기회를 놓치지 마세요.",exuz:"Yaxshi imkoniyatni boy bermang."},
+    {ko:"목표",rom:"mokpyo",uz:"maqsad",t:"mid",ex:"올해 목표는 TOPIK 4급이에요.",exuz:"Bu yilgi maqsadim — TOPIK 4-daraja."},
+    {ko:"계획",rom:"gyehoek",uz:"reja",t:"mid",ex:"방학 계획을 세웠어요.",exuz:"Ta'til rejasini tuzdim."},
+    {ko:"원인",rom:"wonin",uz:"sabab",t:"mid",ex:"사고의 원인을 조사하고 있다.",exuz:"Hodisa sababi tekshirilmoqda."},
+    {ko:"결과",rom:"gyeolgwa",uz:"natija",t:"mid",ex:"시험 결과가 나왔어요.",exuz:"Imtihon natijasi chiqdi."},
+    {ko:"효과",rom:"hyogwa",uz:"samara, ta'sir",t:"mid",ex:"이 약은 효과가 좋아요.",exuz:"Bu dori yaxshi ta'sir qiladi."},
+    {ko:"방법",rom:"bangbeop",uz:"usul",t:"mid",ex:"좋은 공부 방법을 알려 주세요.",exuz:"Yaxshi o'qish usulini aytib bering."},
+    {ko:"문제점",rom:"munjejeom",uz:"muammoli jihat, kamchilik",t:"mid",ex:"이 계획의 문제점은 비용이다.",exuz:"Bu rejaning kamchiligi — xarajat."},
+    {ko:"장점",rom:"jangjeom",uz:"afzallik",t:"mid",ex:"이 제품의 장점은 가볍다는 것이다.",exuz:"Bu mahsulotning afzalligi — yengilligi."},
+    {ko:"단점",rom:"danjeom",uz:"kamchilik",t:"mid",ex:"단점보다 장점이 더 많다.",exuz:"Kamchilikdan afzallik ko'p."},
+    {ko:"의견",rom:"uigyeon",uz:"fikr",t:"mid",ex:"여러분의 의견을 듣고 싶어요.",exuz:"Fikrlaringizni eshitmoqchiman."},
+    {ko:"주장하다",rom:"jujanghada",uz:"da'vo qilmoq, ta'kidlamoq",t:"mid",ex:"그는 자신이 옳다고 주장했다.",exuz:"U o'zini haq deb ta'kidladi."},
+    {ko:"감소하다",rom:"gamsohada",uz:"kamaymoq",t:"mid",ex:"출생률이 감소하고 있다.",exuz:"Tug'ilish darajasi kamaymoqda."},
+    {ko:"차지하다",rom:"chajihada",uz:"egallamoq (ulush)",t:"mid",ex:"여성이 전체의 60%를 차지한다.",exuz:"Ayollar umumiyning 60% ini tashkil qiladi."},
+    {ko:"나타나다",rom:"natanada",uz:"paydo bo'lmoq, namoyon bo'lmoq",t:"mid",ex:"조사 결과에 변화가 나타났다.",exuz:"So'rov natijasida o'zgarish ko'rindi."},
+    {ko:"이르다",rom:"ireuda",uz:"(...ga) yetmoq",t:"mid",ex:"매출이 100억 원에 이르렀다.",exuz:"Savdo 10 milliard vonga yetdi."},
+    {ko:"예상되다",rom:"yesangdoeda",uz:"kutilmoq, taxmin qilinmoq",t:"mid",ex:"내년에는 더 늘어날 것으로 예상된다.",exuz:"Kelasi yil yana oshishi kutilmoqda."},
+    {ko:"극복하다",rom:"geukbokhada",uz:"yengib o'tmoq",t:"mid",ex:"어려움을 극복하고 성공했다.",exuz:"Qiyinchilikni yengib, muvaffaqiyatga erishdi."},
+    {ko:"적응하다",rom:"jeogeunghada",uz:"moslashmoq",t:"mid",ex:"한국 생활에 적응했어요.",exuz:"Koreyadagi hayotga moslashdim."},
+    {ko:"제공하다",rom:"jegonghada",uz:"taqdim etmoq",t:"mid",ex:"무료로 점심을 제공합니다.",exuz:"Tushlik bepul beriladi."},
+    {ko:"유지하다",rom:"yujihada",uz:"saqlab turmoq",t:"mid",ex:"건강을 유지하려면 운동해야 한다.",exuz:"Sog'likni saqlash uchun sport qilish kerak."},
+    {ko:"향상되다",rom:"hyangsangdoeda",uz:"yaxshilanmoq, oshmoq",t:"mid",ex:"실력이 많이 향상되었다.",exuz:"Mahorat ancha oshdi."},
+    {ko:"보호하다",rom:"bohohada",uz:"himoya qilmoq",t:"mid",ex:"자연을 보호해야 한다.",exuz:"Tabiatni himoya qilish kerak."},
+    {ko:"절약하다",rom:"jeoryakhada",uz:"tejamoq",t:"mid",ex:"전기를 절약합시다.",exuz:"Elektrni tejaylik."},
+    {ko:"부담",rom:"budam",uz:"yuk, og'irlik (moliyaviy)",t:"mid",ex:"등록금이 큰 부담이다.",exuz:"O'qish to'lovi katta yuk."},
+    {ko:"태도",rom:"taedo",uz:"munosabat, xulq",t:"mid",ex:"긍정적인 태도가 중요하다.",exuz:"Ijobiy munosabat muhim."},
+    {ko:"습관",rom:"seupgwan",uz:"odat",t:"mid",ex:"좋은 습관을 기르세요.",exuz:"Yaxshi odat shakllantiring."},
+    {ko:"사회",rom:"sahoe",uz:"jamiyat",t:"mid",ex:"사회 문제에 관심을 가져야 한다.",exuz:"Ijtimoiy muammolarga e'tibor berish kerak."},
+    {ko:"경제",rom:"gyeongje",uz:"iqtisod",t:"mid",ex:"경제가 점점 좋아지고 있다.",exuz:"Iqtisod asta-sekin yaxshilanmoqda."},
+    {ko:"전문가",rom:"jeonmunga",uz:"mutaxassis",t:"mid",ex:"전문가의 조언을 들었다.",exuz:"Mutaxassis maslahatini oldim."},
+    {ko:"대상",rom:"daesang",uz:"ob'ekt, qamrov (kimga)",t:"mid",ex:"외국인을 대상으로 조사했다.",exuz:"Chet elliklar o'rtasida so'rov o'tkazildi."},
+    {ko:"급증하다",rom:"geupjeunghada",uz:"keskin ko'paymoq",t:"adv",ex:"온라인 거래가 급증했다.",exuz:"Onlayn savdo keskin ko'paydi."},
+    {ko:"감안하다",rom:"gamanhada",uz:"hisobga olmoq",t:"adv",ex:"상황을 감안해서 결정하자.",exuz:"Vaziyatni hisobga olib qaror qilaylik."},
+    {ko:"간주하다",rom:"ganjuhada",uz:"deb hisoblamoq",t:"adv",ex:"침묵은 동의로 간주된다.",exuz:"Sukut rozilik deb hisoblanadi."},
+    {ko:"규명하다",rom:"gyumyeonghada",uz:"(sababini) aniqlamoq",t:"adv",ex:"사고 원인을 규명해야 한다.",exuz:"Hodisa sababini aniqlash kerak."},
+    {ko:"촉진하다",rom:"chokjinhada",uz:"jadallashtirmoq, rag'batlantirmoq",t:"adv",ex:"정부는 소비를 촉진하는 정책을 내놓았다.",exuz:"Hukumat iste'molni rag'batlantiruvchi siyosat e'lon qildi."},
+    {ko:"완화하다",rom:"wanhwahada",uz:"yumshatmoq",t:"adv",ex:"규제를 완화하기로 했다.",exuz:"Cheklovlarni yumshatishga qaror qilindi."},
+    {ko:"제기하다",rom:"jegihada",uz:"(masala) ko'tarmoq",t:"adv",ex:"전문가들이 문제를 제기했다.",exuz:"Mutaxassislar masala ko'tarishdi."},
+    {ko:"입증하다",rom:"ipjeunghada",uz:"isbotlamoq",t:"adv",ex:"실험으로 효과를 입증했다.",exuz:"Tajriba bilan samarasini isbotladi."},
+    {ko:"배제하다",rom:"baejehada",uz:"istisno qilmoq, chetlatmoq",t:"adv",ex:"가능성을 배제할 수 없다.",exuz:"Ehtimolni istisno qilib bo'lmaydi."},
+    {ko:"보완하다",rom:"bowanhada",uz:"to'ldirmoq, kamchilikni bartaraf etmoq",t:"adv",ex:"단점을 보완한 신제품이 나왔다.",exuz:"Kamchiliklari tuzatilgan yangi mahsulot chiqdi."},
+    {ko:"선호하다",rom:"seonhohada",uz:"afzal ko'rmoq",t:"adv",ex:"젊은 층은 온라인 쇼핑을 선호한다.",exuz:"Yoshlar onlayn xaridni afzal ko'radi."},
+    {ko:"수용하다",rom:"suyonghada",uz:"qabul qilmoq (fikr, odam)",t:"adv",ex:"다양한 의견을 수용해야 한다.",exuz:"Turli fikrlarni qabul qilish kerak."},
+    {ko:"우려",rom:"uryeo",uz:"xavotir",t:"adv",ex:"환경 오염에 대한 우려가 커지고 있다.",exuz:"Ifloslanish haqidagi xavotir kuchaymoqda."},
+    {ko:"관행",rom:"gwanhaeng",uz:"odat tusiga kirgan amaliyot",t:"adv",ex:"잘못된 관행을 바꿔야 한다.",exuz:"Noto'g'ri amaliyotni o'zgartirish kerak."},
+    {ko:"편견",rom:"pyeongyeon",uz:"xurofot, oldindan noto'g'ri fikr",t:"adv",ex:"외국인에 대한 편견을 버려야 한다.",exuz:"Chet elliklarga nisbatan xurofotdan voz kechish kerak."},
+    {ko:"파악하다",rom:"paakhada",uz:"anglab olmoq, aniqlamoq",t:"adv",ex:"상황을 정확히 파악했다.",exuz:"Vaziyatni aniq angladi."},
+    {ko:"도입하다",rom:"doipada",uz:"joriy qilmoq",t:"adv",ex:"새 제도를 도입했다.",exuz:"Yangi tizim joriy qilindi."},
+    {ko:"확산되다",rom:"hwaksandoeda",uz:"keng tarqalmoq",t:"adv",ex:"가짜 뉴스가 빠르게 확산되었다.",exuz:"Soxta xabarlar tez tarqaldi."},
+    {ko:"침해하다",rom:"chimhaehada",uz:"(huquqni) buzmoq",t:"adv",ex:"개인 정보를 침해하면 안 된다.",exuz:"Shaxsiy ma'lumotlarga tajovuz qilish mumkin emas."},
+    {ko:"당면하다",rom:"dangmyeonhada",uz:"duch kelmoq (dolzarb)",t:"adv",ex:"우리가 당면한 과제는 고령화다.",exuz:"Oldimizdagi dolzarb vazifa — aholining qarishi."},
+    {ko:"일맥상통하다",rom:"ilmaeksangtonghada",uz:"mohiyatan o'xshash bo'lmoq",t:"adv",ex:"두 의견은 일맥상통한다.",exuz:"Ikki fikr mohiyatan bir xil."},
+    {ko:"대처하다",rom:"daecheohada",uz:"chora ko'rmoq, kurashmoq",t:"adv",ex:"재난에 신속하게 대처했다.",exuz:"Ofatga tezkor chora ko'rildi."},
+    {ko:"형평성",rom:"hyeongpyeongseong",uz:"adolatlilik, tenglik",t:"adv",ex:"정책의 형평성이 문제가 되었다.",exuz:"Siyosatning adolatliligi muammo bo'ldi."},
+    {ko:"부작용",rom:"bujagyong",uz:"nojo'ya ta'sir",t:"adv",ex:"이 약은 부작용이 거의 없다.",exuz:"Bu dorining nojo'ya ta'siri deyarli yo'q."},
+    {ko:"전망",rom:"jeonmang",uz:"istiqbol",t:"adv",ex:"경제 전망이 밝다.",exuz:"Iqtisodiy istiqbol yorqin."},
     // Maqollar (속담) va 사자성어
     {ko:"일석이조",rom:"ilseogijo",uz:"bir o'q bilan ikki quyon",t:"idiom",ex:"운동하면서 친구도 사귀니 일석이조예요.",exuz:"Sport qilib, do'st ham orttiryapman: bir o'q bilan ikki quyon."},
     {ko:"우물 안 개구리",rom:"umul an gaeguri",uz:"\"quduqdagi qurbaqa\": dunyoqarashi tor odam",t:"idiom"},
@@ -869,7 +972,7 @@
   }
 
   // ---------- ROUTING ----------
-  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home", six:"home" };
+  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home", six:"home", write:"home", t2gram:"home" };
   var PARENT = { lesson:"book", book:"books" };
   var curView = "home";
   function go(v){
@@ -935,14 +1038,17 @@
     });
     // Raqamlar oralig'i: ketma-ket bir xil tur (juft savollarda — bitta to'plam) → [a~b]
     for (var i=0, st=0; i<qs.length; i++){
-      var key = qs[i].grp || qs[i].type || ("x"+i);
-      if (i===0 || key !== (qs[i-1].grp || qs[i-1].type || ("x"+(i-1)))) st = i;
-      qs[i].rk = key + "@" + st;
+      var gk = qs[i].grp || qs[i].type || ("x"+i);
+      if (i===0 || gk !== (qs[i-1].grp || qs[i-1].type || ("x"+(i-1)))) st = i;
+      qs[i].rk = gk + "@" + st;
     }
+    // TOPIK II: tinglash va o'qish alohida varaqlar — o'qish raqamlari 1 dan boshlanadi
+    var rd0 = 0;
+    if (k === "topik2") for (var j=0; j<qs.length; j++){ if (qs[j].sec === "read"){ rd0 = j; break; } }
     var rng = {};
-    qs.forEach(function(q, i){ var r = rng[q.rk] || (rng[q.rk] = [i+1, i+1]); r[1] = i+1; });
+    qs.forEach(function(q, i){ var no = (rd0 && q.sec === "read") ? i+1-rd0 : i+1; q.no = no; var r = rng[q.rk] || (rng[q.rk] = [no, no]); r[1] = no; });
     qs.forEach(function(q){ var r = rng[q.rk]; q.rng = r[0] === r[1] ? String(r[0]) : r[0] + "~" + r[1]; });
-    var ex = { name: M.name+({full: mock && k==="topik" ? TF(" · haqiqiy format"," · реальный формат"," · real format") : TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: minutes, qs: qs };
+    var ex = { name: M.name+({full: mock && k!=="eps" ? TF(" · imtihon formati"," · формат экзамена"," · exam format") : TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: minutes, qs: qs };
     cur = { key:key, exam:ex, i:0, ans:ex.qs.map(function(){return -1;}), left:ex.minutes*60, tid:null };
     $("tExam").textContent = ex.name;
     go("test");
@@ -986,7 +1092,7 @@
     h += '<p class="qinst-uz">'+esc(T ? (window.I18N ? I18N.pick(T) : T.uz) : q.uz)+'</p>';
     if (T && T.ex) h += '<button class="bogi-btn ko" id="bogiBtn">&lt;보기&gt; ▾</button><div class="bogi ko" id="bogi" hidden>'+bogiHTML(T.ex)+'</div>';
     var ask = T && (q.grp || FMT.ASK_KEEP[q.type]) ? q.inst : "";
-    var qno = '<div class="qno ko"><b>'+(cur.i+1)+'.</b> '+(ask ? esc(ask) : "")+'</div>';
+    var qno = '<div class="qno ko"><b>'+(q.no || cur.i+1)+'.</b> '+(ask ? esc(ask) : "")+'</div>';
     if (!q.grp) h += qno;
     if (q.sign) h += '<div class="passage" style="text-align:center"><span class="sign ko">'+esc(q.sign)+'</span></div>';
     if (q.pic) h += '<div class="passage qpic">'+picHTML(q.pic)+'</div>';
@@ -1050,6 +1156,7 @@
       bars += '<div class="brow"><span>'+r[1]+'</span><div class="btrack"><i style="width:'+p+'%;background:'+r[2]+'"></i></div><span>'+s[0]+'/'+s[1]+'</span></div>';
     });
     var msg = pct>=80 ? TF("Ajoyib! Imtihonga tayyorgarlik yaxshi.","Отлично! Подготовка к экзамену хорошая.","Excellent! You're well prepared.") : pct>=50 ? TF("Yomon emas. Xatolar ustida ishlang.","Неплохо. Поработайте над ошибками.","Not bad. Work on your mistakes.") : TF("Boshlanish. So'zlar va grammatikani takrorlang.","Это начало. Повторите слова и грамматику.","A start. Review words and grammar.");
+    bars += levelBox(cur.key.split(":")[0], sec, qs.length);
     bars += '<div class="note">'+msg+(added? " "+TF("{n} ta savol xatolar daftariga qo'shildi.","{n} вопр. добавлено в тетрадь ошибок.","{n} questions added to your mistakes list.",{n:added}):"")+'</div>';
     $("bars").innerHTML = bars;
     $("review").innerHTML = qs.map(function(q,k){ return reviewCard(q, cur.ans[k], TF("{n}-savol","Вопрос {n}","Question {n}",{n:k+1})); }).join("");
@@ -1059,6 +1166,35 @@
 
   // Dinamik matnlar tarjimasi (uz/ru/en)
   function TF(uz, ru, en, vars){ return window.I18N ? I18N.f({uz:uz, ru:ru, en:en}, vars) : uz; }
+  // ---------- TAXMINIY DARAJA (TOPIK I: 200 ball, TOPIK II: 300 ball) ----------
+  var LVTAB = {
+    topik:  { max:200, steps:[[80,1],[140,2]], low: TF("1-darajaga hali yetmadi","Пока ниже 1 уровня","Below level 1 for now") },
+    topik2: { max:300, steps:[[120,3],[150,4],[190,5],[230,6]], low: TF("3-darajaga hali yetmadi","Пока ниже 3 уровня","Below level 3 for now") }
+  };
+  function levelBox(k, sec, n){
+    var T = LVTAB[k]; if (!T) return "";
+    function p(x){ return x[1] ? x[0]/x[1] : null; }
+    var L = p(sec.listen), R = p(sec.read); if (L == null && R == null) return "";
+    if (L == null) L = R; if (R == null) R = L;
+    var score = Math.round(L*100 + R*100), wNote = "";
+    if (k === "topik2"){
+      var W = window.PWWrite && PWWrite.estimate();
+      var w = W ? W.score : Math.round((L+R)/2*100*0.7);
+      score += w;
+      wNote = W ? TF("Yozish: {w}/100 (yozish mashqlaringiz natijasi).","Письмо: {w}/100 (по вашим упражнениям).","Writing: {w}/100 (from your writing practice).",{w:w})
+                : TF("Yozish: ~{w}/100 taxminan olindi. Aniq baho uchun «✍️ Yozish 51–54» ni bajaring.","Письмо: ~{w}/100 (оценка). Для точности выполните «✍️ Письмо 51–54».","Writing: ~{w}/100 (estimated). Do «✍️ Writing 51–54» for an accurate score.",{w:w});
+    }
+    var lv = 0, next = null;
+    T.steps.forEach(function(s){ if (score >= s[0]) lv = s[1]; else if (!next) next = s; });
+    var h = '<div class="lvbox"><div class="lv-h"><span>'+TF("Taxminiy natija","Ориентировочный результат","Estimated result")+'</span><b>'+score+' / '+T.max+'</b></div>';
+    h += '<div class="lv-big">'+(lv ? lv+TF("-daraja"," уровень"," level")+' <span class="ko">('+lv+'급)</span>' : T.low)+'</div>';
+    h += '<div class="lv-track"><i style="width:'+Math.min(100, score/T.max*100)+'%"></i>'+T.steps.map(function(s){ return '<span class="lv-m'+(score>=s[0]?' ok':'')+'" style="left:'+(s[0]/T.max*100)+'%"><em>'+s[1]+'</em></span>'; }).join("")+'</div>';
+    if (next) h += '<div class="note">'+TF("{l}-darajagacha yana <b>{d}</b> ball kerak.","До {l} уровня не хватает <b>{d}</b> баллов.","<b>{d}</b> more points to level {l}.",{l:next[1], d:next[0]-score})+'</div>';
+    if (wNote) h += '<div class="note">'+wNote+'</div>';
+    if (n < 30) h += '<div class="note">'+TF("Baho {n} ta savol asosida — aniqroq natija uchun «Imtihon formati»ni topshiring.","Оценка по {n} вопросам — для точности пройдите «Формат экзамена».","Based on {n} questions — take the «Exam format» test for accuracy.",{n:n})+'</div>';
+    if (k === "topik2" && !(window.PWWrite && PWWrite.estimate())) h += '<button class="btn ghost" data-go="write" style="margin-top:8px">✍️ '+TF("Yozishni mashq qilish","Тренировать письмо","Practise writing")+'</button>';
+    return h + '</div>';
+  }
   function secName(sec){ return sec==="listen" ? TF("Tinglash","Аудирование","Listening") : TF("O'qish","Чтение","Reading"); }
   function reviewCard(q, your, label){
     var good = your===q.a;
@@ -1162,5 +1298,6 @@
 <script src="dict.js"></script>
 <script src="home.js"></script>
 <script src="daftar.js"></script>
+<script src="topik2-write.js"></script>
 </body>
 </html>

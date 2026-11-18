@@ -100,6 +100,14 @@
         help_uz: ko ? "" : "Demo: haqiqiy versiyada AI savolingizga o'zbekcha javob beradi va koreyscha qanday aytilishini o'rgatadi.",
         reply_ko: r[0], reply_uz: r[1] }; });
     }
+    if (path === "/api/write") return wait(1200).then(function () {
+      var j = opt.json || {}, mx = { 51: 10, 52: 10, 53: 30, 54: 50 }[j.no] || 10, k = 0.5 + Math.random() * 0.2;
+      var cr = j.no <= 52 ? [["㉠", 5], ["㉡", 5]] : j.no === 53 ? [["내용 및 과제 수행", 7], ["글의 전개 구조", 7], ["언어 사용", 16]] : [["내용 및 과제 수행", 12], ["글의 전개 구조", 12], ["언어 사용", 26]];
+      var c = cr.map(function (x) { return { name: x[0], max: x[1], score: Math.round(x[1] * k), comment: "" }; });
+      return { score: c.reduce(function (a, x) { return a + x.score; }, 0), max: mx, criteria: c, corrections: [],
+        summary: "Demo baho: haqiqiy versiyada AI matningizni rasmiy mezonlar bo'yicha tekshiradi va xatolarni tuzatadi.",
+        tips: ["Yozma uslub (-다/-ㄴ다) dan foydalaning.", "Namuna javob bilan solishtiring."], improved: "" };
+    });
     if (path === "/api/advice") return wait(1000).then(function () { return {
       summary_uz: "Demo maslahat: haqiqiy versiyada AI test va talaffuz natijalaringizni tahlil qiladi.",
       strengths_uz: ["O'qish bo'limi"], weaknesses_uz: ["Tinglash", "Talaffuz: 받침"],

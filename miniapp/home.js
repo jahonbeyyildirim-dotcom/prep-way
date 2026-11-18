@@ -389,7 +389,8 @@
     if (lv === 0) p.push("🔤 " + T({ uz: "Hangul harflari va oddiy so'zlar", ru: "Буквы хангыль и простые слова", en: "Hangul letters and simple words" }));
     p.push("🎧 " + T({ uz: "«6 daqiqa koreys»: bitta suhbatni tinglash", ru: "«6 минут корейского»: одна беседа", en: "\"6-Minute Korean\": one episode" }));
     p.push(goal === "eps" ? "📝 " + T({ uz: "EPS-TOPIK tezkor test (10 savol)", ru: "Быстрый тест EPS-TOPIK (10 вопросов)", en: "EPS-TOPIK quick test (10 questions)" })
-      : goal === "topik" ? "📝 " + T({ uz: "TOPIK I tezkor test (10 savol)", ru: "Быстрый тест TOPIK I (10 вопросов)", en: "TOPIK I quick test (10 questions)" })
+      : goal === "topik" ? "📝 " + (lv >= 3 ? T({ uz: "TOPIK II tezkor test va yozish (51–54)", ru: "Быстрый тест TOPIK II и письмо (51–54)", en: "TOPIK II quick test and writing (51–54)" })
+        : T({ uz: "TOPIK I tezkor test (10 savol)", ru: "Быстрый тест TOPIK I (10 вопросов)", en: "TOPIK I quick test (10 questions)" }))
       : "🗂️ " + T({ uz: "Kundalik so'zlar kartochkasi", ru: "Карточки бытовых слов", en: "Everyday word cards" }));
     p.push("🤖 " + T({ uz: "Komiko bilan 5 daqiqa ovozli suhbat", ru: "5 минут разговора с Комико", en: "5-minute voice chat with Komiko" }));
     p.push("📷 " + T({ uz: "Daftarga yozish topshirig'i va tekshiruv", ru: "Задание в тетради и проверка", en: "Notebook writing task and check" }));
@@ -426,11 +427,11 @@
       done.length ? T({ uz: "Zo'r ketyapsiz, {n}! Rejadagi qolgan ishlarni ham bajaramizmi?", ru: "Отлично идёте, {n}! Сделаем остальное?", en: "Great progress, {n}! Shall we finish the plan?" }, { n: p.name }) :
       streak ? T({ uz: "{s} kunlik seriyani uzmaylik! Bugun {m} daqiqa mashq qilamiz.", ru: "Не прервём серию в {s} дн.! Сегодня {m} минут практики.", en: "Let's keep your {s}-day streak! {m} minutes of practice today." }, { s: streak, m: goalMin }) :
       T({ uz: "Bugun {m} daqiqa mashq qilamizmi? Men tayyorman!", ru: "Позанимаемся сегодня {m} минут? Я готов!", en: "Shall we practise {m} minutes today? I'm ready!" }, { m: goalMin });
-    var examKey = p.goal === "topik" ? "topik" : "eps";
+    var examKey = p.goal === "topik" ? ((p.level | 0) >= 3 ? "topik2" : "topik") : "eps";
     var ep = window.PWSix ? PWSix.today() : null;
     var plan = [
       { k: "six", i: "🎧", t: T({ uz: "6 daqiqa koreys", ru: "6 минут корейского", en: "6-Minute Korean" }), s: ep ? ep.title : "", a: 'data-go="six"' },
-      { k: "test", i: "⚡", t: (examKey === "eps" ? "EPS-TOPIK" : "TOPIK I") + " " + T({ uz: "tezkor test", ru: "быстрый тест", en: "quick test" }), s: T({ uz: "10 savol · 10 daqiqa", ru: "10 вопросов · 10 минут", en: "10 questions · 10 min" }), a: 'data-start="' + examKey + ':quick"' },
+      { k: "test", i: "⚡", t: ({ eps: "EPS-TOPIK", topik: "TOPIK I", topik2: "TOPIK II" })[examKey] + " " + T({ uz: "tezkor test", ru: "быстрый тест", en: "quick test" }), s: T({ uz: "10 savol · 10 daqiqa", ru: "10 вопросов · 10 минут", en: "10 questions · 10 min" }), a: 'data-start="' + examKey + ':quick"' },
       { k: "chat", i: "🤖", t: T({ uz: "Komiko bilan suhbat", ru: "Разговор с Комико", en: "Talk with Komiko" }), s: T({ uz: "Ovozli mashq · 5 daqiqa", ru: "Голосовая практика · 5 минут", en: "Voice practice · 5 min" }), a: 'data-act="chat"' },
       { k: "hw", i: "📷", t: T({ uz: "Daftar topshirig'i", ru: "Задание в тетради", en: "Notebook task" }), s: T({ uz: "Yozing → rasmga oling → Komiko tekshiradi", ru: "Напишите → сфотографируйте → Комико проверит", en: "Write → take a photo → Komiko checks" }), a: 'data-go="hw"' }
     ];

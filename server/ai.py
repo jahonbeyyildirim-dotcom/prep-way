@@ -131,14 +131,14 @@ async def _claude_json(text: str, temperature: float, max_tokens: int = 2000) ->
     return _parse_json(txt)
 
 
-async def _json_call(parts: list, temperature: float = 0.4, lang_note: bool = True) -> dict:
+async def _json_call(parts: list, temperature: float = 0.4, lang_note: bool = True, max_tokens: int = 2000) -> dict:
     note = _lang_note() if lang_note else None
     if note:
         parts = list(parts) + [note]
     # Matnli so'rov: avval Claude (kalit berilgan bo'lsa), ishlamasa — Gemini
     if claude_enabled() and all(isinstance(p, str) for p in parts):
         try:
-            res = await _claude_json("\n\n".join(parts), temperature)
+            res = await _claude_json("\n\n".join(parts), temperature, max_tokens)
             _PROV.set("claude")
             return res
         except Exception as e:
@@ -335,7 +335,9 @@ async def advice(stats: dict) -> dict:
         + json.dumps(stats, ensure_ascii=False)[:6000]
         + "\n\nGive personalised, concrete advice in Uzbek for passing their target exam. Base it ONLY on these "
         "numbers; if there is little data, say so and give a starter plan. Mention which app sections to use "
-        "(mock test, Gapirish/talaffuz, AI suhbatdosh, So'zlar, Kitoblarim).\n"
+        "(mock test — EPS-TOPIK, TOPIK I or TOPIK II, TOPIK II Yozish 51–54 with AI grading, TOPIK II Grammatika, "
+        "Gapirish/talaffuz, AI suhbatdosh, So'zlar, Kitoblarim). TOPIK levels: TOPIK I 80→1, 140→2 (of 200); "
+        "TOPIK II 120→3, 150→4, 190→5, 230→6 (of 300).\n"
         'Shape: {"summary_uz": "", "strengths_uz": [""], "weaknesses_uz": [""], '
         '"tips": [{"title_uz": "", "text_uz": ""}], "week_plan": [{"day": "1-kun", "task_uz": ""}]}\n'
         "Give 3–5 tips and a 7-day plan.",
@@ -573,6 +575,76 @@ async def check_homework(image: bytes, mime: str, task: dict) -> dict:
                     "note_uz": str(got.get("note_uz", ""))})
     return {"recognized_text": str(data.get("recognized_text", "")), "items": out,
             "feedback_uz": str(data.get("feedback_uz", ""))}
+
+
+# ---------------------------------------------------------------- TOPIK II YOZISH (쓰기 51–54)
+WRITE_RUBRIC = {
+    51: (10, "Two blanks ㉠ and ㉡ in a practical text (notice, e-mail, message), 5 points each. For each blank judge: "
+             "does the sentence fit the context and connect logically to the sentences before AND after it; is the "
+             "grammar correct; does the style/politeness match the text (formal -ㅂ니다 in notices, -아요 in a casual "
+             "message). Give 5 (fully right), 3 (meaning right but grammar/style flaws), 1 (partly related) or 0.",
+         [("blank_a", "㉠", 5), ("blank_b", "㉡", 5)]),
+    52: (10, "Two blanks ㉠ and ㉡ in an expository paragraph, 5 points each. Each answer must be ONE sentence that fits "
+             "the logic (cause, contrast, conclusion…) of the surrounding sentences AND uses written style -다/-ㄴ다 "
+             "(a -요/-ㅂ니다 ending loses points). Give 5, 3, 1 or 0 per blank.",
+         [("blank_a", "㉠", 5), ("blank_b", "㉡", 5)]),
+    53: (30, "A 200–300 character description of the given data/graph. Official criteria: 내용 및 과제 수행 (7): all "
+             "key data included accurately, no personal opinion, no title, length 200–300; 글의 전개 구조 (7): logical "
+             "order (overview → details/causes → outlook), proper connectives; 언어 사용 (16): accurate and varied "
+             "grammar/vocabulary for describing data (증가하다, 차지하다, …에 이르다), written style -다 only. "
+             "Deduct clearly for length outside 200–300, colloquial -요 endings, copying the data as a list.",
+         [("content", "내용 및 과제 수행", 7), ("structure", "글의 전개 구조", 7), ("language", "언어 사용", 16)]),
+    54: (50, "A 600–700 character argumentative essay answering the three given questions. Official criteria: 내용 및 "
+             "과제 수행 (12): answers ALL three questions relevantly with rich, specific content, no copying of the prompt; "
+             "글의 전개 구조 (12): clear introduction–body–conclusion, paragraphing that follows the questions, cohesive "
+             "connectives; 언어 사용 (26): accuracy plus range of intermediate-advanced grammar and vocabulary, written "
+             "style -다 only (no -요/-ㅂ니다), appropriate register. Deduct clearly for length outside 600–700.",
+         [("content", "내용 및 과제 수행", 12), ("structure", "글의 전개 구조", 12), ("language", "언어 사용", 26)]),
+}
+
+
+async def grade_writing(no: int, task: str, model: str, answer, chars: int) -> dict:
+    """TOPIK II yozish javobini rasmiy mezonlar bo'yicha baholaydi."""
+    mx, rubric, crit = WRITE_RUBRIC[no]
+    if config.AI_FAKE:
+        return {"score": round(mx * 0.6), "max": mx, "summary": "Sinov rejimi: taxminiy baho.",
+                "criteria": [{"name": c[1], "score": round(c[2] * 0.6), "max": c[2], "comment": ""} for c in crit],
+                "corrections": [], "tips": ["Yozma uslubdan (-다) foydalaning."], "improved": ""}
+    if isinstance(answer, list):
+        ans = "\n".join(f"{m}: {a}" for m, a in zip(("㉠", "㉡"), answer))
+    else:
+        ans = str(answer)
+    shape_crit = ", ".join(f'{{"key": "{k}", "score": 0, "comment_uz": ""}}' for k, _n, _m in crit)
+    data = await _json_call([
+        f"You are an experienced official TOPIK II writing examiner. Grade question {no} (max {mx} points).\n"
+        f"Rubric: {rubric}\n\n"
+        f"TASK:\n{task[:2500]}\n\n"
+        f"REFERENCE ANSWER (one good possibility, other correct answers are fine):\n{model[:2000]}\n\n"
+        f"LEARNER'S ANSWER ({chars} characters incl. spaces):\n{ans[:3000]}\n\n"
+        "Be strict and realistic like a real examiner — never inflate. Criteria scores must be integers within their max: "
+        + ", ".join(f"{k}≤{m}" for k, _n, m in crit) + ".\n"
+        "Then list concrete corrections of the learner's Korean (wrong → right, with a short reason in Uzbek), at most 10, "
+        "most important first. Give 2–4 specific tips in Uzbek to score higher. In \"improved\" rewrite the learner's own "
+        "answer in correct, natural Korean at a high level, keeping their ideas (for 51/52 give \"㉠: … / ㉡: …\").\n"
+        'Shape: {"criteria": [' + shape_crit + '], "summary_uz": "", '
+        '"corrections": [{"wrong": "", "right": "", "why_uz": ""}], "tips_uz": [""], "improved": ""}',
+    ], temperature=0.2, max_tokens=3500)
+    got = {str(c.get("key")): c for c in data.get("criteria", []) if isinstance(c, dict)}
+    criteria, total = [], 0
+    for k, name, m in crit:
+        c = got.get(k, {})
+        try:
+            sc = int(round(float(c.get("score", 0))))
+        except (TypeError, ValueError):
+            sc = 0
+        sc = max(0, min(m, sc))
+        total += sc
+        criteria.append({"name": name, "score": sc, "max": m, "comment": str(c.get("comment_uz", ""))})
+    corr = [{"wrong": str(c.get("wrong", "")), "right": str(c.get("right", "")), "why": str(c.get("why_uz", ""))}
+            for c in data.get("corrections", []) if isinstance(c, dict) and (c.get("wrong") or c.get("right"))][:10]
+    tips = [str(t) for t in data.get("tips_uz", []) if t][:4]
+    return {"score": total, "max": mx, "summary": str(data.get("summary_uz", "")), "criteria": criteria,
+            "corrections": corr, "tips": tips, "improved": str(data.get("improved", ""))}
 
 
 # ---------------------------------------------------------------- LUG'AT
