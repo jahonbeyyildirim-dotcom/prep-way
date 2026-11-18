@@ -84,7 +84,7 @@ async def _read_audio(form) -> tuple[bytes, str] | None:
 
 # ---------------------------------------------------------------- endpoints
 async def auth_google(req):
-    """Mobil ilova: Google ID token → Prep Way sessiya tokeni."""
+    """Mobil ilova: Google ID token → Hanguk Way sessiya tokeni."""
     body = await req.json()
     id_token = str(body.get("id_token") or "")
     if config.DEV_MODE and id_token.startswith("dev:"):   # faqat sinov rejimi uchun
@@ -341,8 +341,10 @@ async def install_page(_req):
     return web.FileResponse(config.MINIAPP_DIR / "yuklab.html", headers={"Cache-Control": "no-cache"})
 
 
-APK_SRC = "https://github.com/jahonbeyyildirim-dotcom/prep-way/releases/download/demo/PrepWay-demo.apk"
-_APK_CACHE = Path(tempfile.gettempdir()) / "PrepWay.apk"
+_APK_BASE = "https://github.com/jahonbeyyildirim-dotcom/prep-way/releases/download/demo/"
+APK_SRCS = (_APK_BASE + "HangukWay-demo.apk", _APK_BASE + "PrepWay-demo.apk")  # yangi nom, keyin eski nom
+APK_SRC = APK_SRCS[0]
+_APK_CACHE = Path(tempfile.gettempdir()) / "HangukWay.apk"
 _apk_lock = asyncio.Lock()
 
 
@@ -354,12 +356,18 @@ async def _fresh_apk() -> Path | None:
         tmp = _APK_CACHE.with_suffix(".part")
         try:
             async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=180)) as s:
-                async with s.get(APK_SRC) as r:
-                    if r.status != 200:
-                        raise RuntimeError(f"GitHub {r.status}")
-                    with open(tmp, "wb") as f:
-                        async for chunk in r.content.iter_chunked(1 << 16):
-                            f.write(chunk)
+                status = None
+                for src in APK_SRCS:
+                    async with s.get(src) as r:
+                        status = r.status
+                        if r.status != 200:
+                            continue
+                        with open(tmp, "wb") as f:
+                            async for chunk in r.content.iter_chunked(1 << 16):
+                                f.write(chunk)
+                        break
+                else:
+                    raise RuntimeError(f"GitHub {status}")
             if tmp.stat().st_size < 1_000_000:
                 raise RuntimeError("APK juda kichik")
             tmp.replace(_APK_CACHE)
@@ -372,10 +380,10 @@ async def _fresh_apk() -> Path | None:
 async def apk_file(_req):
     path = await _fresh_apk()
     if path is None:
-        raise web.HTTPFound(APK_SRC)
+        raise web.HTTPFound(APK_SRCS[-1])
     return web.FileResponse(path, headers={
         "Content-Type": "application/vnd.android.package-archive",
-        "Content-Disposition": 'attachment; filename="PrepWay.apk"',
+        "Content-Disposition": 'attachment; filename="HangukWay.apk"',
         "Cache-Control": "no-cache",
     })
 
@@ -416,7 +424,8 @@ def make_app() -> web.Application:
         web.post("/api/books/{bid}/lessons/{n}", lesson),
         web.get("/yuklab", install_page),
         web.get("/download", install_page),
-        web.get("/PrepWay.apk", apk_file),
+        web.get("/HangukWay.apk", apk_file),
+        web.get("/PrepWay.apk", apk_file),  # eski havolalar uchun
         web.get("/", index),
         web.get("/{name}", static_file),
     ])

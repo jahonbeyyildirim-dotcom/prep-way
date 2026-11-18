@@ -1,4 +1,4 @@
-/* Prep Way — til tizimi: o'zbek (asosiy), rus, ingliz.
+/* Hanguk Way — til tizimi: o'zbek (asosiy), rus, ingliz.
    1) Interfeys matnlari: DICT dagi o'zbekcha matn tanlangan tilga almashtiriladi (sahifa va yangi qo'shilgan elementlar).
    2) So'zlar va suhbatlar: asosiy til + qolgan ikki tildagi tarjima. */
 (function () {

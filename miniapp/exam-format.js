@@ -1,7 +1,7 @@
-/* Prep Way — imtihon formati: savol turlari, rasmiy ko'rsatmalar, <보기> namunalari, haqiqiy mock tartibi.
+/* Hanguk Way — imtihon formati: savol turlari, rasmiy ko'rsatmalar, <보기> namunalari, haqiqiy mock tartibi.
    TOPIK I: 듣기 1–30 (40 daqiqa), 읽기 31–70 (60 daqiqa) — rasmiy imtihon varaqalari bo'yicha.
    EPS-TOPIK: o'qish 20 + tinglash 20, 50 daqiqa. Savollar banki yopiq: turlar rasmiy savollar banki va darsliklar asosida.
-   <보기> namunalari Prep Way tomonidan yozilgan (imtihondan ko'chirilmagan). */
+   <보기> namunalari Hanguk Way tomonidan yozilgan (imtihondan ko'chirilmagan). */
 (function () {
   function T(o) { return o; }
   var TYPES = {

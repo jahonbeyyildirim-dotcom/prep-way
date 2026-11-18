@@ -1,4 +1,4 @@
-/* Prep Way — AI bo'limlari: talaffuz baholash, AI suhbatdosh (ovozli assistent),
+/* Hanguk Way — AI bo'limlari: talaffuz baholash, AI suhbatdosh (ovozli assistent),
    kitoblar va ular bo'yicha darslar, shaxsiy maslahatlar, AI so'zlar. index.html dagi window.HY dan foydalanadi. */
 (function () {
   var H = window.HY;
@@ -128,7 +128,7 @@
     var denied = err && (err.name === "NotAllowedError" || err.name === "SecurityError");
     if (window.PW && PW.native) {
       box.innerHTML = denied
-        ? "🎙️ Mikrofonga ruxsat berilmadi. Telefon sozlamalarida: <b>Ilovalar → Prep Way → Ruxsatlar → Mikrofon</b> ni yoqing, keyin qayta urinib ko'ring."
+        ? "🎙️ Mikrofonga ruxsat berilmadi. Telefon sozlamalarida: <b>Ilovalar → Hanguk Way → Ruxsatlar → Mikrofon</b> ni yoqing, keyin qayta urinib ko'ring."
         : "🎙️ Bu qurilmada ovoz yozib bo'lmadi. Ilovani qayta ishga tushirib ko'ring.";
       box.hidden = false;
       return;

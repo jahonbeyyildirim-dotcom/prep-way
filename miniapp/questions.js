@@ -1,4 +1,4 @@
-/* Prep Way — savollar banki. Har bir savolning doimiy id si bor (xatolar daftari shu id bilan saqlanadi).
+/* Hanguk Way — savollar banki. Har bir savolning doimiy id si bor (xatolar daftari shu id bilan saqlanadi).
    Turlari: text (matn), sign (belgi), pic (rasm-emoji), audio (tinglash). opts ichida faqat emoji bo'lsa — rasmli variant. */
 window.PW_QBANK = {
   eps: [

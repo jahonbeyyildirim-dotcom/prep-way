@@ -1,4 +1,4 @@
-# Prep Way: Telegram Mini App + AI server
+# Hanguk Way: Telegram Mini App + AI server
 
 EPS-TOPIK va TOPIK imtihonlariga o'zbek tilida tayyorlov. Bu versiyada sun'iy intellekt (Google Gemini) ulangan.
 
@@ -16,7 +16,7 @@ EPS-TOPIK va TOPIK imtihonlariga o'zbek tilida tayyorlov. Bu versiyada sun'iy in
 
 ## 📱 Android va iPhone ilovasi
 
-Prep Way endi alohida telefon ilovasi sifatida ham bor (Google akkaunt bilan kirish). Yo'riqnoma: **[mobile/README.md](mobile/README.md)**.
+Hanguk Way endi alohida telefon ilovasi sifatida ham bor (Google akkaunt bilan kirish). Yo'riqnoma: **[mobile/README.md](mobile/README.md)**.
 Qisqacha: serverga `GOOGLE_CLIENT_IDS` va `SECRET_KEY` qo'shing, `mobile/app.config.json` ni to'ldiring, loyihani GitHub'ga yuklang. GitHub APK'ni o'zi yig'ib beradi.
 
 ## Tuzilishi

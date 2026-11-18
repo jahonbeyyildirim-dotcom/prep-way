@@ -33,7 +33,7 @@ class AIError(Exception):
     """Foydalanuvchiga ko'rsatiladigan xato (o'zbek tilida)."""
 
 
-SYSTEM = """You are "Komiko", the Prep Way AI tutor — a patient, precise Korean-language teacher for Uzbek speakers
+SYSTEM = """You are "Komiko", the Hanguk Way AI tutor — a patient, precise Korean-language teacher for Uzbek speakers
 preparing for TOPIK and EPS-TOPIK.
 Rules:
 - Write every explanation, tip and translation in Uzbek using the Latin script (modern orthography: o', g', sh, ch).

@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Prep Way</string>
+        <string>Hanguk Way</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -75,7 +75,7 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Koreyscha gapirganingizni tanib, talaffuzingizni baholash uchun.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Prep Way talaffuzingizni baholash va AI suhbatdosh bilan gaplashish uchun mikrofondan foydalanadi.</string>
+	<string>Hanguk Way talaffuzingizni baholash va AI suhbatdosh bilan gaplashish uchun mikrofondan foydalanadi.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

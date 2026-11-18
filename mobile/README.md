@@ -1,6 +1,6 @@
-# Prep Way — Android va iPhone ilovasi
+# Hanguk Way — Android va iPhone ilovasi
 
-Telegram Mini App'dagi Prep Way'ning hamma bo'limlari (mock test, talaffuz, AI suhbatdosh, kitoblar, so'zlar, maslahatlar) alohida telefon ilovasi sifatida ishlaydi. Ilova **Capacitor** asosida qurilgan: bitta kod Android va iPhone uchun ishlaydi. Foydalanuvchi **Google akkaunti** bilan kiradi.
+Telegram Mini App'dagi Hanguk Way'ning hamma bo'limlari (mock test, talaffuz, AI suhbatdosh, kitoblar, so'zlar, maslahatlar) alohida telefon ilovasi sifatida ishlaydi. Ilova **Capacitor** asosida qurilgan: bitta kod Android va iPhone uchun ishlaydi. Foydalanuvchi **Google akkaunti** bilan kiradi.
 
 ```
 mobile/
@@ -29,8 +29,8 @@ Server kodi ham yangilandi: endi Google orqali kirish, akkauntni o'chirish va ma
 
 ## 2-qadam. Google Cloud'da kirishni sozlang
 
-1. **console.cloud.google.com** → yangi loyiha yarating (masalan, *Prep Way*).
-2. **APIs & Services → OAuth consent screen (Google Auth Platform)**: ilova nomi *Prep Way*, yordam emaili, maxfiylik siyosati havolasi (`https://SERVERINGIZ/privacy`). Turi: **External**. Keyin ilovani **Publish** qiling, aks holda faqat test foydalanuvchilar kira oladi.
+1. **console.cloud.google.com** → yangi loyiha yarating (masalan, *Hanguk Way*).
+2. **APIs & Services → OAuth consent screen (Google Auth Platform)**: ilova nomi *Hanguk Way*, yordam emaili, maxfiylik siyosati havolasi (`https://SERVERINGIZ/privacy`). Turi: **External**. Keyin ilovani **Publish** qiling, aks holda faqat test foydalanuvchilar kira oladi.
 3. **Credentials → Create credentials → OAuth client ID** orqali **uchta** client yarating:
 
 | Turi | Nima kiritiladi | Natija qayerga yoziladi |
@@ -58,7 +58,7 @@ Server kodi ham yangilandi: endi Google orqali kirish, akkauntni o'chirish va ma
 3. **Settings → Secrets and variables → Actions → New repository secret** bo'limida 4 ta secret qo'shing. Qiymatlari `KALITLAR-MAXFIY/README-MAXFIY.txt` da:
    `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`
 4. **Actions** bo'limini oching: har yuklashda Android ilova o'zi yig'iladi (5–10 daqiqa). Tayyor APK oxirgi ishning **Artifacts** bo'limida bo'ladi.
-5. **Hamma yuklab olishi uchun:** **Releases → Draft a new release** → teg: `v1.0.0` → **Publish**. Bir necha daqiqada Release sahifasiga `PrepWay-1.0.0.apk` (telefonga o'rnatish uchun) va `PrepWay-1.0.0.aab` (Google Play uchun) qo'shiladi.
+5. **Hamma yuklab olishi uchun:** **Releases → Draft a new release** → teg: `v1.0.0` → **Publish**. Bir necha daqiqada Release sahifasiga `HangukWay-1.0.0.apk` (telefonga o'rnatish uchun) va `HangukWay-1.0.0.aab` (Google Play uchun) qo'shiladi.
 
 > **Havola hamma uchun ochiq bo'lishi uchun** repository **Public** bo'lishi kerak. Kalit va parollar Secrets'da turadi, kodda yo'q. Kodni yopiq saqlamoqchi bo'lsangiz, APK'ni Artifacts'dan yuklab olib, Telegram kanalingizga yoki saytingizga qo'ying.
 
@@ -67,7 +67,7 @@ Foydalanuvchi APK'ni ochganda telefon bir marta «noma'lum manbadan o'rnatish»g
 ## 5-qadam. Google Play'ga chiqarish
 
 1. **play.google.com/console** da dasturchi akkaunti oching (bir martalik to'lov, shaxsni tasdiqlash kerak).
-2. Yangi ilova yarating → `PrepWay-x.y.z.aab` faylini yuklang.
+2. Yangi ilova yarating → `HangukWay-x.y.z.aab` faylini yuklang.
 3. Do'kon sahifasini to'ldiring: tavsif, skrinshotlar, ikonka (`mobile/resources/icon.png`), **Privacy policy** havolasi, **Data safety** shakli (Google akkaunt, ovoz va yuklangan fayllar haqida), akkauntni o'chirish yo'li (ilovada: *Akkaunt → Akkauntni o'chirish*).
 4. Yangi shaxsiy akkauntlar uchun Google avval bir guruh testerlar bilan **yopiq sinov**ni talab qilishi mumkin. Play Console nimani so'rasa, shuni bajaring.
 5. Har yangi versiya uchun yangi teg qo'ying (`v1.0.1`, `v1.1.0`…). Versiya raqami o'zi oshadi.

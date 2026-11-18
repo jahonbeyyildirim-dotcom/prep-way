@@ -1,4 +1,4 @@
-/* Prep Way — LUG'AT (Dictionary): koreys ↔ o'zbek / rus / ingliz.
+/* Hanguk Way — LUG'AT (Dictionary): koreys ↔ o'zbek / rus / ingliz.
    - Istalgan ekranda 📖 tugmasi orqali bir bosishda ochiladi.
    - Matndagi so'zni belgilasangiz (barmoq bilan bosib turing), «📖 Tarjima» tugmasi chiqadi.
    - Oflayn lug'at + ilovadagi barcha so'zlar; server ulansa, topilmagan so'z AI orqali tarjima qilinadi. */

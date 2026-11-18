@@ -85,7 +85,7 @@ ol li {{ margin-bottom:6px }} .opts {{ color:#333 }}
 <h2>{t("words")}</h2>{words}
 <h2>{t("gr")}</h2><div class="gram"><div class="p ko">{e(g["p"])}</div>{tri(g["m"], lg)}{"".join(ex_html(x, lg) for x in g["ex"])}</div>
 <h2>{t("quiz")}</h2><ol>{quiz}</ol><p class="tr"><b>{t("key")}:</b> {key}</p>
-<div class="ft">Prep Way · {t("title")}</div></body></html>"""
+<div class="ft">Hanguk Way · {t("title")}</div></body></html>"""
 
 async def main():
     out = ROOT / "miniapp/pdf"; out.mkdir(exist_ok=True)

@@ -1,4 +1,4 @@
-/* Prep Way — til tanlash, tanishuv (8 savol, ixtiyoriy ovozli) va shaxsiy bosh sahifa. */
+/* Hanguk Way — til tanlash, tanishuv (8 savol, ixtiyoriy ovozli) va shaxsiy bosh sahifa. */
 (function () {
   var H = window.HY, K = window.Komiko, I = window.I18N;
   if (!H || !K || !I) return;
@@ -173,7 +173,7 @@
     document.querySelector(".onb-top").style.visibility = s <= 0 ? "hidden" : "visible";
     updTop();
     if (s === -1) {
-      h = '<div class="onb-hero">' + K.avatar(120, "live float") + '<h1>Prep Way</h1>' +
+      h = '<div class="onb-hero">' + K.avatar(120, "live float") + '<h1>Hanguk Way</h1>' +
         '<p>Tilni tanlang · Выберите язык · Choose your language</p>' +
         '<div class="onb-langs">' + [["uz", "🇺🇿", "O'zbekcha", "Koreys tilini o'zbek tilida"], ["ru", "🇷🇺", "Русский", "Корейский на русском"], ["en", "🇬🇧", "English", "Korean in English"]].map(function (l) {
           return '<button class="onb-lang" data-lang="' + l[0] + '"><span class="lf">' + l[1] + '</span><span class="ot"><b>' + l[2] + '</b><small>' + l[3] + '</small></span><span class="ar">›</span></button>';

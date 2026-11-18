@@ -1,4 +1,4 @@
-# Render.com Blueprint: Prep Way API serveri (bepul tarif).
+# Render.com Blueprint: Hanguk Way API serveri (bepul tarif).
 # Render → New → Blueprint → shu repozitoriyni tanlang → GEMINI_API_KEY ni kiriting.
 services:
   - type: web

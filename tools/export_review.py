@@ -10,7 +10,7 @@ from openpyxl.formatting.rule import FormulaRule
 from openpyxl.comments import Comment
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "miniapp")
-OUT = sys.argv[1] if len(sys.argv) > 1 else "Prep-Way-savollar-tekshiruv.xlsx"
+OUT = sys.argv[1] if len(sys.argv) > 1 else "Hanguk-Way-savollar-tekshiruv.xlsx"
 
 JS = r"""
 global.window = {};
@@ -106,14 +106,14 @@ for key, title in (("eps", "EPS-TOPIK"), ("topik", "TOPIK I")):
     ws.conditional_formatting.add(f"Q2:R{last}", FormulaRule(formula=[f'LEFT($Q2,1)="✅"'], fill=PatternFill("solid", fgColor="D9EAD3")))
     ws.conditional_formatting.add(f"Q2:R{last}", FormulaRule(formula=[f'LEFT($Q2,2)="✏️"'], fill=PatternFill("solid", fgColor="FCE5CD")))
     ws.conditional_formatting.add(f"Q2:R{last}", FormulaRule(formula=[f'LEFT($Q2,1)="❌"'], fill=PatternFill("solid", fgColor="F4CCCC")))
-    ws.cell(row=1, column=C_STATUS).comment = Comment("Ro'yxatdan tanlang: To'g'ri / Tuzatish kerak / O'chirish", "Prep Way")
+    ws.cell(row=1, column=C_STATUS).comment = Comment("Ro'yxatdan tanlang: To'g'ri / Tuzatish kerak / O'chirish", "Hanguk Way")
 
 # ---------- Ko'rsatma varag'i ----------
 g = guide
 g.column_dimensions["A"].width = 30
 for col in "BCDEF":
     g.column_dimensions[col].width = 18
-g["A1"] = "Prep Way — savollar bazasini metodist tekshiruvi"
+g["A1"] = "Hanguk Way — savollar bazasini metodist tekshiruvi"
 g["A1"].font = Font(name=ARIAL, size=16, bold=True, color="1F3864")
 lines = [
     "Bu faylda ilovadagi barcha savollar bor: har biri rasmiy savol turi, variantlar, to'g'ri javob va uch tildagi izoh bilan.",

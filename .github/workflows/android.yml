@@ -65,8 +65,8 @@ jobs:
           chmod +x gradlew
           ./gradlew --no-daemon assembleRelease bundleRelease
           mkdir -p "$GITHUB_WORKSPACE/dist"
-          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/dist/PrepWay-$VERSION_NAME.apk"
-          cp app/build/outputs/bundle/release/app-release.aab "$GITHUB_WORKSPACE/dist/PrepWay-$VERSION_NAME.aab"
+          cp app/build/outputs/apk/release/app-release.apk "$GITHUB_WORKSPACE/dist/HangukWay-$VERSION_NAME.apk"
+          cp app/build/outputs/bundle/release/app-release.aab "$GITHUB_WORKSPACE/dist/HangukWay-$VERSION_NAME.aab"
 
       - name: Yig'ish (sinov uchun debug — Google kirish ishlamaydi)
         if: env.HAS_KEY != 'true'
@@ -76,12 +76,12 @@ jobs:
           chmod +x gradlew
           ./gradlew --no-daemon assembleDebug
           mkdir -p "$GITHUB_WORKSPACE/dist"
-          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/dist/PrepWay-$VERSION_NAME-debug.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/dist/HangukWay-$VERSION_NAME-debug.apk"
 
       - name: Fayllarni saqlash (Artifacts)
         uses: actions/upload-artifact@v4
         with:
-          name: PrepWay-android-${{ env.VERSION_NAME }}
+          name: HangukWay-android-${{ env.VERSION_NAME }}
           path: dist/*
 
       - name: Demo rejimni aniqlash
@@ -89,7 +89,7 @@ jobs:
 
       - name: Demo APK'ni «demo» Release'ga chiqarish
         if: github.ref == 'refs/heads/main' && env.HAS_KEY == 'true'
-        run: cp "dist/PrepWay-$VERSION_NAME.apk" dist/PrepWay-demo.apk
+        run: cp "dist/HangukWay-$VERSION_NAME.apk" dist/HangukWay-demo.apk
 
       - name: Demo Release
         if: github.ref == 'refs/heads/main' && env.HAS_KEY == 'true'
@@ -97,26 +97,26 @@ jobs:
         with:
           tag_name: demo
           target_commitish: ${{ github.sha }}
-          name: Prep Way — sinov versiyasi
+          name: Hanguk Way — sinov versiyasi
           prerelease: true
           make_latest: false
           body: |
-            **Prep Way sinov versiyasi (Android).** Ro'yxatdan o'tish shart emas. Komiko AI serverga ulangan; internet bo'lmasa, oflayn rejimda ishlaydi.
+            **Hanguk Way sinov versiyasi (Android).** Ro'yxatdan o'tish shart emas. Komiko AI serverga ulangan; internet bo'lmasa, oflayn rejimda ishlaydi.
 
             📱 **Eng oson yo'l:** telefoningizda **Chrome** brauzerida https://prepway-api.onrender.com/yuklab sahifasini oching — u yerda yuklab olish tugmasi va bosqichma-bosqich yo'riqnoma bor.
 
-            Yoki pastdagi **PrepWay-demo.apk** faylini Chrome'da yuklab oling va «Файлы → Загрузки» papkasidan oching (Telegram ichida ochmang).
+            Yoki pastdagi **HangukWay-demo.apk** faylini Chrome'da yuklab oling va «Файлы → Загрузки» papkasidan oching (Telegram ichida ochmang).
             Telefon so'rasa, «Noma'lum manbalardan o'rnatish»ga ruxsat bering.
 
             Versiya: ${{ env.VERSION_NAME }}
-          files: dist/PrepWay-demo.apk
+          files: dist/HangukWay-demo.apk
 
       - name: Release sahifasiga chiqarish
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          name: Prep Way ${{ env.VERSION_NAME }}
+          name: Hanguk Way ${{ env.VERSION_NAME }}
           body: |
-            Android uchun Prep Way. Telefoningizda **PrepWay-${{ env.VERSION_NAME }}.apk** faylini yuklab oling va o'rnating
+            Android uchun Hanguk Way. Telefoningizda **HangukWay-${{ env.VERSION_NAME }}.apk** faylini yuklab oling va o'rnating
             (birinchi marta telefon «noma'lum manbadan o'rnatish»ga ruxsat so'raydi).
           files: dist/*

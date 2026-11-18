@@ -1,4 +1,4 @@
-/* Prep Way — DAFTAR TEKSHIRUVI.
+/* Hanguk Way — DAFTAR TEKSHIRUVI.
    Komiko topshiriq beradi → o'quvchi daftarga qo'lda yozadi → kamera bilan rasmga oladi →
    rasm ichidagi koreyscha matn telefonning o'zida o'qiladi (Google ML Kit, internetsiz) yoki server (Gemini) orqali →
    har bir band kutilgan javob bilan solishtiriladi. Joylashuv (GPS) ham belgilanadi. */
@@ -129,7 +129,7 @@
   function camError(e) {
     var m = String((e && e.message) || e || "");
     if (/cancel/i.test(m)) return "";
-    if (/denied|permission/i.test(m)) return "Kameraga ruxsat berilmadi. Sozlamalar → Ilovalar → Prep Way → Ruxsatlar → Kamera ni yoqing.";
+    if (/denied|permission/i.test(m)) return "Kameraga ruxsat berilmadi. Sozlamalar → Ilovalar → Hanguk Way → Ruxsatlar → Kamera ni yoqing.";
     return "Rasmga olib bo'lmadi: " + m;
   }
   function thumb(url) {
@@ -249,7 +249,7 @@
       K.Activity.mark("hw");
     }).catch(function (e) {
       var m = e && e.message === "NO_OCR"
-        ? "Bu qurilmada rasmdagi matnni o'qib bo'lmaydi. Daftar tekshiruvi telefondagi Prep Way ilovasida ishlaydi."
+        ? "Bu qurilmada rasmdagi matnni o'qib bo'lmaydi. Daftar tekshiruvi telefondagi Hanguk Way ilovasida ishlaydi."
         : camError(e);
       if (m) out.innerHTML = '<div class="err">⚠️ ' + esc(m) + '</div>';
       else if (!photo) out.innerHTML = "";

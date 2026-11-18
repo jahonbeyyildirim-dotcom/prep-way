@@ -1,4 +1,4 @@
-/* Prep Way — mobil ilova rejimi (Android / iPhone, Capacitor).
+/* Hanguk Way — mobil ilova rejimi (Android / iPhone, Capacitor).
    Telegram Mini App'da hech narsa qilmaydi. Ilovada: Google orqali kirish ekrani, sessiya tokeni,
    akkaunt oynasi (chiqish, akkauntni o'chirish, maxfiylik siyosati). */
 (function () {
@@ -73,7 +73,7 @@
     var ov = document.createElement("div");
     ov.className = "pw-ov"; ov.id = "pwLogin";
     ov.innerHTML =
-      '<div class="pw-logo">길</div><h1>Prep Way</h1>' +
+      '<div class="pw-logo">길</div><h1>Hanguk Way</h1>' +
       '<p>Koreys tili imtihonlariga o\'zbek tilida, sun\'iy intellekt bilan tayyorlaning.</p>' +
       '<button class="pw-g" id="pwG">' + G_ICON + '<span>Google bilan kirish</span></button>' +
       '<div class="pw-err" id="pwErr">' + esc(msg || "") + '</div>' +

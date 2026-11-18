@@ -1,4 +1,4 @@
-/* Prep Way oflayn lug'ati (1 000+ so'z, EPS-TOPIK mavzulari bilan). Har qator: koreyscha|o'qilishi|o'zbekcha|ruscha|inglizcha|teg */
+/* Hanguk Way oflayn lug'ati (1 000+ so'z, EPS-TOPIK mavzulari bilan). Har qator: koreyscha|o'qilishi|o'zbekcha|ruscha|inglizcha|teg */
 window.PW_DICT_RAW = `
 안녕하세요|annyeonghaseyo|salom, assalomu alaykum|здравствуйте|hello|ibora
 안녕히 가세요|annyeonghi gaseyo|xayr (ketayotganga)|до свидания (уходящему)|goodbye (to someone leaving)|ibora

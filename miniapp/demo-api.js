@@ -1,4 +1,4 @@
-/* Prep Way — DEMO rejim: serversiz ishlaydi. Server o'rniga namunaviy javoblar qaytaradi.
+/* Hanguk Way — DEMO rejim: serversiz ishlaydi. Server o'rniga namunaviy javoblar qaytaradi.
    Faqat app.config.json da "demo": true bo'lganda yoqiladi. Haqiqiy AI baholash serverda ishlaydi. */
 (function () {
   if (!(window.PW && window.PW.demo)) return;

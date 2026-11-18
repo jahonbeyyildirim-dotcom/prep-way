@@ -1,8 +1,8 @@
 {
-  "name": "prep-way-mobile",
+  "name": "hanguk-way-mobile",
   "version": "1.0.0",
   "private": true,
-  "description": "Prep Way — Android va iPhone ilovasi (Capacitor)",
+  "description": "Hanguk Way — Android va iPhone ilovasi (Capacitor)",
   "scripts": {
     "build": "node scripts/build-web.mjs",
     "sync": "node scripts/build-web.mjs && npx cap sync",

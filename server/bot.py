@@ -40,7 +40,7 @@ async def cmd_start(m: Message, command: CommandObject):
     name = e(m.from_user.first_name if m.from_user else "")
     await m.answer(
         f"Assalomu alaykum, {name}! 👋\n\n"
-        "🇰🇷 <b>Prep Way</b> — EPS-TOPIK va TOPIK imtihonlariga o'zbek tilida tayyorlanish.\n\n"
+        "🇰🇷 <b>Hanguk Way</b> — EPS-TOPIK va TOPIK imtihonlariga o'zbek tilida tayyorlanish.\n\n"
         "🎙 <b>Ovozli assistent:</b> menga koreyscha ovozli xabar yuboring. Gapingizni baholayman, xatolarni "
         "tuzataman va suhbatni davom ettiraman.\n"
         "📚 <b>O'z kitobingiz:</b> koreys tili darsligini PDF yoki rasm qilib yuboring. Shu kitob bo'yicha "
@@ -81,7 +81,7 @@ async def send_invoice(m: Message):
         days = int((until - time.time()) // 86400) + 1
         await m.answer(f"⭐ Sizda Premium bor, yana {days} kun amal qiladi. Qayta to'lasangiz muddat uzayadi.")
     await m.answer_invoice(
-        title="Prep Way Premium — 1 oy",
+        title="Hanguk Way Premium — 1 oy",
         description=f"Kuniga {config.PREMIUM_DAILY_AI} ta AI so'rov, {config.PREMIUM_MAX_BOOKS} tagacha kitob, "
                     f"ovozli assistent va shaxsiy maslahatlar ({config.PREMIUM_DAYS} kun).",
         payload="premium_30d",

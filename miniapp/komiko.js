@@ -1,4 +1,4 @@
-/* Prep Way — KOMIKO: ovozli ustoz.
+/* Hanguk Way — KOMIKO: ovozli ustoz.
    - Ovoz chiqarish: server (Gemini, ayol/erkak) → telefon TTS (Capacitor TextToSpeech) → brauzer speechSynthesis.
    - Nutqni tanish: telefon (Capacitor SpeechRecognition, ko-KR) → brauzer webkitSpeechRecognition.
    - Talaffuz bahosi: aytilgan gap maqsad gap bilan harf (jamo) darajasida solishtiriladi — haqiqiy natija.
@@ -249,7 +249,7 @@
   function canListen() { return !!((SR && NATIVE) || WSR); }
   function srError(e) {
     var m = String((e && (e.message || e.error)) || e || "");
-    if (/permission|not-allowed|denied|Missing/i.test(m)) return "Mikrofonga ruxsat berilmadi. Sozlamalar → Ilovalar → Prep Way → Ruxsatlar → Mikrofon ni yoqing.";
+    if (/permission|not-allowed|denied|Missing/i.test(m)) return "Mikrofonga ruxsat berilmadi. Sozlamalar → Ilovalar → Hanguk Way → Ruxsatlar → Mikrofon ni yoqing.";
     if (/no match|no-speech|didn't understand|7|6/i.test(m)) return "Gap eshitilmadi. Mikrofonni bosib, aniqroq va balandroq gapiring.";
     if (/network|2|4/i.test(m)) return "Nutqni tanish uchun internet kerak. Internetni yoqib, qayta urinib ko'ring.";
     if (/busy|8/i.test(m)) return "Mikrofon band. Bir soniyadan keyin qayta urinib ko'ring.";
