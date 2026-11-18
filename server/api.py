@@ -242,14 +242,12 @@ async def dict_lookup(req):
     hit = await dictsvc.cache_get(q)
     if hit and hit.get("entries"):  # umumiy keshda bor — AI limiti sarflanmaydi
         return web.json_response({**hit, "cached": True})
-    await _take_ai(uid)
-    try:
-        res = await dictsvc.lookup(q, str(body.get("lang") or "uz"))
-    except Exception:
-        await storage.give_back(uid, "ai")
-        raise
+    # Lug'at umumiy AI limitidan alohida: oddiy foydalanishda cheklovsiz, faqat suiiste'molga qarshi kunlik chegara
+    if not dictsvc.take_quota(uid):
+        return jerr("Bugun lug'at orqali juda ko'p so'z qidirildi. Ertaga davom eting.", 429)
+    res = await dictsvc.lookup(q, str(body.get("lang") or "uz"))
     if not res.get("entries"):
-        await storage.give_back(uid, "ai")
+        dictsvc.give_back(uid)
     return web.json_response(res)
 
 
@@ -331,7 +329,7 @@ async def health(_req):
     """Kunlik tekshiruv (GitHub Actions): server va baza tirikmi."""
     from . import persist
     db = await persist.ping()
-    return web.json_response({"ok": True, "db": db, "deepl": dictsvc.deepl_enabled()})
+    return web.json_response({"ok": True, "db": db, "deepl": dictsvc.deepl_enabled(), "claude": ai.claude_enabled()})
 
 
 async def privacy(_req):

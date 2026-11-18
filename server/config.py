@@ -23,6 +23,12 @@ def _int(name: str, default: int) -> int:
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 DEEPL_API_KEY = os.getenv("DEEPL_API_KEY", "").strip()   # ixtiyoriy: lug'at uchun DeepL tarjimasi
+# ixtiyoriy: Claude (Anthropic) — lug'at va Komiko matnli javoblari uchun asosiy AI; Gemini zaxira bo'ladi
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-haiku-5-5").strip()
+CLAUDE_API_URL = os.getenv("CLAUDE_API_URL", "https://api.anthropic.com/v1/messages").strip()
+CLAUDE_TIMEOUT_S = float(os.getenv("CLAUDE_TIMEOUT_S", "25") or 25)
+DICT_DAILY_LIMIT = int(os.getenv("DICT_DAILY_LIMIT", "500") or 500)  # lug'at: AI limitidan alohida, suiiste'molga qarshi
 WEBAPP_URL = os.getenv("WEBAPP_URL", "").strip().rstrip("/")
 
 # Model nomlari vaqt o'tishi bilan yangilanadi: aistudio.google.com dagi ro'yxatni tekshirib, kerak bo'lsa o'zgartiring.

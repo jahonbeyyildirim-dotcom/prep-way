@@ -290,7 +290,7 @@
   var ch = { topic: "intro", history: [], busy: false, started: false };
 
   function aiBubble(ko, uz) {
-    return '<div class="bub ai"><div class="ko">' + esc(ko) + ' ' + say(ko) + '</div>' +
+    return '<div class="bub ai"><div class="ko">' + (window.PWDict ? PWDict.linkify(esc(ko)) : esc(ko)) + ' ' + say(ko) + '</div>' +
       (uz ? '<div class="tr">' + esc(uz) + '</div>' : '') + '</div>';
   }
   function addHTML(html) {
@@ -315,6 +315,20 @@
 
   function sendChat(text, audio) {
     if (ch.busy || !needServer(null)) return;
+    // «X nima degani?» kabi savollarga javob to'g'ridan-to'g'ri lug'atdan (AI limiti sarflanmaydi)
+    var dq = text && window.PWDict ? PWDict.answer(text) : null;
+    if (dq) {
+      addHTML('<div class="bub me">' + esc(text) + '</div>');
+      var wid = "w" + Date.now();
+      addHTML('<div class="bub ai" id="' + wid + '"><span class="spin"></span></div>');
+      dq.then(function (r) {
+        var w = document.getElementById(wid); if (w) w.remove();
+        addHTML('<div class="bub ai k-dict" id="' + wid + '">' + r.html + '</div>');
+        var el = document.getElementById(wid); if (el) PWDict.bind(el);
+        if (r.entries && r.entries[0]) H.speak(r.entries[0].ko);
+      }).catch(function (e) { var w = document.getElementById(wid); if (w) w.remove(); addHTML(errBox(e.message)); });
+      return;
+    }
     ch.busy = true;
     var fd = new FormData();
     fd.append("history", JSON.stringify(ch.history.slice(-10)));

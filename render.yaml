@@ -21,4 +21,6 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: DEEPL_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
         sync: false          # Neon Postgres manzili — panelda o'zingiz kiritasiz (maxfiy)

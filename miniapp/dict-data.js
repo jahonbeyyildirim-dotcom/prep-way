@@ -1,4 +1,4 @@
-/* Prep Way oflayn lug'ati (900+ so'z, EPS-TOPIK mavzulari bilan). Har qator: koreyscha|o'qilishi|o'zbekcha|ruscha|inglizcha|teg */
+/* Prep Way oflayn lug'ati (1 000+ so'z, EPS-TOPIK mavzulari bilan). Har qator: koreyscha|o'qilishi|o'zbekcha|ruscha|inglizcha|teg */
 window.PW_DICT_RAW = `
 안녕하세요|annyeonghaseyo|salom, assalomu alaykum|здравствуйте|hello|ibora
 안녕히 가세요|annyeonghi gaseyo|xayr (ketayotganga)|до свидания (уходящему)|goodbye (to someone leaving)|ibora
@@ -876,4 +876,145 @@ window.PW_DICT_RAW = `
 수고하세요|sugohaseyo|ishingizga omad (xayrlashganda)|удачи в работе (при прощании)|keep up the good work|ibora
 병원에 가고 싶어요|byeongwone gago sipeoyo|kasalxonaga bormoqchiman|я хочу в больницу|I want to go to the hospital|ibora
 어디가 아파요?|eodiga apayo|qayeringiz og'riyapti?|что у вас болит?|where does it hurt?|ibora
+지갑|jigap|hamyon|кошелёк|wallet|uy
+우산|usan|soyabon|зонт|umbrella|uy
+안경|angyeong|ko'zoynak|очки|glasses|uy
+시계|sigye|soat (qo'l, devor)|часы|watch, clock|uy
+거울|geoul|oyna (ko'zgu)|зеркало|mirror|uy
+수건|sugeon|sochiq|полотенце|towel|uy
+비누|binu|sovun|мыло|soap|uy
+칫솔|chitsol|tish cho'tkasi|зубная щётка|toothbrush|uy
+치약|chiyak|tish pastasi|зубная паста|toothpaste|uy
+휴지|hyuji|salfetka, tualet qog'ozi|туалетная бумага, салфетка|tissue, toilet paper|uy
+컵|keop|stakan|стакан, кружка|cup|uy
+그릇|geureut|idish, kosa|миска, посуда|bowl, dish|uy
+접시|jeopsi|likopcha|тарелка|plate|uy
+숟가락|sutgarak|qoshiq|ложка|spoon|uy
+젓가락|jeotgarak|cho'p tayoqchalar|палочки для еды|chopsticks|uy
+냄비|naembi|qozon, kastryul|кастрюля|pot|uy
+전등|jeondeung|chiroq|лампа, свет|light, lamp|uy
+텔레비전|tellebijeon|televizor|телевизор|television|uy
+컴퓨터|keompyuteo|kompyuter|компьютер|computer|uy
+볼펜|bolpen|ruchka|ручка|ballpoint pen|til
+종이|jongi|qog'oz|бумага|paper|til
+수업|sueop|dars|урок, занятие|class, lesson|til
+학원|hagwon|o'quv markazi|учебный центр, курсы|private academy|til
+졸업하다|joreophada|bitirmoq (o'qishni)|окончить (учёбу)|to graduate|til
+입학하다|iphakhada|o'qishga kirmoq|поступить (в учебное заведение)|to enter school|til
+설명하다|seolmyeonghada|tushuntirmoq|объяснять|to explain|til
+외우다|oeuda|yodlamoq|заучивать|to memorize|til
+뜻하다|tteuthada|anglatmoq|означать|to mean|til
+오전|ojeon|tushdan oldin|до полудня|a.m., morning|vaqt
+오후|ohu|tushdan keyin|после полудня|p.m., afternoon|vaqt
+새벽|saebyeok|tong, saharlab|рассвет, раннее утро|dawn|vaqt
+이번 주|ibeon ju|shu hafta|на этой неделе|this week|vaqt
+다음 주|daeum ju|keyingi hafta|на следующей неделе|next week|vaqt
+지난주|jinanju|o'tgan hafta|на прошлой неделе|last week|vaqt
+이번 달|ibeon dal|shu oy|в этом месяце|this month|vaqt
+다음 달|daeum dal|keyingi oy|в следующем месяце|next month|vaqt
+지난달|jinandal|o'tgan oy|в прошлом месяце|last month|vaqt
+날|nal|kun|день|day|vaqt
+처음|cheoeum|birinchi marta, boshi|впервые, начало|first time, beginning|vaqt
+마지막|majimak|oxirgi|последний|last|vaqt
+동안|dongan|davomida|в течение|during, for|vaqt
+전|jeon|oldin|до, назад|before, ago|vaqt
+후|hu|keyin|после|after|vaqt
+쯤|jjeum|taxminan|примерно|about, around|vaqt
+언제나|eonjena|har doim|всегда|always|ravish
+거의|geoui|deyarli|почти|almost|ravish
+모두|modu|hammasi|все|all, everyone|ravish
+다|da|hammasi, butunlay|всё, полностью|all, completely|ravish
+더|deo|ko'proq|больше, ещё|more|ravish
+덜|deol|kamroq|меньше|less|ravish
+가장|gajang|eng|самый|most|ravish
+제일|jeil|eng (birinchi)|самый|the most|ravish
+별로|byeollo|unchalik (inkor bilan)|не особо|not really|ravish
+아마도|amado|balki|возможно|perhaps|ravish
+그래서|geuraeseo|shuning uchun|поэтому|so, therefore|ravish
+그런데|geureonde|lekin, aytgancha|но, кстати|but, by the way|ravish
+그리고|geurigo|va, keyin|и, потом|and|ravish
+그러나|geureona|biroq|однако|however|ravish
+그러면|geureomyeon|unday bo'lsa|тогда, в таком случае|then, if so|ravish
+왜냐하면|waenyahamyeon|chunki|потому что|because|ravish
+혹시|hoksi|balki, mabodo|случайно, может быть|by any chance|ravish
+계속|gyesok|davomli, to'xtovsiz|постоянно, продолжая|continuously|ravish
+이미|imi|allaqachon|уже|already|ravish
+아직도|ajikdo|hali ham|до сих пор|still|ravish
+얼마나|eolmana|qanchalik|насколько|how (much/long)|savol
+무슨|museun|qanday (nima)|какой (что за)|what kind of|savol
+어떤|eotteon|qanday, qaysi|какой|which, what kind|savol
+웬일|wenil|nima bo'ldi|что случилось|what happened|savol
+문제|munje|muammo; masala|проблема; задача|problem; question|ish
+방법|bangbeop|usul|способ|method|ish
+이유|iyu|sabab|причина|reason|ish
+결과|gyeolgwa|natija|результат|result|ish
+계획|gyehoek|reja|план|plan|ish
+경험|gyeongheom|tajriba|опыт|experience|ish
+약속|yaksok|va'da; uchrashuv|обещание; встреча|promise; appointment|ish
+규칙|gyuchik|qoida|правило|rule|ish
+순서|sunseo|tartib, navbat|порядок, очередь|order, sequence|ish
+목표|mokpyo|maqsad|цель|goal|ish
+실수|silsu|xato|ошибка|mistake|ish
+실수하다|silsuhada|xato qilmoq|ошибаться|to make a mistake|ish
+설명서|seolmyeongseo|qo'llanma, yo'riqnoma|инструкция|manual|ish
+사용법|sayongbeop|foydalanish tartibi|способ применения|instructions for use|ish
+돕다|dopda|yordam bermoq|помогать|to help|ish
+배치하다|baechihada|joylashtirmoq|размещать|to arrange, to assign|ish
+담당하다|damdanghada|mas'ul bo'lmoq|отвечать за|to be in charge of|ish
+교육|gyoyuk|ta'lim, o'qitish|обучение|education, training|ish
+회식|hoesik|jamoa ziyofati|корпоративный ужин|company dinner|ish
+야근|yageun|tungi ish, kechgacha ishlash|работа допоздна|working late|ish
+출장|chuljang|xizmat safari|командировка|business trip|ish
+기분|gibun|kayfiyat|настроение|mood|his
+마음|maeum|ko'ngil, qalb|сердце, душа|heart, mind|his
+사랑|sarang|sevgi|любовь|love|his
+사랑하다|saranghada|sevmoq|любить|to love|his
+즐겁다|jeulgeopda|quvnoq, maroqli|весёлый, радостный|enjoyable|his
+재미없다|jaemieopda|zerikarli|неинтересный|boring|his
+심심하다|simsimhada|zerikmoq|скучно|bored|his
+놀라다|nollada|hayron qolmoq|удивляться|to be surprised|his
+긴장하다|ginjanghada|hayajonlanmoq, asabiylashmoq|нервничать|to be nervous|his
+부끄럽다|bukkeureopda|uyalmoq|стыдно, неловко|embarrassed|his
+답답하다|dapdaphada|siqilmoq|душно, тягостно|frustrated, stuffy|his
+속상하다|soksanghada|xafa bo'lmoq|расстраиваться|upset|his
+감기에 걸리다|gamgie geollida|shamollamoq|простудиться|to catch a cold|tana
+약을 먹다|yageul meokda|dori ichmoq|принимать лекарство|to take medicine|tana
+피|pi|qon|кровь|blood|tana
+뼈|ppyeo|suyak|кость|bone|tana
+얼굴|eolgul|yuz|лицо|face|tana
+배가 아프다|baega apeuda|qorin og'riyapti|болит живот|to have a stomachache|tana
+머리가 아프다|meoriga apeuda|bosh og'riyapti|болит голова|to have a headache|tana
+피곤|pigon|charchoq|усталость|fatigue|tana
+건강|geongang|sog'liq|здоровье|health|tana
+쌀|ssal|guruch (xom)|рис (крупа)|rice (uncooked)|ovqat
+국|guk|sho'rva|суп|soup|ovqat
+찌개|jjigae|quyuq sho'rva (tushonka)|тушёный суп (ччигэ)|stew|ovqat
+반찬|banchan|garnir (qo'shimcha taomlar)|закуски (панчхан)|side dishes|ovqat
+떡|tteok|tteok (guruch noni)|токк (рисовый хлебец)|rice cake|ovqat
+면|myeon|lag'mon (makaron)|лапша|noodles|ovqat
+마늘|maneul|sarimsoq|чеснок|garlic|ovqat
+감자|gamja|kartoshka|картофель|potato|ovqat
+배추|baechu|Pekin karami|пекинская капуста|napa cabbage|ovqat
+고추|gochu|qalampir|перец|chili pepper|ovqat
+기름|gireum|yog'; moy|масло; жир|oil|ovqat
+간장|ganjang|soya sousi|соевый соус|soy sauce|ovqat
+술|sul|spirtli ichimlik|алкоголь|alcohol|ovqat
+음료수|eumnyosu|ichimlik|напиток|beverage|ovqat
+주스|juseu|sharbat|сок|juice|ovqat
+아이스크림|aiseukeurim|muzqaymoq|мороженое|ice cream|ovqat
+과자|gwaja|pechenye, shirinlik|печенье, снеки|snacks|ovqat
+도시락|dosirak|tushlik qutisi|ланч-бокс|packed lunch|ovqat
+메뉴|menyu|menyu|меню|menu|ovqat
+주문|jumun|buyurtma|заказ|order|ovqat
+포장해 주세요|pojanghae juseyo|olib ketishga o'rab bering|заверните с собой|please pack it to go|ibora
+얼마예요?|eolmayeyo|qancha turadi?|сколько стоит?|how much is it?|ibora
+이거 주세요|igeo juseyo|buni bering|дайте это|please give me this|ibora
+화장실이 어디예요?|hwajangsiri eodiyeyo|hojatxona qayerda?|где туалет?|where is the restroom?|ibora
+몇 시예요?|myeot siyeyo|soat necha?|который час?|what time is it?|ibora
+다시 말씀해 주시겠어요?|dasi malsseumhae jusigesseoyo|yana bir bor aytib bera olasizmi?|не могли бы вы повторить?|could you say that again?|ibora
+축하합니다|chukhahamnida|tabriklayman|поздравляю|congratulations|ibora
+안녕히 주무세요|annyeonghi jumuseyo|xayrli tun|спокойной ночи|good night|ibora
+맛있게 드세요|masitge deuseyo|yoqimli ishtaha|приятного аппетита|enjoy your meal|ibora
+잘 먹었습니다|jal meogeotseumnida|rahmat, mazali bo'ldi (ovqatdan keyin)|спасибо, было вкусно|thanks for the meal (after)|ibora
+아니에요|anieyo|yo'q; arzimaydi|нет; не за что|no; you're welcome|ibora
 `;

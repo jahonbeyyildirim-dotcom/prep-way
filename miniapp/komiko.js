@@ -596,7 +596,7 @@
     var oth = parts ? othersOf(parts) : "";
     document.querySelectorAll("#chLog .k-chips").forEach(function (c) { c.remove(); });
     document.querySelectorAll("#chLog .komiko.live").forEach(function (s) { s.classList.remove("live", "talking"); });
-    var h = '<div class="k-row">' + avatar(38, "live") + '<div class="bub ai"><div class="ko">' + esc(ko) +
+    var h = '<div class="k-row">' + avatar(38, "live") + '<div class="bub ai"><div class="ko">' + (window.PWDict ? PWDict.linkify(esc(ko)) : esc(ko)) +
       ' <button class="mini" data-say="' + esc(ko) + '" aria-label="Tinglash">🔊</button></div>' + (uz ? '<div class="tr">' + esc(uz) + '</div>' : '') + (oth ? '<div class="tri">' + esc(oth) + '</div>' : '') + '</div></div>';
     if (chips && chips.length) {
       h += '<div class="k-chips"><div class="k-chips-t">' + T({ uz: "💡 Shunday javob berishingiz mumkin (bosib tinglang):", ru: "💡 Можно ответить так (нажмите, чтобы послушать):", en: "💡 You could answer like this (tap to listen):" }) + '</div>' + chips.map(function (a) {
@@ -649,9 +649,28 @@
     });
     return { r: bestR, a: bestA };
   }
+  // Lug'at savoli («X nima degani?», «what does X mean?», «X 뜻이 뭐예요?») — javob lug'atdan
+  function dictReply(text, shown) {
+    if (!window.PWDict) return false;
+    var p = PWDict.answer(text);
+    if (!p) return false;
+    add('<div class="bub me">' + esc(shown || text) + '</div>');
+    var w = add('<div class="k-row">' + avatar(38, "live talking") + '<div class="bub ai"><span class="spin"></span></div></div>');
+    p.then(function (r) {
+      if (w) w.remove();
+      var row = add('<div class="k-row">' + avatar(38) + '<div class="bub ai k-dict">' + r.html + '</div></div>');
+      if (row) PWDict.bind(row);
+      if (r.entries && r.entries[0]) speak(r.entries[0].ko);
+    }).catch(function (e) {
+      if (w) w.remove();
+      add('<div class="err">📖 ' + esc((e && e.message) || "Lug'at javob bermadi.") + '</div>');
+    });
+    return true;
+  }
   function userAnswer(variants, typed) {
     if (kc.done || kc.busy) return;
     var said = variants[0] || "";
+    if (typed && dictReply(said)) return;
     if (!/[가-힣]/.test(variants.join(""))) { helpUz(said); return; }
     var E = evalAnswer(variants), sc = Math.min(100, E.r.sc);
     add('<div class="bub me ko">' + (typed ? "" : "🎙️ ") + esc(E.r.said) + '</div>');
@@ -694,8 +713,10 @@
     $("kNext").onclick = function () { kc.topic = next; setTopicButtons(); startLocalChat(); };
   }
   function helpUz(text) {
-    add('<div class="bub me">' + esc(text) + '</div>');
     var hit = PHRASES.find(function (p) { return p[0].test(text); });
+    // Iboralar ro'yxatida yo'q bo'lsa — lug'atdan (savol shaklida yoki qisqa so'z bo'lsa to'g'ridan-to'g'ri)
+    if (!hit && (dictReply(text) || (text.length <= 30 && text.split(/\s+/).length <= 3 && dictReply("tarjima: " + text, text)))) return;
+    add('<div class="bub me">' + esc(text) + '</div>');
     if (hit) {
       var lbl = hit[3][{ uz: 0, ru: 1, en: 2 }[L()]];
       add('<div class="k-row">' + avatar(38) + '<div class="bub ai"><div>«' + esc(lbl) + '» ' + T({ uz: "koreyscha:", ru: "по-корейски:", en: "in Korean:" }) + '</div><div class="ko" style="font-size:20px;font-weight:700;margin-top:4px">' + esc(hit[1]) +

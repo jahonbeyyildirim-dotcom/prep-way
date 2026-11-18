@@ -28,7 +28,28 @@ _KO = re.compile(r"[가-힣]")
 
 
 def _key(q: str) -> str:
-    return re.sub(r"\s+", " ", q.strip().lower())[:60]
+    return re.sub(r"\s+", " ", q.strip().lower())[:80]
+
+
+# ---------------- Kunlik chegara (suiiste'molga qarshi) ----------------
+_QUOTA: dict[tuple, int] = {}
+
+
+def take_quota(uid) -> bool:
+    day = time.strftime("%Y-%m-%d")
+    if len(_QUOTA) > 20000:
+        _QUOTA.clear()
+    k = (uid, day)
+    if _QUOTA.get(k, 0) >= config.DICT_DAILY_LIMIT:
+        return False
+    _QUOTA[k] = _QUOTA.get(k, 0) + 1
+    return True
+
+
+def give_back(uid) -> None:
+    k = (uid, time.strftime("%Y-%m-%d"))
+    if _QUOTA.get(k):
+        _QUOTA[k] -= 1
 
 
 # ---------------- Kesh ----------------
@@ -199,12 +220,12 @@ def romanize(s):
 # ---------------- Asosiy qidiruv ----------------
 async def lookup(q: str, lang: str = "uz") -> dict:
     """Keshsiz qidiruv: Gemini + DeepL. Natija keshga yoziladi."""
-    q = q.strip()[:60]
+    q = q.strip()[:80]
     entries, src = [], []
     try:
         entries = (await ai.dict_lookup(q, lang)).get("entries", [])
         if entries:
-            src.append("ai")
+            src.append(ai.last_provider() or "ai")
     except Exception as e:
         log.info("Gemini lug'at: %s", e)
 

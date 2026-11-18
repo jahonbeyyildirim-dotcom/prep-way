@@ -54,7 +54,7 @@
   function netSave(list) { try { localStorage.setItem(NKEY, JSON.stringify(list.slice(-4000))); } catch (e) {} }
   function slim(e) {
     var o = { ko: e.ko, rom: e.rom || "", uz: e.uz || "", ru: e.ru || "", en: e.en || "", tag: "net", src: e.src || "ai" };
-    if (e.dl) o.dl = e.dl;
+    ["dl", "hanja", "pos", "level", "syn", "ant", "note_uz", "note_ru", "note_en"].forEach(function (k) { if (e[k]) o[k] = e[k]; });
     if (e.ex_ko) o.ex = [[e.ex_ko, e.ex_uz || "", e.ex_ru || "", e.ex_en || ""]]; else if (e.ex) o.ex = e.ex;
     return o;
   }
@@ -65,6 +65,7 @@
       if (!e || !e.ko) return;
       var o = slim(e);
       if (!BY[o.ko]) { add(o); added++; }
+      else { var x = BY[o.ko]; ["hanja", "pos", "level", "syn", "ant", "note_uz", "note_ru", "note_en", "dl"].forEach(function (k) { if (o[k] && !x[k]) x[k] = o[k]; }); if (o.ex && !x.ex) x.ex = o.ex; }
       if (!byKo[o.ko]) { byKo[o.ko] = 1; have.push(o); }
     });
     netSave(have);
@@ -140,12 +141,19 @@
   // ---------- Ko'rinish ----------
   function card(e) {
     var tag = TAGS[e.tag] ? I.pick(TAGS[e.tag]) : "";
+    var meta = [e.hanja ? esc(e.hanja) : "", e.pos ? esc(e.pos) : "", e.level ? "TOPIK " + esc(e.level) : ""].filter(Boolean).join(" · ");
     var h = '<div class="dc"><div class="dc-h"><span class="ko dc-ko">' + esc(e.ko) + '</span>' + (e.rom ? '<span class="note">[' + esc(e.rom) + ']</span>' : '') +
       '<button class="mini" data-say="' + esc(e.ko) + '">🔊</button><button class="dc-star' + (isSaved(e.ko) ? " on" : "") + '" data-star="' + esc(e.ko) + '">' + (isSaved(e.ko) ? "★" : "☆") + '</button></div>' +
+      (meta ? '<div class="note dc-meta">' + meta + '</div>' : '') +
       '<div class="dc-m">' + I.tri({ uz: e.uz, ru: e.ru, en: e.en }) + '</div>';
+    var nt = e["note_" + LG] || e.note_uz || "";
+    if (nt) h += '<div class="note dc-note">💡 ' + esc(nt) + '</div>';
+    var rel = (e.syn || []).map(function (w) { return '<button class="chip d-rc" data-q="' + esc(w) + '">≈ ' + esc(w) + '</button>'; })
+      .concat((e.ant || []).map(function (w) { return '<button class="chip d-rc" data-q="' + esc(w) + '">↔ ' + esc(w) + '</button>'; }));
+    if (rel.length) h += '<div class="dc-rel">' + rel.join("") + '</div>';
     var dl = e.dl && (e.dl[LG] || e.dl.uz || e.dl.en);
     if (dl && dl !== I.pick({ uz: e.uz, ru: e.ru, en: e.en })) h += '<div class="note dc-dl">DeepL: ' + esc(dl) + '</div>';
-    var srcB = e.src ? String(e.src).split("+").map(function (x) { return x === "deepl" ? "DeepL" : x === "ai" ? "Gemini AI" : x; }).join(" · ") : "";
+    var srcB = e.src ? String(e.src).split("+").map(function (x) { return x === "deepl" ? "DeepL" : x === "ai" ? "Gemini AI" : x === "claude" ? "Claude AI" : x; }).join(" · ") : "";
     if (tag) h += '<span class="dc-tag">' + esc(tag) + '</span>';
     if (srcB) h += '<span class="dc-tag dc-src">' + esc(srcB) + '</span>';
     if (e.use) h += '<div class="sw-u">📍 ' + esc(I.pick(e.use)) + '</div>';
@@ -160,7 +168,13 @@
     var out = $("dRes"); if (!out) return;
     var qq = (q || "").trim();
     if (!qq) { browse(out); return; }
-    var r = search(qq);
+    var sentence = /\s/.test(qq) && qq.length > 14 || /[.?!。？]$/.test(qq);
+    var r = sentence ? [] : search(qq);
+    if (r.length && !K.LOCAL()) {  // oflayn natija bor, lekin batafsil (misollar, ma'nolar) uchun AI tugmasi
+      out.innerHTML = r.map(card).join("") + '<button class="btn ghost d-more" id="dAi" style="width:100%;margin-top:8px">🤖 ' + esc(T({ uz: "AI bilan batafsil: barcha ma'nolar va misollar", ru: "Подробнее с ИИ: все значения и примеры", en: "More with AI: all meanings and examples" })) + '</button><div id="dNone"></div>';
+      $("dAi").onclick = function () { this.remove(); aiLookup(qq, true); };
+      bind(out); return;
+    }
     out.innerHTML = r.length ? r.map(card).join("") : '<div class="card empty" style="padding:18px" id="dNone">🔎 ' + esc(T({ uz: "«{q}» oflayn lug'atda topilmadi.", ru: "«{q}» нет в офлайн-словаре.", en: "\"{q}\" isn't in the offline dictionary." }, { q: qq })) + '</div>';
     if (!r.length && !K.LOCAL()) aiLookup(qq);
     else if (!r.length) $("dNone").insertAdjacentHTML("beforeend", '<div class="note" style="margin-top:6px">' + esc(T({ uz: "Imloni tekshiring yoki so'zning lug'at shaklini yozing (masalan, 먹어요 → 먹다).", ru: "Проверьте написание или введите словарную форму (например, 먹어요 → 먹다).", en: "Check the spelling or type the dictionary form (e.g. 먹어요 → 먹다)." })) + '</div>');
@@ -207,16 +221,23 @@
     });
     var more = $("dMore"); if (more) more.onclick = function () { bw.n += 100; var st = out.scrollTop; browse(out); out.scrollTop = st; };
   }
-  function aiLookup(q) {
+  function aiLookup(q, append) {
     var tok = ++aiTok, box = $("dNone");
     if (box) box.insertAdjacentHTML("beforeend", '<div class="loading" style="margin-top:8px">' + K.avatar(24, "live talking") + ' ' + esc(T({ uz: "Komiko tarjima qilyapti…", ru: "Комико переводит…", en: "Komiko is translating…" })) + '</div>');
     H.api("/api/dict", { json: { q: q, lang: LG } }).then(function (r) {
       if (tok !== aiTok) return;
       var list = (r.entries || []).map(function (e) { var o = slim(e); o.tag = "ai"; return o; });
       learn(r.entries || []);
-      $("dRes").innerHTML = list.length ? list.map(card).join("") : '<div class="card empty">🔎 ' + esc(T({ uz: "Topilmadi.", ru: "Не найдено.", en: "Not found." })) + '</div>';
+      var html = list.length ? list.map(card).join("") : '<div class="card empty">🔎 ' + esc(T({ uz: "Topilmadi. Imloni tekshiring yoki boshqacha yozib ko'ring.", ru: "Не найдено. Проверьте написание или попробуйте иначе.", en: "Not found. Check the spelling or try another wording." })) + '</div>';
+      if (append) { var nb = $("dNone"); if (nb) nb.outerHTML = '<div class="d-sec">🤖 AI</div>' + html; } else $("dRes").innerHTML = html;
       bind($("dRes"));
-    }).catch(function () { if (tok === aiTok && box) box.querySelector(".loading").remove(); });
+    }).catch(function (err) {
+      if (tok !== aiTok) return;
+      var b2 = $("dNone"); if (!b2) return;
+      var ld = b2.querySelector(".loading"); if (ld) ld.remove();
+      b2.insertAdjacentHTML("beforeend", '<div class="note" style="margin-top:6px">⚠️ ' + esc((err && err.message) || T({ uz: "Internet yoki server bilan aloqa yo'q.", ru: "Нет связи с сервером.", en: "No connection to the server." })) + '</div><button class="btn ghost" id="dRetry" style="margin-top:8px">🔁 ' + esc(T({ uz: "Qayta urinish", ru: "Повторить", en: "Retry" })) + '</button>');
+      var rb = $("dRetry"); if (rb) rb.onclick = function () { render(q); };
+    });
   }
   function bind(root) {
     root.querySelectorAll("[data-star]").forEach(function (b) {
@@ -285,5 +306,56 @@
   });
   pick.onclick = function () { var q = pick.dataset.q; pick.hidden = true; try { window.getSelection().removeAllRanges(); } catch (e) {} open(q); };
 
-  window.PWDict = { open: open, close: close, search: search, size: function () { return DB.length; } };
+  // ---------- Komiko va suhbat uchun: «X nima degani?» savollariga lug'atdan javob ----------
+  var ASK = [
+    /^(?:tarjima(?: qil(?:ing)?)?|translate|переведи(?:те)?|перевод)\s*[:\-]?\s*(.+)$/i,
+    /^(.+?)\s+(?:so'zi(?:ning)?\s+)?(?:nima\s+degani|degani\s+nima|ma'nosi(?:\s+nima)?|ning\s+ma'nosi)\??$/i,
+    /^(.+?)\s+(?:koreyscha|koreys\s+tilida)\s+(?:qanday|nima)(?:\s+bo'ladi|\s+deyiladi|\s+aytiladi)?\??$/i,
+    /^(?:koreyscha|koreys\s+tilida)\s+(.+?)\s+(?:qanday|nima)(?:\s+bo'ladi|\s+deyiladi)?\??$/i,
+    /^(?:что\s+(?:значит|означает)|как\s+переводится)\s+(.+?)\??$/i,
+    /^как\s+(?:сказать|будет)\s+(?:по-корейски\s+)?(.+?)(?:\s+по-корейски)?\??$/i,
+    /^(.+?)\s+по-корейски\??$/i,
+    /^what\s+does\s+(.+?)\s+mean\??$/i,
+    /^how\s+(?:do\s+(?:you|i)\s+|to\s+)say\s+(.+?)(?:\s+in\s+korean)?\??$/i,
+    /^(.+?)\s+in\s+korean\??$/i,
+    /^(.+?)(?:이|가)?\s*(?:무슨\s+뜻이에요|뜻이\s+뭐예요|뜻이\s+뭐야|무슨\s+뜻)\??$/
+  ];
+  function askTerm(text) {
+    var t = String(text || "").trim().replace(/[ʻʼ‘’`´]/g, "'");
+    for (var i = 0; i < ASK.length; i++) {
+      var m = t.match(ASK[i]);
+      if (m && m[1]) {
+        var w = m[1].replace(/^[«"“'„]+|[»"”'?.!]+$/g, "").trim();
+        if (w && w.length <= 60) return w;
+      }
+    }
+    return null;
+  }
+  // Savolga lug'atdan javob: {html} yoki null (lug'at savoli emas)
+  function answer(text) {
+    var term = askTerm(text);
+    if (!term) return null;
+    var r = search(term).slice(0, 2);
+    var head = '<div class="note" style="margin-bottom:6px">📖 ' + esc(T({ uz: "Lug'atdan: «{w}»", ru: "Из словаря: «{w}»", en: "From the dictionary: \"{w}\"" }, { w: term })) + '</div>';
+    if (r.length) return Promise.resolve({ term: term, html: head + r.map(card).join(""), entries: r });
+    if (K.LOCAL()) return Promise.resolve({ term: term, html: head + '<div class="note">' + esc(T({ uz: "Oflayn lug'atda yo'q. Internet ulanganda AI tarjima qiladi.", ru: "Нет в офлайн-словаре. При подключении к интернету переведёт ИИ.", en: "Not in the offline dictionary. With internet, AI will translate it." })) + '</div>', entries: [] });
+    return H.api("/api/dict", { json: { q: term, lang: LG } }).then(function (res) {
+      var list = (res.entries || []).map(function (e) { var o = slim(e); o.tag = "ai"; return o; });
+      learn(res.entries || []);
+      return { term: term, entries: list, html: head + (list.length ? list.map(card).join("") : '<div class="note">' + esc(T({ uz: "Topilmadi.", ru: "Не найдено.", en: "Not found." })) + '</div>') };
+    });
+  }
+  // Koreyscha so'zlarni bosiladigan qiladi (bosilganda lug'at ochiladi). Kirish: allaqachon esc() qilingan matn
+  function linkify(escaped) {
+    return String(escaped).replace(/[가-힣]+/g, function (w) { return '<span class="kw" data-kw="' + w + '">' + w + '</span>'; });
+  }
+  document.addEventListener("click", function (ev) {
+    var k = ev.target && ev.target.closest && ev.target.closest(".kw");
+    if (!k) return;
+    ev.preventDefault(); ev.stopPropagation();
+    open(k.dataset.kw);
+  }, true);
+
+  window.PWDict = { open: open, close: close, search: search, answer: answer, askTerm: askTerm, linkify: linkify, card: card, bind: function (r) { bind(r); },
+    size: function () { return DB.length; } };
 })();

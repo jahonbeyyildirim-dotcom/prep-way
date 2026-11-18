@@ -103,15 +103,57 @@ def _parse_json(text: str) -> dict:
     return data
 
 
-async def _json_call(parts: list, temperature: float = 0.4) -> dict:
+_PROV = contextvars.ContextVar("pw_ai_provider", default="")
+
+
+def last_provider() -> str:
+    """Oxirgi matnli so'rovga qaysi AI javob berdi: "claude" yoki "ai" (Gemini)."""
+    return _PROV.get()
+
+
+def claude_enabled() -> bool:
+    return bool(config.ANTHROPIC_API_KEY)
+
+
+async def _claude_json(text: str, temperature: float, max_tokens: int = 2000) -> dict:
+    """Claude (Anthropic Messages API) — faqat matnli so'rovlar uchun."""
+    import aiohttp
+    body = {"model": config.CLAUDE_MODEL, "max_tokens": max_tokens, "temperature": temperature,
+            "system": SYSTEM, "messages": [{"role": "user", "content": text}]}
+    async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=config.CLAUDE_TIMEOUT_S)) as s:
+        async with s.post(config.CLAUDE_API_URL, json=body, headers={
+                "x-api-key": config.ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01",
+                "content-type": "application/json"}) as r:
+            data = await r.json(content_type=None)
+            if r.status != 200:
+                raise RuntimeError(f"Claude {r.status}: {str(data)[:160]}")
+    txt = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text")
+    return _parse_json(txt)
+
+
+async def _json_call(parts: list, temperature: float = 0.4, lang_note: bool = True) -> dict:
+    note = _lang_note() if lang_note else None
+    if note:
+        parts = list(parts) + [note]
+    # Matnli so'rov: avval Claude (kalit berilgan bo'lsa), ishlamasa — Gemini
+    if claude_enabled() and all(isinstance(p, str) for p in parts):
+        try:
+            res = await _claude_json("\n\n".join(parts), temperature)
+            _PROV.set("claude")
+            return res
+        except Exception as e:
+            log.warning("Claude javob bermadi, Gemini'ga o'tilmoqda: %s", e)
+    res = await _gemini_json(parts, temperature)
+    _PROV.set("ai")
+    return res
+
+
+async def _gemini_json(parts: list, temperature: float = 0.4) -> dict:
     cfg = types.GenerateContentConfig(
         system_instruction=SYSTEM,
         response_mime_type="application/json",
         temperature=temperature,
     )
-    note = _lang_note()
-    if note:
-        parts = list(parts) + [note]
     last = None
     models = [config.GEMINI_MODEL] + [m for m in config.GEMINI_FALLBACK_MODELS if m != config.GEMINI_MODEL]
     for _attempt in range(2):
@@ -535,18 +577,41 @@ async def check_homework(image: bytes, mime: str, task: dict) -> dict:
 
 # ---------------------------------------------------------------- LUG'AT
 async def dict_lookup(q: str, lang: str = "uz") -> dict:
-    """So'zni koreys ↔ o'zbek/rus/ingliz tarjima qiladi (oflayn lug'atda topilmaganda)."""
-    q = q.strip()[:60]
+    """To'liq lug'at maqolasi: koreys ↔ o'zbek/rus/ingliz (oflayn lug'atda topilmaganda).
+
+    Natija hamma tillar uchun bir xil (umumiy keshga yoziladi), shuning uchun interfeys tili qo'shilmaydi."""
+    q = q.strip()[:80]
     if config.AI_FAKE:
         return {"entries": [{"ko": q, "rom": "", "uz": "(sinov)", "ru": "(тест)", "en": "(test)"}]}
     data = await _json_call([
-        "You are a Korean dictionary for Uzbek, Russian and English speakers. The user typed: "
-        f"«{q}». It may be Korean (possibly conjugated or with particles) or an Uzbek/Russian/English word. "
-        "Return up to 3 Korean dictionary entries that best match (use the dictionary form, e.g. 먹어요 → 먹다). "
-        "For each: ko, rom (Revised Romanization), uz, ru, en (short meanings), and one simple example sentence "
-        "ex_ko with translations ex_uz, ex_ru, ex_en. If it is not a real word, return an empty list.\n"
-        'Shape: {"entries": [{"ko": "", "rom": "", "uz": "", "ru": "", "en": "", "ex_ko": "", "ex_uz": "", "ex_ru": "", "ex_en": ""}]}',
-    ], temperature=0.1)
-    keys = ("ko", "rom", "uz", "ru", "en", "ex_ko", "ex_uz", "ex_ru", "ex_en")
-    out = [{k: str(e.get(k, ""))[:200] for k in keys} for e in (data.get("entries") or []) if isinstance(e, dict) and e.get("ko")]
+        "You are an expert Korean dictionary (like the National Institute of Korean Language dictionary) for Uzbek, "
+        f"Russian and English speakers preparing for TOPIK and EPS-TOPIK. The user typed: «{q}».\n"
+        "It may be a Korean word, a conjugated form with particles/endings, a phrase or short sentence, or an "
+        "Uzbek/Russian/English word or phrase (then give the Korean equivalents).\n"
+        "Return 1–3 entries, best match first. For a conjugated form use the dictionary form (먹어요 → 먹다, "
+        "학교에서 → 학교). For a whole phrase or sentence, return it as one entry with its translation.\n"
+        "Fields: ko (Hangul), hanja (if Sino-Korean, else empty), rom (Revised Romanization, real pronunciation), "
+        "pos (part of speech in Uzbek: ot, fe'l, sifat, ravish, ibora, olmosh, son, undov…), level (TOPIK level 1–6 as a number, 0 if unknown), "
+        "uz, ru, en (main meanings; separate different senses with «; »; Uzbek in Latin script with o‘ g‘ ‘), "
+        "syn (up to 3 Korean synonyms), ant (up to 2 Korean antonyms), "
+        "note_uz, note_ru, note_en (one short usage note: formality, typical context or a common mistake; may be empty), "
+        "ex (1–2 natural example sentences for an EPS/TOPIK learner, each {ko, uz, ru, en}).\n"
+        "Be accurate; never invent words. If the input is not a real word or phrase, return an empty list.\n"
+        'Shape: {"entries": [{"ko": "", "hanja": "", "rom": "", "pos": "", "level": 0, "uz": "", "ru": "", "en": "", '
+        '"syn": [], "ant": [], "note_uz": "", "note_ru": "", "note_en": "", "ex": [{"ko": "", "uz": "", "ru": "", "en": ""}]}]}',
+    ], temperature=0.1, lang_note=False)
+    out = []
+    for e in data.get("entries") or []:
+        if not isinstance(e, dict) or not e.get("ko"):
+            continue
+        o = {k: str(e.get(k, "") or "")[:300] for k in ("ko", "hanja", "rom", "pos", "uz", "ru", "en", "note_uz", "note_ru", "note_en")}
+        try:
+            o["level"] = max(0, min(6, int(e.get("level") or 0)))
+        except (TypeError, ValueError):
+            o["level"] = 0
+        o["syn"] = [str(x)[:30] for x in (e.get("syn") or []) if x][:3]
+        o["ant"] = [str(x)[:30] for x in (e.get("ant") or []) if x][:2]
+        exs = [x for x in (e.get("ex") or []) if isinstance(x, dict) and x.get("ko")][:2]
+        o["ex"] = [[str(x.get("ko", ""))[:200], str(x.get("uz", ""))[:200], str(x.get("ru", ""))[:200], str(x.get("en", ""))[:200]] for x in exs]
+        out.append({k: v for k, v in o.items() if v not in ("", [], None)} | {"ko": o["ko"]})
     return {"entries": out[:3]}
