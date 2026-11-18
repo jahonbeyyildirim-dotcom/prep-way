@@ -117,6 +117,8 @@
   .exam-btns .btn{padding:11px 10px;font-size:14px;flex-direction:column;gap:2px;line-height:1.2}
   .exam-btns .btn small{font-weight:600;opacity:.8;font-size:12px}
   .exam-btns.prac{margin-top:8px}
+  .exam-btns.three{grid-template-columns:1fr 1fr 1fr}
+  .exam-btns.three .btn{font-size:12.5px;padding:8px 4px}
   .exam-btns.prac .btn{padding:8px 8px;font-size:13px}
   .exam h3 .lvl{font-size:13px;font-weight:700;color:var(--muted);margin-left:6px}
   .exam.t2{border-color:#c9d6f2;background:linear-gradient(180deg,#f4f7fd,var(--card) 40%)}
@@ -332,11 +334,12 @@
         <div class="meta"><span class="chip">Tinglash + Yozish + O'qish</span><span class="chip" data-bank="topik2">Bankda savollar</span></div>
         <div class="exam-btns">
           <button class="btn ghost" data-start="topik2:quick">⚡ Tezkor test<small>10 savol · 12 daqiqa</small></button>
-          <button class="btn" data-start="topik2:full">📝 Imtihon formati<small>48 savol · 65 daqiqa</small></button>
+          <button class="btn" data-start="topik2:exam">📝 To'liq imtihon<small>100 savol · 130 daqiqa</small></button>
         </div>
-        <div class="exam-btns prac">
-          <button class="btn ghost" data-start="topik2:listen">🎧 Tinglash<small>10 savol · 15 daq.</small></button>
-          <button class="btn ghost" data-start="topik2:read">📖 O'qish<small>10 savol · 18 daq.</small></button>
+        <div class="exam-btns prac three">
+          <button class="btn ghost" data-start="topik2:full">🧪 Yarim imtihon<small>48 savol</small></button>
+          <button class="btn ghost" data-start="topik2:listen">🎧 Tinglash<small>10 savol</small></button>
+          <button class="btn ghost" data-start="topik2:read">📖 O'qish<small>10 savol</small></button>
         </div>
         <div class="exam-btns prac">
           <button class="btn ghost" data-go="write">✍️ Yozish 51–54<small>AI baholaydi</small></button>
@@ -539,6 +542,7 @@
 <script src="questions-i18n.js"></script>
 <script src="questions-sets.js"></script>
 <script src="topik2.js"></script>
+<script src="topik2b.js"></script>
 <script src="exam-format.js"></script>
 <script src="pics/pics.js"></script>
 <script>
@@ -619,7 +623,7 @@
   var MODES = {
     eps:   { name:"EPS-TOPIK", order:["read","listen"], quick:{read:5, listen:5, min:10}, full:{read:20, listen:20, min:50}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:15} },
     topik: { name:"TOPIK I",   order:["listen","read"], quick:{read:5, listen:5, min:10}, full:{read:18, listen:12, min:40}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:15} },
-    topik2:{ name:"TOPIK II",  order:["listen","read"], quick:{read:5, listen:5, min:12}, full:{read:28, listen:20, min:65}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:18} }
+    topik2:{ name:"TOPIK II",  order:["listen","read"], quick:{read:5, listen:5, min:12}, full:{read:28, listen:20, min:65}, exam:{read:50, listen:50, min:130}, listen:{read:0, listen:10, min:15}, read:{read:10, listen:0, min:18} }
   };
   var BANK = {}, QBYID = {};
   function pad3(n){ return ("00"+n).slice(-3); }
@@ -999,9 +1003,9 @@
   // ---------- TEST ----------
   var cur = null; // {key, exam, i, ans[], left, tid}
   function startTest(key){
-    var parts = String(key).split(":"), k = parts[0], mode = ({full:1, listen:1, read:1})[parts[1]] ? parts[1] : "quick";
+    var parts = String(key).split(":"), k = parts[0], mode = ({full:1, listen:1, read:1, exam:1})[parts[1]] ? parts[1] : "quick";
     var M = MODES[k], cfg = M[mode], qs = [], seen = seenMap(), used = {}, minutes = cfg.min;
-    var mock = mode === "full" && FMT && FMT.MOCK[k];
+    var mock = (mode === "full" || mode === "exam") && FMT && FMT.MOCK[mode === "exam" ? k + "_exam" : k];
     if (mock){
       // Haqiqiy imtihon tartibi: har bir tur o'z o'rnida va o'z sonida
       minutes = mock.minutes;
@@ -1048,7 +1052,7 @@
     var rng = {};
     qs.forEach(function(q, i){ var no = (rd0 && q.sec === "read") ? i+1-rd0 : i+1; q.no = no; var r = rng[q.rk] || (rng[q.rk] = [no, no]); r[1] = no; });
     qs.forEach(function(q){ var r = rng[q.rk]; q.rng = r[0] === r[1] ? String(r[0]) : r[0] + "~" + r[1]; });
-    var ex = { name: M.name+({full: mock && k!=="eps" ? TF(" · imtihon formati"," · формат экзамена"," · exam format") : TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: minutes, qs: qs };
+    var ex = { name: M.name+({exam: TF(" · to'liq imtihon"," · полный экзамен"," · full exam"), full: mock && k!=="eps" ? TF(" · imtihon formati"," · формат экзамена"," · exam format") : TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: minutes, qs: qs };
     cur = { key:key, exam:ex, i:0, ans:ex.qs.map(function(){return -1;}), left:ex.minutes*60, tid:null };
     $("tExam").textContent = ex.name;
     go("test");
@@ -1191,7 +1195,7 @@
     h += '<div class="lv-track"><i style="width:'+Math.min(100, score/T.max*100)+'%"></i>'+T.steps.map(function(s){ return '<span class="lv-m'+(score>=s[0]?' ok':'')+'" style="left:'+(s[0]/T.max*100)+'%"><em>'+s[1]+'</em></span>'; }).join("")+'</div>';
     if (next) h += '<div class="note">'+TF("{l}-darajagacha yana <b>{d}</b> ball kerak.","До {l} уровня не хватает <b>{d}</b> баллов.","<b>{d}</b> more points to level {l}.",{l:next[1], d:next[0]-score})+'</div>';
     if (wNote) h += '<div class="note">'+wNote+'</div>';
-    if (n < 30) h += '<div class="note">'+TF("Baho {n} ta savol asosida — aniqroq natija uchun «Imtihon formati»ni topshiring.","Оценка по {n} вопросам — для точности пройдите «Формат экзамена».","Based on {n} questions — take the «Exam format» test for accuracy.",{n:n})+'</div>';
+    if (n < 30) h += '<div class="note">'+TF("Baho {n} ta savol asosida — aniqroq natija uchun «To'liq imtihon»ni topshiring.","Оценка по {n} вопросам — для точности пройдите «Полный экзамен».","Based on {n} questions — take the «Full exam» for accuracy.",{n:n})+'</div>';
     if (k === "topik2" && !(window.PWWrite && PWWrite.estimate())) h += '<button class="btn ghost" data-go="write" style="margin-top:8px">✍️ '+TF("Yozishni mashq qilish","Тренировать письмо","Practise writing")+'</button>';
     return h + '</div>';
   }

@@ -196,7 +196,9 @@
       ko: "주어진 문장이 들어갈 곳으로 가장 알맞은 것을 고르십시오.",
       uz: "<보기>dagi gap qaysi joyga eng mos tushadi?", ru: "Куда лучше всего вставить данное предложение?", en: "Where does the given sentence fit best?" }),
     "U-R12": T({ exam: "topik2", sec: "read", range: "19~50", set: true,
-      ko: "다음을 읽고 물음에 답하십시오.", uz: "O'qing va savollarga javob bering.", ru: "Прочитайте и ответьте на вопросы.", en: "Read and answer the questions." })
+      ko: "다음을 읽고 물음에 답하십시오.", uz: "O'qing va savollarga javob bering.", ru: "Прочитайте и ответьте на вопросы.", en: "Read and answer the questions." }),
+    "U-R13": T({ exam: "topik2", sec: "read", range: "48~50", set: true,
+      ko: "다음을 읽고 물음에 답하십시오.", uz: "Maqolani o'qing va uchta savolga javob bering.", ru: "Прочитайте статью и ответьте на три вопроса.", en: "Read the article and answer three questions." })
   };
 
   // Eski ko'rsatmalar → tur (savol fayllaridagi inst bo'yicha)
@@ -239,6 +241,12 @@
       ["U-L1", 3], ["U-L2", 3], ["U-L3", 3], ["U-L4", 3], ["U-L5", 4, "set"],
       ["U-R1", 2], ["U-R2", 2], ["U-R3", 2], ["U-R4", 2], ["U-R5", 2], ["U-R6", 2], ["U-R12", 1, "set"],
       ["U-R7", 2], ["U-R8", 2], ["U-R9", 2], ["U-R10", 2], ["U-R11", 2], ["U-R12", 2, "set"]
+    ] },
+    // TOPIK II to'liq imtihon: 듣기 50 (rasmli 1~3 o'rniga [4~8] turi) + 읽기 50 = 100 savol, 60 + 70 = 130 daqiqa
+    topik2_exam: { minutes: 130, parts: [
+      ["U-L1", 8], ["U-L2", 4], ["U-L3", 4], ["U-L4", 4], ["U-L5", 15, "set"],
+      ["U-R1", 2], ["U-R2", 2], ["U-R3", 4], ["U-R4", 4], ["U-R5", 3], ["U-R6", 3], ["U-R12", 3, "set"],
+      ["U-R7", 3], ["U-R8", 4], ["U-R9", 3], ["U-R10", 4], ["U-R11", 3], ["U-R12", 3, "set"], ["U-R13", 3]
     ] },
     eps: { minutes: 50, parts: [
       ["E-R1", 3], ["E-R1S", 2], ["E-R2", 2], ["E-R3", 4], ["E-R9", 2], ["E-R10", 1], ["E-R4", 2], ["E-R5", 1], ["E-R6", 1], ["E-R7", 1], ["E-R8", 1],
