@@ -57,7 +57,7 @@
     _trim: function (a) { var ks = Object.keys(a).sort(); while (ks.length > 120) delete a[ks.shift()]; }
   };
   // Faol bo'limlarda o'tkazilgan vaqt kunlik maqsadga qo'shiladi
-  var ACTIVE = { test: 1, speak: 1, lesson: 1, words: 1, hw: 1, mistakes: 1, book: 1 };
+  var ACTIVE = { test: 1, speak: 1, lesson: 1, words: 1, hw: 1, mistakes: 1, book: 1, role: 1, gcards: 1, stories: 1, write: 1, t2gram: 1, hangul: 1, six: 1 };
   var vt = { v: "home", t0: Date.now() };
   function flushTime() { if (ACTIVE[vt.v]) Activity.addSecs((Date.now() - vt.t0) / 1000); vt.t0 = Date.now(); }
   var prevOnView = H.onView, prevOnLeave = H.onLeave;

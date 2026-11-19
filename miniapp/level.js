@@ -198,4 +198,6 @@
     gramLv: function () { var g = 0; try { g = +localStorage.getItem("pwGramLv") || 0; localStorage.removeItem("pwGramLv"); } catch (e) {} if (g) return g; var l = lv(); return l >= 4 ? 5 : l === 3 ? 3 : 0; }
   };
   setTimeout(arrangeExams, 0);
+  // home.js level.js dan oldin yuklanadi — bosh sahifani reja va daraja kartasi bilan qayta chizamiz
+  document.dispatchEvent(new CustomEvent("pw:activity"));
 })();

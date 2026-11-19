@@ -354,6 +354,48 @@
     });
   }
 
+  // ---------- Qo'lda yozib qidirish: barmoq bilan chizing, AI o'qiydi ----------
+  function handSearch() {
+    var box = document.createElement("div"); box.className = "hw-pad";
+    box.innerHTML = '<div class="hw-box"><div class="hw-h"><b>✍️ ' + esc(T({ uz: "Barmoq bilan yozing", ru: "Напишите пальцем", en: "Write with your finger" })) + '</b><button class="dict-x" id="hwX">✕</button></div>' +
+      '<canvas id="hwC"></canvas><div class="note" style="margin:6px 0 8px">' + esc(T({ uz: "Koreyscha so'z yoki bo'g'inni yozing, keyin «Qidirish».", ru: "Напишите корейское слово, затем «Искать».", en: "Write a Korean word, then tap Search." })) + '</div>' +
+      '<div style="display:flex;gap:8px"><button class="btn ghost" id="hwClr" style="flex:1">🧽 ' + esc(T({ uz: "Tozalash", ru: "Очистить", en: "Clear" })) + '</button><button class="btn ghost" id="hwUndo">↶</button><button class="btn" id="hwGo" style="flex:2">🔎 ' + esc(T({ uz: "Qidirish", ru: "Искать", en: "Search" })) + '</button></div></div>';
+    document.body.appendChild(box);
+    var cv = $("hwC"), r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1, ctx = cv.getContext("2d"), strokes = [], curS = null;
+    cv.width = r.width * dpr; cv.height = r.height * dpr; ctx.scale(dpr, dpr);
+    function redraw() {
+      ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, r.width, r.height);
+      ctx.strokeStyle = "#e5e7eb"; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(r.width / 2, 0); ctx.lineTo(r.width / 2, r.height); ctx.moveTo(0, r.height / 2); ctx.lineTo(r.width, r.height / 2); ctx.stroke(); ctx.setLineDash([]);
+      ctx.strokeStyle = "#111"; ctx.lineWidth = Math.max(6, r.width / 45); ctx.lineCap = ctx.lineJoin = "round";
+      strokes.forEach(function (st) { ctx.beginPath(); st.forEach(function (p, i) { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }); if (st.length === 1) ctx.lineTo(st[0][0] + 0.1, st[0][1]); ctx.stroke(); });
+    }
+    function pt(e) { var b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; }
+    cv.addEventListener("pointerdown", function (e) { e.preventDefault(); cv.setPointerCapture(e.pointerId); curS = [pt(e)]; strokes.push(curS); redraw(); });
+    cv.addEventListener("pointermove", function (e) { if (!curS) return; e.preventDefault(); curS.push(pt(e)); redraw(); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (ev) { cv.addEventListener(ev, function () { curS = null; }); });
+    redraw();
+    function close() { box.remove(); }
+    $("hwX").onclick = close;
+    $("hwClr").onclick = function () { strokes = []; redraw(); };
+    $("hwUndo").onclick = function () { strokes.pop(); redraw(); };
+    $("hwGo").onclick = function () {
+      if (!strokes.length) return;
+      if (K.LOCAL()) { H.toast(T({ uz: "Qo'lda yozish internet orqali ishlaydi.", ru: "Рукописный ввод работает онлайн.", en: "Handwriting needs the internet." })); return; }
+      var b = $("hwGo"); b.disabled = true; b.innerHTML = '<span class="spin"></span>';
+      cv.toBlob(function (blob) {
+        var fd = new FormData(); fd.append("image", blob, "hand.png"); fd.append("lang", LG); fd.append("hand", "1");
+        H.api("/api/dict/photo", { body: fd }).then(function (res) {
+          var txt = String(res.text || "").replace(/\s+/g, " ").trim();
+          learn(res.words || []);
+          (res.words || []).forEach(function (e) { var o = slim(e); o.tag = "ai"; searchCache[o.ko] = o; });
+          close();
+          if (!txt) { H.toast(T({ uz: "Yozuv tanilmadi — qayta urinib ko'ring.", ru: "Не распознано — попробуйте ещё.", en: "Couldn't read it — try again." })); return; }
+          $("dQ").value = txt; render(txt);
+        }).catch(function (e) { b.disabled = false; b.textContent = "🔎"; H.toast(e.message || String(e)); });
+      }, "image/png");
+    };
+  }
+
   // ---------- Rasm orqali qidirish (menyu, belgi, kitob sahifasi) ----------
   function photoSearch() {
     var out = $("dRes"), D = window.PWDaftar;
@@ -392,13 +434,14 @@
       el.innerHTML = '<div class="dict-box"><div class="dict-top"><span class="dict-t">📖 ' + esc(T({ uz: "Lug'at", ru: "Словарь", en: "Dictionary" })) + '</span>' +
         '<span class="dict-l">🇰🇷 ⇄ 🇺🇿 🇷🇺 🇬🇧</span><button class="dict-x" id="dX" aria-label="Close">✕</button></div>' +
         '<div class="dict-s"><input class="inp" id="dQ" type="search" autocomplete="off" autocapitalize="off" placeholder="' + esc(T({ uz: "So'z yozing: 사과, olma, яблоко, apple…", ru: "Введите слово: 사과, olma, яблоко, apple…", en: "Type a word: 사과, olma, яблоко, apple…" })) + '">' +
-        (K.canListen() ? '<button class="dict-mic" id="dMic" aria-label="Voice">🎙️</button>' : '') + '<button class="dict-mic" id="dCam" aria-label="Photo">📷</button></div>' +
+        (K.canListen() ? '<button class="dict-mic" id="dMic" aria-label="Voice">🎙️</button>' : '') + '<button class="dict-mic" id="dHand" aria-label="Handwriting">✍️</button><button class="dict-mic" id="dCam" aria-label="Photo">📷</button></div>' +
         '<div class="dict-res" id="dRes"></div></div>';
       document.body.appendChild(el);
       $("dX").onclick = close;
       $("dQ").oninput = function () { var v = this.value; clearTimeout(tmr); tmr = setTimeout(function () { render(v); }, 180); };
       $("dQ").onkeydown = function (e) { if (e.key === "Enter") { remember(this.value.trim()); this.blur(); } };
       $("dCam").onclick = function () { photoSearch(); };
+      $("dHand").onclick = function () { handSearch(); };
       var mic = $("dMic");
       if (mic) mic.onclick = function () {
         mic.classList.add("rec");

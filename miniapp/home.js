@@ -476,6 +476,8 @@
       }).join("") + '</div>' +
       '<div class="tiles">' +
         '<button class="tile t6" data-go="role"><span>🎭</span><b>' + esc(T({ uz: "Vaziyatlar", ru: "Ситуации", en: "Role-play" })) + '</b><small>' + esc(T({ uz: "Zavod, bank, shifokor: rolli suhbat", ru: "Завод, банк, врач: ролевой диалог", en: "Factory, bank, doctor: role-play" })) + '</small></button>' +
+        '<button class="tile t7" data-go="gcards"><span>📘</span><b>' + esc(T({ uz: "Grammatika", ru: "Грамматика", en: "Grammar" })) + '</b><small>' + esc(T({ uz: "Kartochkalar va test · 1–6", ru: "Карточки и тест · 1–6", en: "Cards & quiz · 1–6" })) + '</small></button>' +
+        '<button class="tile t8" data-go="stories"><span>📖</span><b>' + esc(T({ uz: "Hikoyalar", ru: "Рассказы", en: "Stories" })) + '</b><small>' + esc(T({ uz: "Darajangizga mos o'qish", ru: "Чтение по уровню", en: "Graded reading" })) + '</small></button>' +
         '<button class="tile t1" data-act="chat"><span>🤖</span><b>Komiko</b><small>' + esc(T({ uz: "Ovozli suhbat", ru: "Голосовой диалог", en: "Voice chat" })) + '</small></button>' +
         '<button class="tile t2" data-go="hw"><span>📷</span><b>' + esc(T({ uz: "Daftar", ru: "Тетрадь", en: "Notebook" })) + '</b><small>' + esc(T({ uz: "Rasm bilan tekshiruv", ru: "Проверка по фото", en: "Photo check" })) + '</small></button>' +
         '<button class="tile t3" data-go="speak"><span>🎯</span><b>' + esc(T({ uz: "Talaffuz", ru: "Произношение", en: "Pronunciation" })) + '</b><small>' + esc(T({ uz: "Gapni ayting, baho oling", ru: "Скажите фразу — получите оценку", en: "Say it, get a score" })) + '</small></button>' +
@@ -493,6 +495,8 @@
       '<div class="note" style="font-weight:700;margin-bottom:6px">🌐 ' + esc(T({ uz: "Ilova tili", ru: "Язык приложения", en: "App language" })) + '</div><div class="onb-speed" style="justify-content:flex-start">' +
       [["uz", "🇺🇿 O'zbekcha"], ["ru", "🇷🇺 Русский"], ["en", "🇬🇧 English"]].map(function (l) { return '<button data-sl="' + l[0] + '" class="' + (LG === l[0] ? "on" : "") + '">' + l[1] + '</button>'; }).join("") + '</div>' +
       '<div style="height:12px"></div>' +
+      (window.PWTheme ? '<div class="note" style="font-weight:700;margin-bottom:6px">🌗 ' + esc(T({ uz: "Mavzu", ru: "Тема", en: "Theme" })) + '</div><div class="onb-speed" style="justify-content:flex-start">' +
+        [["auto", T({ uz: "Avto", ru: "Авто", en: "Auto" })], ["light", "☀️ " + T({ uz: "Yorug'", ru: "Светлая", en: "Light" })], ["dark", "🌙 " + T({ uz: "Tungi", ru: "Тёмная", en: "Dark" })]].map(function (t) { return '<button data-th="' + t[0] + '" class="' + (PWTheme.get() === t[0] ? "on" : "") + '">' + esc(t[1]) + '</button>'; }).join("") + '</div><div style="height:12px"></div>' : '') +
       '<button class="lsn" id="stVoice"><span class="n">🔈</span><span style="flex:1"><b>' + esc(T({ uz: "Komiko ovozi", ru: "Голос Комико", en: "Komiko's voice" })) + '</b><div class="s">' +
         esc(p.voice === "male" ? T({ uz: "Erkak", ru: "Мужской", en: "Male" }) : T({ uz: "Ayol", ru: "Женский", en: "Female" })) + ' · ' + esc(p.speed === "slow" ? T({ uz: "sekin", ru: "медленно", en: "slow" }) : T({ uz: "odatiy", ru: "обычно", en: "normal" })) + '</div></span>›</button>' +
       '<div style="height:8px"></div>' +
@@ -500,11 +504,14 @@
       [5, 10, 20, 30].map(function (m) { return '<button data-dm="' + m + '" class="' + ((p.daily || 10) === m ? "on" : "") + '">' + m + ' ' + esc(T({ uz: "daq", ru: "мин", en: "min" })) + '</button>'; }).join("") + '</div>' +
       '<div style="height:12px"></div>' +
       (window.PWCoach ? '<button class="lsn" id="stRem"><span class="n">🔔</span><span style="flex:1"><b>' + esc(T({ uz: "Kundalik eslatma", ru: "Ежедневное напоминание", en: "Daily reminder" })) + '</b><div class="s">' + esc((PWCoach.reminder() || {}).on ? (PWCoach.reminder().h + ":00") : T({ uz: "o'chiq", ru: "выкл.", en: "off" })) + '</div></span>›</button><div style="height:8px"></div>' : '') +
+      (window.PWTeacher ? '<button class="lsn" id="stGroup"><span class="n">👩‍🏫</span><span style="flex:1"><b>' + esc(T({ uz: "Guruhlar va o'qituvchi", ru: "Группы и учитель", en: "Groups & teacher" })) + '</b><div class="s">' + esc(T({ uz: "Kod bilan qo'shilish yoki guruh ochish", ru: "Вступить по коду или создать группу", en: "Join with a code or create a group" })) + '</div></span>›</button><div style="height:8px"></div>' : '') +
       (window.PWLeague ? '<button class="lsn" id="stExam"><span class="n">📅</span><span style="flex:1"><b>' + esc(T({ uz: "Imtihon sanasi", ru: "Дата экзамена", en: "Exam date" })) + '</b><div class="s">' + esc(localStorage.getItem("pwExamDate") ? JSON.parse(localStorage.getItem("pwExamDate")) : T({ uz: "kiritilmagan", ru: "не указана", en: "not set" })) + '</div></span>›</button><div style="height:8px"></div>' : '') +
       '<button class="lsn" id="stRedo"><span class="n">🔄</span><span style="flex:1"><b>' + esc(T({ uz: "Tanishuv savollarini qaytadan", ru: "Пройти знакомство заново", en: "Redo the intro questions" })) + '</b><div class="s">' + esc(T({ uz: "Darajani qayta aniqlash", ru: "Заново определить уровень", en: "Re-check your level" })) + '</div></span>›</button>' +
       '<p class="note" style="font-size:11.5px;margin-top:14px;opacity:.75">' + esc(T({ uz: "Chizmalar", ru: "Рисунки", en: "Drawings" })) + ': OpenMoji — CC BY-SA 4.0</p>');
     $("stVoice").onclick = function () { K.closeSheet(); K.voicePicker(); };
     $("stRedo").onclick = function () { K.closeSheet(); startOnboarding(); };
+    document.querySelectorAll("#kSheet [data-th]").forEach(function (b) { b.onclick = function () { PWTheme.set(b.dataset.th); document.querySelectorAll("#kSheet [data-th]").forEach(function (x) { x.classList.toggle("on", x === b); }); }; });
+    if ($("stGroup")) $("stGroup").onclick = function () { K.closeSheet(); PWTeacher.open(); };
     if ($("stExam")) $("stExam").onclick = function () { K.closeSheet(); setTimeout(PWLeague.examSheet, 250); };
     if ($("stRem")) $("stRem").onclick = function () { K.closeSheet(); setTimeout(PWCoach.reminderSheet, 250); };
     document.querySelectorAll("#kSheet [data-sl]").forEach(function (b) { b.onclick = function () { I.setLang(b.dataset.sl); }; });

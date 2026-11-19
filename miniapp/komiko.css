@@ -512,3 +512,84 @@ body.onb-open .dict-fab,body.dict-open .dict-fab{display:none}
 .ch-vs span{font-weight:900;opacity:.7}
 .ch-msg{margin-top:6px;font-weight:800;font-size:16px}
 body.view-role .dict-fab{display:none}
+
+/* ===== Tungi mavzu ===== */
+html.dark{--bg:#0e1424;--card:#161f36;--ink:#e8ecf5;--muted:#97a3bb;--line:#27324d;--blue:#3d6df0;--blue-2:#5b86ff;--blue-soft:#1a2747;
+  --red:#ff6370;--red-soft:#3a1d27;--green:#3fc287;--green-soft:#15302a;--shadow:0 10px 30px rgba(0,0,0,.35);color-scheme:dark}
+html.dark .toast{background:#2b3655;color:#fff}
+html.dark .fix.mid,html.dark .hw-it.near{background:#3a2f15;color:#ffd38a}
+html.dark .dc-tag.dc-src{background:#15302a;color:#7be0a8}
+html.dark .sign{background:#fff}
+html.dark img.mark{box-shadow:none}
+html.dark .wk-d.ice i{background:#2a4a6b}
+html.dark .exp,html.dark .why-tip{color:var(--ink)}
+html.dark .btn.ghost:hover{border-color:var(--muted)}
+html.dark .dict-x{background:var(--card)}
+html.dark .tx-sec{color:#8fb0ff}
+html.dark .rg-pop{color:#7be0a8}
+html.dark .filters button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ===== Grammatika kartochkalari ===== */
+.tile.t7{background:linear-gradient(135deg,#0f766e,#14b8a6)}
+.tile.t8{background:linear-gradient(135deg,#9d174d,#ec4899)}
+.gc-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.gc-seg button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 6px;font-weight:800;font-size:13.5px}
+.gc-seg button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.gc-n{font-style:normal;background:#FF5A4E;color:#fff;border-radius:99px;padding:0 6px;font-size:11.5px;margin-left:2px}
+.gc-lv{margin-bottom:10px}
+.gc-card{position:relative;min-height:240px;border-radius:22px;padding:28px 20px 20px;background:linear-gradient(160deg,#0f766e,#14b8a6);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;cursor:pointer;box-shadow:0 14px 34px rgba(15,118,110,.3)}
+.gc-card.flip{background:var(--card);color:var(--ink);border:2px solid #14b8a6;box-shadow:var(--shadow)}
+.gc-card .note{color:inherit;opacity:.8}
+.gc-lvb{position:absolute;top:12px;left:14px;font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.2)}
+.gc-card.flip .gc-lvb{background:rgba(20,184,166,.15);color:#0f766e}
+.gc-p{font-size:34px;font-weight:900;line-height:1.2}
+.gc-card.flip .gc-p{font-size:24px;color:#0f766e}
+html.dark .gc-card.flip .gc-p,html.dark .gc-card.flip .gc-lvb{color:#5eead4}
+.gc-m{font-size:17px;font-weight:700}
+.gc-ex{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 12px;border-radius:14px;background:var(--bg);width:100%}
+.gc-ex .ko{font-size:17px;font-weight:700}
+.gc-ex small{color:var(--muted)}
+.gc-nav{display:flex;justify-content:space-between;margin-top:12px}
+.gc-qt{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.gc-qm{font-size:19px;font-weight:800;margin:6px 0 10px}
+.gc-opts{display:grid;gap:8px}
+.gc-opts .opt.ok{border-color:var(--green);background:var(--green-soft)}
+.gc-opts .opt.bad{border-color:var(--red);background:var(--red-soft)}
+
+/* ===== Hikoyalar ===== */
+.st-d{font-weight:800;color:var(--muted);font-size:13px}
+.st-d.on{color:#2f9e6b}
+.st-card{padding:16px}
+.st-ti{margin:0 0 10px;font-size:22px}
+.st-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.st-tools .btn{padding:9px 12px;font-size:13.5px}
+.st-s{margin:0;padding:8px 10px;border-radius:12px;font-size:17px;line-height:1.7;transition:background .2s}
+.st-s small{display:block;font-size:13.5px;color:var(--muted);line-height:1.4}
+.st-s.on{background:rgba(255,154,60,.16)}
+.st-q{padding:14px;margin-bottom:8px}
+
+/* ===== Qo'lda yozish ===== */
+.hw-pad{position:fixed;inset:0;z-index:140;background:rgba(10,14,30,.5);display:flex;align-items:flex-end;justify-content:center}
+.hw-box{width:100%;max-width:600px;background:var(--bg);border-radius:24px 24px 0 0;padding:14px 16px calc(16px + env(safe-area-inset-bottom))}
+.hw-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+#hwC{display:block;width:100%;height:min(62vw,300px);border-radius:16px;border:1px solid var(--line);background:#fff;touch-action:none}
+.dict-s .dict-mic{width:44px;flex:none}
+.off-bar{position:fixed;left:10px;right:10px;top:calc(8px + env(safe-area-inset-top));z-index:150;padding:9px 12px;border-radius:12px;background:#2b3655;color:#fff;font-size:12.5px;font-weight:700;text-align:center;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+
+/* ===== Guruhlar / o'qituvchi ===== */
+.tc-sec{padding:14px;margin-bottom:10px}
+.tc-row{display:flex;gap:8px;margin-top:10px}
+.tc-row .inp{flex:1;min-width:0}
+.tc-list{display:grid;gap:6px;margin-top:8px}
+.tc-it{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line);color:var(--ink);text-align:left;width:100%}
+.tc-priv{font-size:12px;margin:8px 0 0}
+.tc-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tc-code{font-size:18px;letter-spacing:.12em;color:var(--blue)}
+.tc-tbl{display:grid;gap:8px}
+.tc-st{padding:12px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.tc-st.cold{opacity:.7;border-style:dashed}
+.tc-st-h{display:flex;align-items:center;gap:8px}
+.tc-st-h b{flex:1;min-width:0}
+.tc-st .lg-lv{background:var(--blue-soft);color:var(--blue)}
+.tc-xp{font-weight:800;color:#FF7A2F;font-size:13.5px}
+.tc-st-g{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 2px;font-size:13.5px;font-weight:700}

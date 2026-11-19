@@ -281,7 +281,7 @@ async def dict_photo(req):
     mime = f.content_type if f.content_type in ("image/jpeg", "image/png", "image/webp") else "image/jpeg"
     await _take_ai(uid)
     try:
-        return web.json_response(await ai.photo_words(data, mime, str(form.get("lang") or "uz")))
+        return web.json_response(await ai.photo_words(data, mime, str(form.get("lang") or "uz"), str(form.get("hand") or "") == "1"))
     except Exception:
         await storage.give_back(uid, "ai")
         raise
@@ -301,6 +301,52 @@ async def xp_add(req):
 
 async def league(req):
     return web.json_response(storage.league_get(req["uid"]))
+
+
+async def groups_list(req):
+    return web.json_response(storage.groups_of(req["uid"]))
+
+
+async def group_create(req):
+    b = await req.json()
+    try:
+        return web.json_response(await storage.group_create(req["uid"], b.get("name")))
+    except ValueError as e:
+        return jerr(str(e))
+
+
+async def group_join(req):
+    b = await req.json()
+    try:
+        return web.json_response(await storage.group_join(req["uid"], b.get("code"), b.get("name") or req["user"].get("first_name") or ""))
+    except ValueError as e:
+        return jerr(str(e))
+
+
+async def group_leave(req):
+    b = await req.json()
+    await storage.group_leave(req["uid"], str(b.get("code") or ""))
+    return web.json_response({"ok": True})
+
+
+async def group_get(req):
+    v = storage.group_view(req["uid"], req.match_info["code"])
+    if v is None:
+        return jerr("Guruh topilmadi yoki siz uning o'qituvchisi emassiz.", 404)
+    return web.json_response(v)
+
+
+async def group_del(req):
+    ok = await storage.group_delete(req["uid"], req.match_info["code"])
+    return web.json_response({"ok": ok}) if ok else jerr("Guruh topilmadi.", 404)
+
+
+async def group_stats(req):
+    try:
+        b = await req.json()
+    except Exception:
+        return jerr("Noto'g'ri so'rov.")
+    return web.json_response({"saved": await storage.group_stats_save(req["uid"], b if isinstance(b, dict) else {})})
 
 
 async def explain(req):
@@ -518,6 +564,16 @@ async def static_file(req):
     return web.FileResponse(path, headers={"Cache-Control": "no-cache"})
 
 
+async def sub_static(req):
+    """miniapp/pics va miniapp/pdf ichidagi fayllar (rasmli savollar, darsliklar)."""
+    sub, name = req.match_info["sub"], req.match_info["name"]
+    base = (config.MINIAPP_DIR / sub).resolve()
+    path = (base / name).resolve()
+    if path.parent != base or not path.is_file():
+        raise web.HTTPNotFound()
+    return web.FileResponse(path, headers={"Cache-Control": "public, max-age=86400"})
+
+
 def make_app() -> web.Application:
     app = web.Application(middlewares=[cors_middleware, middleware], client_max_size=(config.MAX_UPLOAD_MB + 2) * 1024 * 1024)
     app.add_routes([
@@ -538,6 +594,13 @@ def make_app() -> web.Application:
         web.post("/api/roleplay", roleplay),
         web.post("/api/xp", xp_add),
         web.get("/api/league", league),
+        web.get("/api/groups", groups_list),
+        web.post("/api/group/create", group_create),
+        web.post("/api/group/join", group_join),
+        web.post("/api/group/leave", group_leave),
+        web.post("/api/group/stats", group_stats),
+        web.get("/api/group/{code}", group_get),
+        web.delete("/api/group/{code}", group_del),
         web.post("/api/dict", dict_lookup),
         web.get("/api/dict/words", dict_words),
         web.post("/api/words", words),
@@ -551,6 +614,7 @@ def make_app() -> web.Application:
         web.get("/HangukWay.apk", apk_file),
         web.get("/PrepWay.apk", apk_file),  # eski havolalar uchun
         web.get("/", index),
+        web.get("/{sub:pics|pdf}/{name}", sub_static),
         web.get("/{name}", static_file),
     ])
     return app

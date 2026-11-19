@@ -753,8 +753,10 @@ async def grade_writing(no: int, task: str, model: str, answer, chars: int) -> d
             "corrections": corr, "tips": tips, "improved": str(data.get("improved", ""))}
 
 
-async def photo_words(image: bytes, mime: str, lang: str = "uz") -> dict:
-    """Rasmdagi koreyscha matnni o'qiydi va asosiy so'zlarni tarjima qiladi (lug'atdagi 📷)."""
+async def photo_words(image: bytes, mime: str, lang: str = "uz", hand: bool = False) -> dict:
+    """Rasmdagi koreyscha matnni o'qiydi va asosiy so'zlarni tarjima qiladi (lug'atdagi 📷 va ✍️)."""
+    if config.AI_FAKE and hand:
+        return {"text": "학교", "translation": "maktab", "words": [{"ko": "학교", "rom": "hakgyo", "pos": "ot", "level": 1, "uz": "maktab", "ru": "школа", "en": "school"}]}
     if config.AI_FAKE:
         return {"text": "오늘의 메뉴: 김치찌개", "translation": "Bugungi menyu: kimchi sho'rva",
                 "words": [{"ko": "메뉴", "rom": "menyu", "pos": "ot", "level": 1, "uz": "menyu", "ru": "меню", "en": "menu"},
@@ -762,7 +764,9 @@ async def photo_words(image: bytes, mime: str, lang: str = "uz") -> dict:
     tl = {"ru": "Russian", "en": "English"}.get(lang, "Uzbek (Latin script)")
     data = await _json_call([
         types.Part.from_bytes(data=image, mime_type=mime),
-        "Read all Korean text in this photo (menu, sign, label, book page, screen…). "
+        ("This image is Korean handwriting drawn with a finger on a phone screen (usually one word or a short phrase; "
+         "strokes may be shaky). Read it as exactly as possible; if a stroke is ambiguous choose the most likely real Korean word. "
+         if hand else "Read all Korean text in this photo (menu, sign, label, book page, screen…). ") +
         f"Return it in text (keep line breaks, max 600 chars) and a natural translation into {tl} in translation. "
         "Then list up to 12 of the most useful Korean words from it in DICTIONARY form (verbs/adjectives with -다, no particles), "
         "most important first, each with rom (Revised Romanization), pos (in Uzbek: ot, fe'l, sifat, ravish, ibora…), "

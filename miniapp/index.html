@@ -6,6 +6,23 @@
 <title>Hanguk Way — EPS-TOPIK va TOPIK tayyorlov</title>
 <!-- Telegram Mini App SDK: boshqa skriptlardan oldin yuklanishi kerak -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+/* Mavzu: avto / yorug' / tungi — sahifa chizilishidan oldin qo'llanadi (miltillash bo'lmasin) */
+(function(){
+  function apply(){
+    var m; try { m = JSON.parse(localStorage.getItem("pwTheme")) || "auto"; } catch(e){ m = "auto"; }
+    var tg = window.Telegram && Telegram.WebApp, sys = tg && tg.colorScheme ? tg.colorScheme === "dark" : (window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches);
+    var dark = m === "dark" || (m === "auto" && sys);
+    document.documentElement.classList.toggle("dark", !!dark);
+    var mt = document.querySelector('meta[name="theme-color"]'); if (mt) mt.content = dark ? "#0e1424" : "#f6f5f1";
+  }
+  window.PWTheme = { apply: apply, set: function(m){ try { localStorage.setItem("pwTheme", JSON.stringify(m)); } catch(e){} apply(); },
+    get: function(){ try { return JSON.parse(localStorage.getItem("pwTheme")) || "auto"; } catch(e){ return "auto"; } } };
+  apply();
+  if (window.matchMedia) try { matchMedia("(prefers-color-scheme: dark)").addEventListener("change", apply); } catch(e){}
+  if (window.Telegram && Telegram.WebApp && Telegram.WebApp.onEvent) Telegram.WebApp.onEvent("themeChanged", apply);
+})();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
@@ -509,6 +526,9 @@
   <section class="view" id="v-t2gram"></section>
   <section class="view" id="v-hangul"></section>
   <section class="view" id="v-role"></section>
+  <section class="view" id="v-gcards"></section>
+  <section class="view" id="v-stories"></section>
+  <section class="view" id="v-teacher"></section>
 
   <!-- DAFTAR (kamera) -->
   <section class="view" id="v-hw"></section>
@@ -999,7 +1019,7 @@
   }
 
   // ---------- ROUTING ----------
-  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home", six:"home", write:"home", t2gram:"home", hangul:"home", role:"home" };
+  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home", six:"home", write:"home", t2gram:"home", hangul:"home", role:"home", gcards:"home", stories:"home", teacher:"home" };
   var PARENT = { lesson:"book", book:"books" };
   var curView = "home";
   function go(v){
@@ -1351,6 +1371,27 @@
 <script src="share.js"></script>
 <script src="daftar.js"></script>
 <script src="topik2-write.js"></script>
+<script src="gram1-data.js"></script>
+<script src="gcards.js"></script>
+<script src="stories-data.js"></script>
+<script src="stories.js"></script>
+<script src="teacher.js"></script>
 <script src="level.js"></script>
+<script>
+/* Oflayn rejim: web versiyada fayllar keshlanadi; internet uzilsa ogohlantirish chiqadi */
+(function(){
+  if ("serviceWorker" in navigator && !(window.PW && PW.native) && (location.protocol === "https:" || location.hostname === "localhost")) {
+    window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+  }
+  function net(){
+    var off = navigator.onLine === false, b = document.getElementById("offBar");
+    if (off && !b){ b = document.createElement("div"); b.id = "offBar"; b.className = "off-bar";
+      b.textContent = window.I18N ? I18N.f({uz:"📴 Oflayn: testlar, lug'at, kartalar va hikoyalar ishlaydi. AI funksiyalar internet kutadi.", ru:"📴 Офлайн: тесты, словарь, карточки и рассказы работают. Функциям ИИ нужен интернет.", en:"📴 Offline: tests, dictionary, cards and stories work. AI features need the internet."}) : "📴 Oflayn";
+      document.body.appendChild(b); }
+    if (!off && b){ b.remove(); }
+  }
+  window.addEventListener("online", net); window.addEventListener("offline", net); net();
+})();
+</script>
 </body>
 </html>

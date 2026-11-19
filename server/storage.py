@@ -17,6 +17,8 @@ USAGE_FILE = config.DATA_DIR / "usage.json"
 BOOKS_DIR = config.DATA_DIR / "books"
 TTS_DIR = config.DATA_DIR / "tts_cache"
 LEAGUE_FILE = config.DATA_DIR / "league.json"
+GROUPS_FILE = config.DATA_DIR / "groups.json"
+GSTATS_FILE = config.DATA_DIR / "group_stats.json"
 BOOKS_DIR.mkdir(parents=True, exist_ok=True)
 TTS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -162,6 +164,18 @@ async def delete_user(uid: int) -> None:
         lg = _read(LEAGUE_FILE, {})
         if any([lg.get(k, {}).pop(str(uid), None) is not None for k in ("users", "prev")]):
             _write(LEAGUE_FILE, lg)
+        gs = _read(GSTATS_FILE, {})
+        if gs.pop(str(uid), None) is not None:
+            _write(GSTATS_FILE, gs)
+        gr = _read(GROUPS_FILE, {})
+        changed = False
+        for code in list(gr):
+            if gr[code].get("owner") == uid:
+                del gr[code]; changed = True
+            elif gr[code].get("members", {}).pop(str(uid), None) is not None:
+                changed = True
+        if changed:
+            _write(GROUPS_FILE, gr)
     rmtree(BOOKS_DIR / str(uid))
 
 
@@ -239,3 +253,107 @@ def league_get(uid: int, top: int = 30) -> dict:
     prev = next(({"rank": i + 1, "xp": v.get("xp", 0), "of": len(prk)} for i, (u, v) in enumerate(prk) if u == me), None)
     return {"week": lg.get("week", _week()), "ends": _week_end(), "total": len(rk), "me": my_rank,
             "my_xp": lg.get("users", {}).get(me, {}).get("xp", 0), "rows": rows, "prev": prev}
+
+
+# ---------- O'qituvchi guruhlari ----------
+import secrets as _secrets
+_CODE_ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+
+def _new_code(existing) -> str:
+    while True:
+        c = "".join(_secrets.choice(_CODE_ABC) for _ in range(6))
+        if c not in existing:
+            return c
+
+
+async def group_create(uid: int, name: str) -> dict:
+    name = " ".join(str(name or "").split())[:40] or "Guruh"
+    async with _lock:
+        gr = _read(GROUPS_FILE, {})
+        if sum(1 for g in gr.values() if g.get("owner") == uid) >= 10:
+            raise ValueError("Ko'pi bilan 10 ta guruh yaratish mumkin.")
+        code = _new_code(gr)
+        gr[code] = {"name": name, "owner": uid, "created": time.time(), "members": {}}
+        _write(GROUPS_FILE, gr)
+        return {"code": code, "name": name}
+
+
+async def group_join(uid: int, code: str, name: str) -> dict:
+    code = str(code or "").strip().upper()
+    async with _lock:
+        gr = _read(GROUPS_FILE, {})
+        g = gr.get(code)
+        if not g:
+            raise ValueError("Bunday guruh kodi topilmadi.")
+        if sum(1 for x in gr.values() if str(uid) in x.get("members", {})) >= 5 and str(uid) not in g["members"]:
+            raise ValueError("Ko'pi bilan 5 ta guruhga qo'shilish mumkin.")
+        if len(g["members"]) >= 200 and str(uid) not in g["members"]:
+            raise ValueError("Guruh to'lgan (200 kishi).")
+        g["members"][str(uid)] = {"name": _clean_name(name), "joined": g["members"].get(str(uid), {}).get("joined", time.time())}
+        _write(GROUPS_FILE, gr)
+        return {"code": code, "name": g["name"]}
+
+
+async def group_leave(uid: int, code: str) -> None:
+    async with _lock:
+        gr = _read(GROUPS_FILE, {})
+        g = gr.get(str(code).upper())
+        if g and g["members"].pop(str(uid), None) is not None:
+            _write(GROUPS_FILE, gr)
+
+
+async def group_delete(uid: int, code: str) -> bool:
+    async with _lock:
+        gr = _read(GROUPS_FILE, {})
+        g = gr.get(str(code).upper())
+        if not g or g.get("owner") != uid:
+            return False
+        del gr[str(code).upper()]
+        _write(GROUPS_FILE, gr)
+        return True
+
+
+def groups_of(uid: int) -> dict:
+    gr = _read(GROUPS_FILE, {})
+    own = [{"code": c, "name": g["name"], "count": len(g.get("members", {}))} for c, g in gr.items() if g.get("owner") == uid]
+    joined = [{"code": c, "name": g["name"]} for c, g in gr.items() if str(uid) in g.get("members", {})]
+    return {"owned": own, "joined": joined}
+
+
+def in_any_group(uid: int) -> bool:
+    return any(str(uid) in g.get("members", {}) for g in _read(GROUPS_FILE, {}).values())
+
+
+async def group_stats_save(uid: int, st: dict) -> bool:
+    if not in_any_group(uid):
+        return False
+    clean = {}
+    for k in ("tests7", "avg7", "streak", "mins7", "xp", "words", "role", "stories"):
+        try:
+            clean[k] = max(0, min(int(st.get(k) or 0), 10_000_000))
+        except (TypeError, ValueError):
+            clean[k] = 0
+    for k in ("level", "weak", "exam", "last"):
+        clean[k] = str(st.get(k) or "")[:80]
+    clean["ts"] = time.time()
+    async with _lock:
+        gs = _read(GSTATS_FILE, {})
+        gs[str(uid)] = clean
+        _write(GSTATS_FILE, gs)
+    return True
+
+
+def group_view(uid: int, code: str) -> dict | None:
+    gr = _read(GROUPS_FILE, {})
+    g = gr.get(str(code).upper())
+    if not g or g.get("owner") != uid:
+        return None
+    gs = _read(GSTATS_FILE, {})
+    lg = _league_roll(_read(LEAGUE_FILE, {}))
+    rows = []
+    for m, info in g.get("members", {}).items():
+        st = gs.get(m, {})
+        rows.append({"name": info.get("name", ""), "joined": info.get("joined", 0), "wxp": lg.get("users", {}).get(m, {}).get("xp", 0), **st})
+    rows.sort(key=lambda r: -r.get("wxp", 0))
+    return {"code": str(code).upper(), "name": g["name"], "rows": rows}
