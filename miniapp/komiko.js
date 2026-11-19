@@ -43,12 +43,13 @@
       x.secs = Math.min(x.secs + Math.round(s), 6 * 3600); a[d] = x; Activity._trim(a); save(AKEY, a);
     },
     streak: function () {
-      var a = Activity.all(), n = 0, t = new Date();
+      var a = Activity.all(), n = 0, t = new Date(), frozen = {};
+      (load("pwFreeze", {}).used || []).forEach(function (d) { frozen[d] = 1; });  // muzlatilgan kunlar seriyani uzmaydi
       for (var i = 0; i < 400; i++) {
         var d = new Date(t.getFullYear(), t.getMonth(), t.getDate() - i);
         var k = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
         var x = a[k];
-        if (x && (x.done.length || x.secs >= 60)) n++;
+        if ((x && (x.done.length || x.secs >= 60)) || frozen[k]) n++;
         else if (i > 0) break; // bugun hali mashq qilinmagan bo'lsa, seriya kechagidan hisoblanadi
       }
       return n;

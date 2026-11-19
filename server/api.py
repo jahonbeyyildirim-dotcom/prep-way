@@ -252,6 +252,26 @@ async def dict_photo(req):
         raise
 
 
+async def explain(req):
+    """Testdagi xato javobni AI tushuntiradi."""
+    uid = req["uid"]
+    try:
+        b = await req.json()
+        opts = [str(o)[:300] for o in (b.get("opts") or [])][:4]
+        correct, your = int(b.get("correct")), int(b.get("your", -1))
+    except Exception:
+        return jerr("Noto'g'ri so'rov.")
+    if len(opts) < 2 or not 0 <= correct < len(opts):
+        return jerr("Noto'g'ri so'rov.")
+    await _take_ai(uid)
+    try:
+        return web.json_response(await ai.explain_answer(str(b.get("exam") or "TOPIK")[:40], str(b.get("inst") or ""),
+                                                         str(b.get("body") or ""), opts, correct, your, str(b.get("note") or "")))
+    except Exception:
+        await storage.give_back(uid, "ai")
+        raise
+
+
 async def write_grade(req):
     """TOPIK II yozish (51–54) javobini AI baholaydi."""
     uid = req["uid"]
@@ -463,6 +483,7 @@ def make_app() -> web.Application:
         web.post("/api/homework", homework),
         web.post("/api/write", write_grade),
         web.post("/api/dict/photo", dict_photo),
+        web.post("/api/explain", explain),
         web.post("/api/dict", dict_lookup),
         web.get("/api/dict/words", dict_words),
         web.post("/api/words", words),

@@ -603,6 +603,31 @@ WRITE_RUBRIC = {
 }
 
 
+async def explain_answer(exam: str, inst: str, body: str, opts: list, correct: int, your: int, note: str) -> dict:
+    """Test savolidagi xatoni tushuntiradi ("Nega xato?")."""
+    if config.AI_FAKE:
+        return {"why_right": "To'g'ri javob matndagi kalit so'zga mos keladi.",
+                "why_wrong": "Siz tanlagan variant matnda aytilmagan ma'noni beradi.",
+                "words": [{"ko": "고장 나다", "uz": "buzilmoq"}], "tip": "Avval savolni o'qing, keyin matndan kalit so'zni qidiring."}
+    letters = "①②③④"
+    ol = "\n".join(f"{letters[i] if i < 4 else i + 1} {o}" for i, o in enumerate(opts[:4]))
+    yours = f"{letters[your]} {opts[your]}" if 0 <= your < len(opts) else "(no answer)"
+    data = await _json_call([
+        f"You are a friendly, precise Korean teacher helping a learner prepare for {exam}. They got this exam question wrong.\n"
+        f"INSTRUCTION: {inst[:400]}\nTEXT / AUDIO SCRIPT:\n{body[:2500]}\nOPTIONS:\n{ol}\n"
+        f"CORRECT: {letters[correct]} {opts[correct]}\nLEARNER CHOSE: {yours}\n"
+        f"(Existing short note, may help: {note[:600]})\n\n"
+        "Explain in Uzbek (Latin script), simply, for this learner: why_right — why the correct option is right, quoting the exact "
+        "Korean words in the text that prove it (2–3 sentences); why_wrong — why the learner's choice is wrong (what it actually "
+        "means or which detail contradicts it; if no answer, say what to look for); words — up to 5 key Korean words/grammar "
+        "patterns from the text with short meanings; tip — one practical strategy for this question type in the real exam.\n"
+        'Shape: {"why_right": "", "why_wrong": "", "words": [{"ko": "", "uz": ""}], "tip": ""}',
+    ], temperature=0.2, max_tokens=1200)
+    words = [{"ko": str(w.get("ko", "")), "uz": str(w.get("uz", ""))} for w in data.get("words", [])[:5] if isinstance(w, dict) and w.get("ko")]
+    return {"why_right": str(data.get("why_right", "")), "why_wrong": str(data.get("why_wrong", "")),
+            "words": words, "tip": str(data.get("tip", ""))}
+
+
 async def grade_writing(no: int, task: str, model: str, answer, chars: int) -> dict:
     """TOPIK II yozish javobini rasmiy mezonlar bo'yicha baholaydi."""
     mx, rubric, crit = WRITE_RUBRIC[no]

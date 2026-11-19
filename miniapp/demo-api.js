@@ -100,6 +100,10 @@
         help_uz: ko ? "" : "Demo: haqiqiy versiyada AI savolingizga o'zbekcha javob beradi va koreyscha qanday aytilishini o'rgatadi.",
         reply_ko: r[0], reply_uz: r[1] }; });
     }
+    if (path === "/api/explain") return wait(900).then(function () {
+      return { why_right: "Demo: haqiqiy versiyada AI to'g'ri javobni matndagi aniq so'zlar bilan isbotlab beradi.",
+        why_wrong: "Siz tanlagan variant nima uchun mos kelmasligi shu yerda tushuntiriladi.", words: [], tip: "Avval savolni o'qing, keyin matndan kalit so'zni qidiring." };
+    });
     if (path === "/api/write") return wait(1200).then(function () {
       var j = opt.json || {}, mx = { 51: 10, 52: 10, 53: 30, 54: 50 }[j.no] || 10, k = 0.5 + Math.random() * 0.2;
       var cr = j.no <= 52 ? [["㉠", 5], ["㉡", 5]] : j.no === 53 ? [["내용 및 과제 수행", 7], ["글의 전개 구조", 7], ["언어 사용", 16]] : [["내용 및 과제 수행", 12], ["글의 전개 구조", 12], ["언어 사용", 26]];

@@ -461,8 +461,10 @@
           '<div class="st"><b>' + mins + '<small>/' + goalMin + '</small></b><span>' + esc(T({ uz: "daqiqa bugun", ru: "мин сегодня", en: "min today" })) + '</span><i class="st-bar"><i style="width:' + pct + '%"></i></i></div>' +
           '<div class="st"><b>' + L.short + '</b><span>' + esc(P(L.t)) + '</span></div>' +
         '</div>' +
+        (window.PWCoach ? PWCoach.week() : '') +
       '</div>' +
       (window.PWLevel ? PWLevel.trackCard(p) : '') +
+      (window.PWCoach ? PWCoach.card(p) : '') +
       (ep && (p.level | 0) >= 1 ? '<button class="six-card" data-go="six"><div class="sc-l"><span class="sc-tag">🎧 ' + esc(T({ uz: "6 daqiqa koreys", ru: "6 минут корейского", en: "6-Minute Korean" })) + '</span>' +
         '<b>' + esc(ep.title) + '</b><small>' + esc(T({ uz: "Ikki kishi suhbati · yangi so'zlar · PDF", ru: "Диалог двоих · новые слова · PDF", en: "Two-person chat · new words · PDF" })) + '</small></div><span class="sc-play">▶</span></button>' : '') +
       '<div class="sec-h"><h2>' + esc(T({ uz: "Bugungi reja", ru: "План на сегодня", en: "Today's plan" })) + '</h2><span class="chip">' + nDone + ' / ' + plan.length + '</span></div>' +
@@ -494,10 +496,12 @@
       '<div class="note" style="font-weight:700;margin-bottom:6px">⏱ ' + esc(T({ uz: "Kunlik maqsad", ru: "Цель на день", en: "Daily goal" })) + '</div><div class="onb-speed" style="justify-content:flex-start">' +
       [5, 10, 20, 30].map(function (m) { return '<button data-dm="' + m + '" class="' + ((p.daily || 10) === m ? "on" : "") + '">' + m + ' ' + esc(T({ uz: "daq", ru: "мин", en: "min" })) + '</button>'; }).join("") + '</div>' +
       '<div style="height:12px"></div>' +
+      (window.PWCoach ? '<button class="lsn" id="stRem"><span class="n">🔔</span><span style="flex:1"><b>' + esc(T({ uz: "Kundalik eslatma", ru: "Ежедневное напоминание", en: "Daily reminder" })) + '</b><div class="s">' + esc((PWCoach.reminder() || {}).on ? (PWCoach.reminder().h + ":00") : T({ uz: "o'chiq", ru: "выкл.", en: "off" })) + '</div></span>›</button><div style="height:8px"></div>' : '') +
       '<button class="lsn" id="stRedo"><span class="n">🔄</span><span style="flex:1"><b>' + esc(T({ uz: "Tanishuv savollarini qaytadan", ru: "Пройти знакомство заново", en: "Redo the intro questions" })) + '</b><div class="s">' + esc(T({ uz: "Darajani qayta aniqlash", ru: "Заново определить уровень", en: "Re-check your level" })) + '</div></span>›</button>' +
       '<p class="note" style="font-size:11.5px;margin-top:14px;opacity:.75">' + esc(T({ uz: "Chizmalar", ru: "Рисунки", en: "Drawings" })) + ': OpenMoji — CC BY-SA 4.0</p>');
     $("stVoice").onclick = function () { K.closeSheet(); K.voicePicker(); };
     $("stRedo").onclick = function () { K.closeSheet(); startOnboarding(); };
+    if ($("stRem")) $("stRem").onclick = function () { K.closeSheet(); setTimeout(PWCoach.reminderSheet, 250); };
     document.querySelectorAll("#kSheet [data-sl]").forEach(function (b) { b.onclick = function () { I.setLang(b.dataset.sl); }; });
     document.querySelectorAll("#kSheet [data-dm]").forEach(function (b) {
       b.onclick = function () { var q = Profile.get() || {}; q.daily = +b.dataset.dm; Profile.set(q);
