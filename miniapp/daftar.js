@@ -301,5 +301,5 @@
     profKey = k;
   });
   (function () { var p = K.Profile.get() || {}; profKey = p.level + "|" + p.goal; })();
-  window.PWDaftar = { grade: grade, tasks: TASKS, nearest: nearest };
+  window.PWDaftar = { grade: grade, tasks: TASKS, nearest: nearest, takePhoto: takePhoto, ocr: ocrDevice, camError: camError };
 })();

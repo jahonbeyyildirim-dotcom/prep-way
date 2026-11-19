@@ -452,7 +452,7 @@
     var nDone = plan.filter(isDone).length;
     box.innerHTML =
       '<div class="dh">' +
-        '<div class="dh-glyph" aria-hidden="true">한 글 말<br>배 움 길</div>' +
+        '<div class="dh-glyph" aria-hidden="true">한 국 어<br>배 워 요</div>' +
         '<div class="dh-top"><div><div class="dh-greet">' + esc(greet()) + ',</div><div class="dh-name">' + esc(p.name || "") + ' 👋</div></div>' +
           '<button class="dh-set" id="dhSet" aria-label="Settings">⚙️</button></div>' +
         '<div class="dh-mid">' + K.avatar(86, "live float") + '<div class="dh-bub">' + esc(msg) + '</div></div>' +

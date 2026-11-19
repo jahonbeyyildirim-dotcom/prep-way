@@ -336,3 +336,51 @@ body.onb-open .dict-fab,body.dict-open .dict-fab{display:none}
 .bub.k-dict{border:none;flex:1;min-width:0}
 .k-dict .dc-h{flex-wrap:wrap;row-gap:2px}
 .dc-ko{white-space:nowrap}
+
+/* ===== Lug'at 2.0: amallar, tuslanish, talaffuz, takrorlash, rasm ===== */
+.dc-acts{margin-left:auto;display:flex;align-items:center;gap:4px}
+.dc-acts .mini{width:34px;height:34px;padding:0;border-radius:10px;display:grid;place-items:center;font-size:15px}
+.dc-acts .mini.rec{background:var(--red);color:#fff;animation:pulse 1.1s infinite}
+.dc-acts .dc-star{margin-left:2px}
+.dc-prac{margin-top:8px;padding:10px 12px;border-radius:12px;background:var(--blue-soft)}
+.pr-row{display:flex;align-items:center;gap:12px}
+.pr-sc{font-size:28px;font-weight:800;min-width:46px}
+.pr-w{font-size:24px;font-weight:800;letter-spacing:.04em}
+.pr-w .ok{font-style:normal;color:var(--green)}
+.pr-w .bad{font-style:normal;color:var(--red);text-decoration:underline wavy}
+.dc-conj{margin-top:10px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.dc-conj summary{cursor:pointer;padding:9px 12px;font-weight:800;font-size:14px;list-style:none;background:linear-gradient(90deg,rgba(43,91,224,.08),transparent)}
+.dc-conj summary::-webkit-details-marker{display:none}
+.dc-conj summary::after{content:"▾";float:right;color:var(--muted)}
+.dc-conj[open] summary::after{content:"▴"}
+.cj{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.cj-r{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:0;background:var(--card);padding:8px 10px;text-align:left;color:var(--ink)}
+.cj-r span{font-size:11.5px;color:var(--muted);font-weight:700}
+.cj-r b{font-size:16px}
+.cj-r:active{background:var(--blue-soft)}
+.d-acts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
+.d-act{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:12px 10px;text-align:left;color:var(--ink);min-width:0}
+.d-act span{font-size:22px}
+.d-act b{font-size:13.5px}
+.d-act small{font-size:11.5px;color:var(--muted);line-height:1.25}
+.d-act:first-child{background:linear-gradient(135deg,#12245C,#2B5BE0);border:0;color:#fff}
+.d-act:first-child small{color:rgba(255,255,255,.75)}
+.d-dot,.fab-n{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:#FF5A4E;color:#fff;font-style:normal;font-size:12px;font-weight:800;display:grid;place-items:center;border:2px solid var(--bg)}
+.dict-fab{position:fixed}
+.rv-top{display:flex;justify-content:space-between;align-items:center;margin:6px 0}
+.rv-bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:14px}
+.rv-bar i{display:block;height:100%;background:linear-gradient(90deg,#FF5A4E,#FF9A3C)}
+.rv-card{min-height:220px;border-radius:22px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;text-align:center;cursor:pointer;box-shadow:0 10px 30px rgba(18,36,92,.08)}
+.rv-card.open{border-color:#2B5BE0}
+.rv-ko{font-size:44px;font-weight:800}
+.rv-m{font-size:20px;font-weight:700}
+.rv-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.rv-b0{background:var(--red)!important}
+.rv-b1{background:#b7791f!important}
+.rv-b2{background:var(--green)!important}
+.rv-done{text-align:center;padding:30px 10px;font-size:48px}
+.rv-done h3{font-size:22px;margin:8px 0}
+.rv-done p{font-size:14px}
+.ph-th{display:block;max-width:100%;max-height:180px;border-radius:12px;object-fit:cover;margin:0 auto}
+.ph-res{padding:12px}
+.ph-t{white-space:pre-wrap;font-size:17px;line-height:1.6}

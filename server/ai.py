@@ -647,6 +647,34 @@ async def grade_writing(no: int, task: str, model: str, answer, chars: int) -> d
             "corrections": corr, "tips": tips, "improved": str(data.get("improved", ""))}
 
 
+async def photo_words(image: bytes, mime: str, lang: str = "uz") -> dict:
+    """Rasmdagi koreyscha matnni o'qiydi va asosiy so'zlarni tarjima qiladi (lug'atdagi 📷)."""
+    if config.AI_FAKE:
+        return {"text": "오늘의 메뉴: 김치찌개", "translation": "Bugungi menyu: kimchi sho'rva",
+                "words": [{"ko": "메뉴", "rom": "menyu", "pos": "ot", "level": 1, "uz": "menyu", "ru": "меню", "en": "menu"},
+                          {"ko": "김치찌개", "rom": "gimchijjigae", "pos": "ot", "level": 1, "uz": "kimchi sho'rva", "ru": "суп кимчи", "en": "kimchi stew"}]}
+    tl = {"ru": "Russian", "en": "English"}.get(lang, "Uzbek (Latin script)")
+    data = await _json_call([
+        types.Part.from_bytes(data=image, mime_type=mime),
+        "Read all Korean text in this photo (menu, sign, label, book page, screen…). "
+        f"Return it in text (keep line breaks, max 600 chars) and a natural translation into {tl} in translation. "
+        "Then list up to 12 of the most useful Korean words from it in DICTIONARY form (verbs/adjectives with -다, no particles), "
+        "most important first, each with rom (Revised Romanization), pos (in Uzbek: ot, fe'l, sifat, ravish, ibora…), "
+        "level (TOPIK level 1–6), uz, ru, en meanings (short). If there is no Korean text, return empty text and words.\n"
+        'Shape: {"text": "", "translation": "", "words": [{"ko": "", "rom": "", "pos": "", "level": 1, "uz": "", "ru": "", "en": ""}]}',
+    ], temperature=0.1, lang_note=False)
+    words = []
+    for w in data.get("words", [])[:12]:
+        if not isinstance(w, dict) or not str(w.get("ko", "")).strip():
+            continue
+        try:
+            lv = max(0, min(6, int(w.get("level") or 0)))
+        except (TypeError, ValueError):
+            lv = 0
+        words.append({k: str(w.get(k, "")) for k in ("ko", "rom", "pos", "uz", "ru", "en")} | {"level": lv})
+    return {"text": str(data.get("text", ""))[:600], "translation": str(data.get("translation", ""))[:800], "words": words}
+
+
 # ---------------------------------------------------------------- LUG'AT
 async def dict_lookup(q: str, lang: str = "uz") -> dict:
     """To'liq lug'at maqolasi: koreys ↔ o'zbek/rus/ingliz (oflayn lug'atda topilmaganda).

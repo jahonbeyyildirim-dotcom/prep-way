@@ -233,6 +233,25 @@ async def homework(req):
         raise
 
 
+async def dict_photo(req):
+    """Lug'at: rasmdagi koreyscha matn va so'zlar."""
+    uid = req["uid"]
+    form = await req.post()
+    f = form.get("image")
+    if f is None or not hasattr(f, "file"):
+        return jerr("Rasm topilmadi.")
+    data = f.file.read()
+    if len(data) > 8 * 1024 * 1024:
+        return jerr("Rasm juda katta (8 MB dan oshmasin).")
+    mime = f.content_type if f.content_type in ("image/jpeg", "image/png", "image/webp") else "image/jpeg"
+    await _take_ai(uid)
+    try:
+        return web.json_response(await ai.photo_words(data, mime, str(form.get("lang") or "uz")))
+    except Exception:
+        await storage.give_back(uid, "ai")
+        raise
+
+
 async def write_grade(req):
     """TOPIK II yozish (51–54) javobini AI baholaydi."""
     uid = req["uid"]
@@ -443,6 +462,7 @@ def make_app() -> web.Application:
         web.post("/api/advice", advice),
         web.post("/api/homework", homework),
         web.post("/api/write", write_grade),
+        web.post("/api/dict/photo", dict_photo),
         web.post("/api/dict", dict_lookup),
         web.get("/api/dict/words", dict_words),
         web.post("/api/words", words),

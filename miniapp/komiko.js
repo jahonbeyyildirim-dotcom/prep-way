@@ -182,6 +182,7 @@
     var play = function (url) {
       return new Promise(function (res) {
         var a = new Audio(url); cur.audio = a;
+        if (window.Komiko && Komiko.tmpRate) { try { a.preservesPitch = true; a.playbackRate = Komiko.tmpRate; } catch (e) {} }
         a.onplay = function () { if (tok === cur.token) setTalking(true); };
         a.onended = a.onerror = function () { if (tok === cur.token) setTalking(false); res(); };
         a.play().catch(function () { setTalking(false); res(deviceSpeak(text, voice, tok)); });
@@ -838,6 +839,12 @@
     });
   };
   window.Komiko = {
+    speakSlow: function (text) {  // sekin talaffuz (lug'at 🐢 tugmasi)
+      var K = window.Komiko; K.tmpSpeed = "slow"; K.tmpRate = 0.72;
+      var p = speak(text);
+      setTimeout(function () { K.tmpSpeed = null; }, 60);
+      return Promise.resolve(p).then(function () { K.tmpRate = null; }, function () { K.tmpRate = null; });
+    },
     speak: speak, sayLocal: sayLocal, stop: stopAll, listen: listen, isListening: function () { return lis.on; }, stopListen: stopListen, canListen: canListen,
     compare: compare, best: best, avatar: avatar, Profile: Profile, Activity: Activity,
     sheet: sheet, closeSheet: closeSheet, openChat: openChat, voicePicker: voicePicker, today: today, LOCAL: LOCAL, onlyHangul: onlyHangul

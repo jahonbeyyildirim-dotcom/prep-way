@@ -133,17 +133,56 @@
   function toggleSave(e) {
     var s = ld(SKEY), i = -1;
     s.forEach(function (x, k) { if (x.ko === e.ko) i = k; });
-    if (i >= 0) s.splice(i, 1); else s.unshift({ ko: e.ko, rom: e.rom, uz: e.uz, ru: e.ru, en: e.en, tag: e.tag });
-    sv(SKEY, s.slice(0, 300));
+    if (i >= 0) s.splice(i, 1); else s.unshift({ ko: e.ko, rom: e.rom, uz: e.uz, ru: e.ru, en: e.en, tag: e.tag, pos: e.pos, box: 0, due: 0, added: Date.now() });
+    sv(SKEY, s.slice(0, 500));
+    badge();
+  }
+  // ---------- Intervalli takrorlash (Leitner): 0 → darhol, keyin 1, 2, 4, 8, 16, 32 kun ----------
+  var DAYS = [0, 1, 2, 4, 8, 16, 32];
+  function dueList() { var now = Date.now(); return ld(SKEY).filter(function (x) { return (x.due || 0) <= now; }); }
+  function grade(ko, g) {  // g: 0 — bilmadim, 1 — qiyin, 2 — bildim
+    var s = ld(SKEY);
+    s.forEach(function (x) {
+      if (x.ko !== ko) return;
+      var b = x.box || 0;
+      b = g === 0 ? 0 : g === 1 ? Math.max(1, b) : Math.min(DAYS.length - 1, b + 1);
+      x.box = b; x.due = Date.now() + (g === 0 ? 5 * 60 * 1000 : DAYS[b] * 864e5); x.seen = (x.seen || 0) + 1;
+    });
+    sv(SKEY, s); badge();
+  }
+  function badge() {
+    var f = document.getElementById("dictFab"); if (!f) return;
+    var n = dueList().length, b = f.querySelector(".fab-n");
+    if (n && !b) { b = document.createElement("i"); b.className = "fab-n"; f.appendChild(b); }
+    if (b) { if (n) b.textContent = n > 99 ? "99+" : n; else b.remove(); }
   }
   function remember(q) { var r = ld(RKEY).filter(function (x) { return x !== q; }); r.unshift(q); sv(RKEY, r.slice(0, 12)); }
 
+  // ---------- Fe'l / sifat aniqlash (tuslanish jadvali uchun) ----------
+  function predType(e) {
+    if (!window.PWConj || !/^[가-힣]+다$/.test(e.ko || "")) return "";
+    var pos = String(e.pos || "").toLowerCase();
+    if (e.tag === "sifat" || /sifat|adj|прилаг/.test(pos)) return "adj";
+    if (e.tag === "fe'l" || /fe.l|verb|глагол/.test(pos) || /(moq|mak)$/.test(String(e.uz || "").trim()) || /^to /.test(String(e.en || "").trim())) return "verb";
+    return "";
+  }
+  function conjHTML(e, pt) {
+    var rows = window.PWConj(e.ko, pt === "adj"); if (!rows.length) return "";
+    var L = window.PWConj.LABELS;
+    return '<details class="dc-conj"><summary>📐 ' + esc(T({ uz: "Tuslanish", ru: "Спряжение", en: "Conjugation" })) + ' <span class="note">' + esc(pt === "adj" ? T({ uz: "sifat", ru: "прил.", en: "adj." }) : T({ uz: "fe'l", ru: "глагол", en: "verb" })) + '</span></summary><div class="cj">' +
+      rows.map(function (r) { return '<button class="cj-r" data-say="' + esc(r.form.replace(/ …$/, "")) + '"><span>' + esc(I.pick(L[r.k])) + '</span><b class="ko">' + esc(r.form) + '</b></button>'; }).join("") + '</div></details>';
+  }
+  var CAN_SHARE = !!navigator.share;
   // ---------- Ko'rinish ----------
   function card(e) {
     var tag = TAGS[e.tag] ? I.pick(TAGS[e.tag]) : "";
     var meta = [e.hanja ? esc(e.hanja) : "", e.pos ? esc(e.pos) : "", e.level ? "TOPIK " + esc(e.level) : ""].filter(Boolean).join(" · ");
     var h = '<div class="dc"><div class="dc-h"><span class="ko dc-ko">' + esc(e.ko) + '</span>' + (e.rom ? '<span class="note">[' + esc(e.rom) + ']</span>' : '') +
-      '<button class="mini" data-say="' + esc(e.ko) + '">🔊</button><button class="dc-star' + (isSaved(e.ko) ? " on" : "") + '" data-star="' + esc(e.ko) + '">' + (isSaved(e.ko) ? "★" : "☆") + '</button></div>' +
+      '<span class="dc-acts"><button class="mini" data-say="' + esc(e.ko) + '" aria-label="Play">🔊</button><button class="mini" data-slow="' + esc(e.ko) + '" aria-label="Slow">🐢</button>' +
+      (K.canListen() ? '<button class="mini" data-prac="' + esc(e.ko) + '" aria-label="Practice">🎙️</button>' : '') +
+      (CAN_SHARE ? '<button class="mini" data-share="' + esc(e.ko) + '" aria-label="Share">↗</button>' : '') +
+      '<button class="dc-star' + (isSaved(e.ko) ? " on" : "") + '" data-star="' + esc(e.ko) + '">' + (isSaved(e.ko) ? "★" : "☆") + '</button></span></div>' +
+      '<div class="dc-prac" hidden></div>' +
       (meta ? '<div class="note dc-meta">' + meta + '</div>' : '') +
       '<div class="dc-m">' + I.tri({ uz: e.uz, ru: e.ru, en: e.en }) + '</div>';
     var nt = e["note_" + LG] || e.note_uz || "";
@@ -156,6 +195,7 @@
     var srcB = e.src ? String(e.src).split("+").map(function (x) { return x === "deepl" ? "DeepL" : x === "ai" ? "Gemini AI" : x === "claude" ? "Claude AI" : x; }).join(" · ") : "";
     if (tag) h += '<span class="dc-tag">' + esc(tag) + '</span>';
     if (srcB) h += '<span class="dc-tag dc-src">' + esc(srcB) + '</span>';
+    var pt = predType(e); if (pt) h += conjHTML(e, pt);
     if (e.use) h += '<div class="sw-u">📍 ' + esc(I.pick(e.use)) + '</div>';
     if (e.ex && e.ex.length) h += '<div class="sw-ex">' + e.ex.slice(0, 2).map(function (x) {
       var EX = { uz: 1, ru: 2, en: 3 }, main = x[EX[LG]] || x[1];
@@ -194,7 +234,12 @@
     var cats = {}; DB.forEach(function (e) { var t = e.tag || "boshqa"; cats[t] = (cats[t] || 0) + 1; });
     var list = DB.filter(function (e) { return !bw.cat || (bw.cat === "saved" ? isSaved(e.ko) : (e.tag || "boshqa") === bw.cat); });
     if (bw.cat === "saved") list = saved.map(function (x) { return BY[x.ko] || x; });
-    var h = '<div class="d-sec">📅 ' + esc(T({ uz: "Kun so'zi", ru: "Слово дня", en: "Word of the day" })) + '</div>' + card(dw);
+    var due = dueList().length;
+    var h = '<div class="d-acts"><button class="d-act" data-act="review"><span>🔁</span><b>' + esc(T({ uz: "Takrorlash", ru: "Повторение", en: "Review" })) + '</b><small>' +
+      esc(saved.length ? (due ? T({ uz: "{n} ta so'z vaqti keldi", ru: "{n} слов пора повторить", en: "{n} words due" }, { n: due }) : T({ uz: "Hozircha hammasi takrorlangan", ru: "Пока всё повторено", en: "All caught up" })) : T({ uz: "☆ bilan so'z saqlang", ru: "Сохраните слова ☆", en: "Save words with ☆" })) + '</small>' + (due ? '<i class="d-dot">' + due + '</i>' : '') + '</button>' +
+      '<button class="d-act" data-act="saved"><span>⭐</span><b>' + esc(T({ uz: "Mening so'zlarim", ru: "Мои слова", en: "My words" })) + '</b><small>' + saved.length + ' ' + esc(T({ uz: "ta so'z", ru: "слов", en: "words" })) + '</small></button>' +
+      '<button class="d-act" data-act="photo"><span>📷</span><b>' + esc(T({ uz: "Rasm orqali", ru: "По фото", en: "From a photo" })) + '</b><small>' + esc(T({ uz: "Menyu, belgi, kitob", ru: "Меню, вывески, книги", en: "Menus, signs, books" })) + '</small></button></div>' +
+      '<div class="d-sec">📅 ' + esc(T({ uz: "Kun so'zi", ru: "Слово дня", en: "Word of the day" })) + '</div>' + card(dw);
     if (rec.length) h += '<div class="d-sec">🕘 ' + esc(T({ uz: "Oxirgi qidiruvlar", ru: "Недавние запросы", en: "Recent searches" })) + '</div><div class="d-chips">' +
       rec.map(function (r) { return '<button class="chip d-rc" data-q="' + esc(r) + '">' + esc(r) + '</button>'; }).join("") + '</div>';
     h += '<div class="d-sec">📚 ' + esc(T({ uz: "Lug'at ro'yxati", ru: "Список слов", en: "Word list" })) + ' · ' + DB.length + '</div>' +
@@ -212,6 +257,14 @@
     out.innerHTML = h;
     bind(out);
     out.querySelectorAll("[data-cat]").forEach(function (b) { b.onclick = function () { bw.cat = b.dataset.cat; bw.n = 60; browse(out); }; });
+    out.querySelectorAll("[data-act]").forEach(function (b) {
+      b.onclick = function () {
+        var a = b.dataset.act;
+        if (a === "review") { if (!ld(SKEY).length) { H.toast(T({ uz: "Avval so'z yonidagi ☆ ni bosib saqlang.", ru: "Сначала сохраните слова ☆.", en: "Save words with ☆ first." })); return; } if (!dueList().length) { H.toast(T({ uz: "Hozircha takrorlaydigan so'z yo'q 👍", ru: "Пока нечего повторять 👍", en: "Nothing due right now 👍" })); return; } rv = null; review(out); }
+        else if (a === "saved") { bw.cat = "saved"; bw.n = 60; browse(out); var l = out.querySelector(".d-list"); if (l) l.scrollIntoView({ block: "start" }); }
+        else if (a === "photo") photoSearch();
+      };
+    });
     out.querySelectorAll(".d-row").forEach(function (b) {
       b.onclick = function () {
         var e = BY[b.dataset.ko]; if (!e) return;
@@ -226,7 +279,7 @@
     if (box) box.insertAdjacentHTML("beforeend", '<div class="loading" style="margin-top:8px">' + K.avatar(24, "live talking") + ' ' + esc(T({ uz: "Komiko tarjima qilyapti…", ru: "Комико переводит…", en: "Komiko is translating…" })) + '</div>');
     H.api("/api/dict", { json: { q: q, lang: LG } }).then(function (r) {
       if (tok !== aiTok) return;
-      var list = (r.entries || []).map(function (e) { var o = slim(e); o.tag = "ai"; return o; });
+      var list = (r.entries || []).map(function (e) { var o = slim(e); o.tag = "ai"; searchCache[o.ko] = o; return o; });
       learn(r.entries || []);
       var html = list.length ? list.map(card).join("") : '<div class="card empty">🔎 ' + esc(T({ uz: "Topilmadi. Imloni tekshiring yoki boshqacha yozib ko'ring.", ru: "Не найдено. Проверьте написание или попробуйте иначе.", en: "Not found. Check the spelling or try another wording." })) + '</div>';
       if (append) { var nb = $("dNone"); if (nb) nb.outerHTML = '<div class="d-sec">🤖 AI</div>' + html; } else $("dRes").innerHTML = html;
@@ -247,6 +300,86 @@
       };
     });
     root.querySelectorAll(".d-rc").forEach(function (b) { b.onclick = function () { $("dQ").value = b.dataset.q; render(b.dataset.q); }; });
+    root.querySelectorAll("[data-slow]").forEach(function (b) { b.onclick = function (ev) { ev.stopPropagation(); K.speakSlow ? K.speakSlow(b.dataset.slow) : H.speak(b.dataset.slow); }; });
+    root.querySelectorAll("[data-share]").forEach(function (b) {
+      b.onclick = function () {
+        var e = BY[b.dataset.share] || searchCache[b.dataset.share] || { ko: b.dataset.share };
+        var txt = e.ko + (e.rom ? " [" + e.rom + "]" : "") + " — " + (meaning(e) || "") + "\n\nHanguk Way 📖";
+        navigator.share({ title: e.ko, text: txt }).catch(function () {});
+      };
+    });
+    root.querySelectorAll("[data-prac]").forEach(function (b) { b.onclick = function () { practice(b); }; });
+  }
+  // So'zni talaffuz qilib ko'rish: telefon tinglaydi va harfma-harf solishtiradi
+  function practice(btn) {
+    var ko = btn.dataset.prac, box = btn.closest(".dc").querySelector(".dc-prac");
+    box.hidden = false; btn.classList.add("rec");
+    box.innerHTML = '<div class="note">🎙️ ' + esc(T({ uz: "Ayting: {w}", ru: "Скажите: {w}", en: "Say: {w}" }, { w: ko })) + '</div>';
+    K.listen("ko-KR").then(function (alts) {
+      btn.classList.remove("rec");
+      var best = null; (alts || []).forEach(function (a) { var c = K.compare(ko, a); if (!best || c.score > best.c.score) best = { a: a, c: c }; });
+      if (!best) throw new Error(T({ uz: "Ovoz eshitilmadi.", ru: "Голос не распознан.", en: "No speech heard." }));
+      var sc = best.c.score, col = sc >= 85 ? "var(--green)" : sc >= 60 ? "#b7791f" : "var(--red)";
+      box.innerHTML = '<div class="pr-row"><b class="pr-sc" style="color:' + col + '">' + sc + '</b><span class="ko pr-w">' + best.c.marks.map(function (m) { return '<i class="' + (m.ok ? "ok" : "bad") + '">' + esc(m.ch) + '</i>'; }).join("") + '</span></div>' +
+        '<div class="note">' + esc(T({ uz: "Siz aytdingiz: «{a}»", ru: "Вы сказали: «{a}»", en: "You said: \"{a}\"" }, { a: best.a })) + (sc >= 85 ? " 🎉" : " · " + esc(T({ uz: "qizil harflarni 🐢 sekin tinglab, qayta ayting", ru: "послушайте красные буквы медленно 🐢 и повторите", en: "listen slowly 🐢 to the red letters and retry" }))) + '</div>';
+      if (H.pushHist) H.pushHist("speak", { overall: sc, accuracy: sc, pronunciation: sc, fluency: null, level: "dict", date: new Date().toISOString().slice(0, 10) });
+    }).catch(function (e) { btn.classList.remove("rec"); box.innerHTML = '<div class="note">⚠️ ' + esc(e.message || String(e)) + '</div>'; });
+  }
+
+  // ---------- Takrorlash rejimi ----------
+  var rv = null;
+  function review(out) {
+    var list = dueList();
+    if (!rv) rv = { list: list.slice(0, 20), i: 0, ok: 0, show: false };
+    if (rv.i >= rv.list.length) {
+      out.innerHTML = '<div class="rv-done">🎉<h3>' + esc(T({ uz: "Takrorlash tugadi!", ru: "Повторение завершено!", en: "Review done!" })) + '</h3><p class="note">' +
+        esc(T({ uz: "{n} ta so'zdan {o} tasini bildingiz. Keyingi takrorlash vaqti kelganda 📖 tugmasida raqam chiqadi.", ru: "Знали {o} из {n}. Когда придёт время, на кнопке 📖 появится число.", en: "You knew {o} of {n}. When it's time again, a number appears on the 📖 button." }, { n: rv.list.length, o: rv.ok })) + '</p>' +
+        '<button class="btn" id="rvBack">' + esc(T({ uz: "Lug'atga qaytish", ru: "Вернуться в словарь", en: "Back to dictionary" })) + '</button></div>';
+      if (window.Komiko && Komiko.Activity && rv.list.length) Komiko.Activity.mark("words");
+      $("rvBack").onclick = function () { rv = null; bw.cat = ""; browse(out); };
+      return;
+    }
+    var x = rv.list[rv.i], e = BY[x.ko] || x;
+    out.innerHTML = '<div class="rv-top"><button class="linkbtn" id="rvX">‹ ' + esc(T({ uz: "Chiqish", ru: "Выйти", en: "Exit" })) + '</button><span class="note">' + (rv.i + 1) + ' / ' + rv.list.length + '</span></div>' +
+      '<div class="rv-bar"><i style="width:' + Math.round(rv.i / rv.list.length * 100) + '%"></i></div>' +
+      '<div class="rv-card' + (rv.show ? " open" : "") + '" id="rvCard"><div class="ko rv-ko">' + esc(e.ko) + '</div>' +
+      (rv.show ? '<div class="note">[' + esc(e.rom || "") + ']</div><div class="rv-m">' + esc(meaning(e) || "") + '</div>' : '<div class="note">' + esc(T({ uz: "Ma'nosini eslang va bosing", ru: "Вспомните значение и нажмите", en: "Recall the meaning, then tap" })) + '</div>') + '</div>' +
+      (rv.show ? '<div class="rv-btns"><button class="btn rv-b0" data-g="0">' + esc(T({ uz: "Bilmadim", ru: "Не знал", en: "Didn't know" })) + '</button><button class="btn rv-b1" data-g="1">' + esc(T({ uz: "Qiyin", ru: "Трудно", en: "Hard" })) + '</button><button class="btn rv-b2" data-g="2">' + esc(T({ uz: "Bildim", ru: "Знал", en: "Knew it" })) + '</button></div>' : '');
+    H.speak(e.ko);
+    $("rvX").onclick = function () { rv = null; browse(out); };
+    $("rvCard").onclick = function () { if (!rv.show) { rv.show = true; review(out); } else H.speak(e.ko); };
+    out.querySelectorAll("[data-g]").forEach(function (b) {
+      b.onclick = function () { var g = +b.dataset.g; grade(x.ko, g); if (g === 2) rv.ok++; H.haptic && H.haptic("sel"); rv.i++; rv.show = false; review(out); };
+    });
+  }
+
+  // ---------- Rasm orqali qidirish (menyu, belgi, kitob sahifasi) ----------
+  function photoSearch() {
+    var out = $("dRes"), D = window.PWDaftar;
+    var pickP = (D && window.Capacitor && Capacitor.isNativePlatform && Capacitor.isNativePlatform()) ? D.takePhoto(false) : new Promise(function (res, rej) {
+      var inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.setAttribute("capture", "environment");
+      inp.onchange = function () { var f = inp.files && inp.files[0]; if (!f) rej(new Error("cancel")); else res({ file: f, url: URL.createObjectURL(f), format: (f.type || "image/jpeg").split("/")[1] }); };
+      inp.click();
+    });
+    pickP.then(function (ph) {
+      out.innerHTML = '<div class="card" style="padding:14px"><img class="ph-th" src="' + esc(ph.url) + '" alt=""><div class="loading" style="margin-top:8px">' + K.avatar(24, "live talking") + ' ' + esc(T({ uz: "Komiko rasmdagi koreyscha matnni o'qiyapti…", ru: "Комико читает корейский текст на фото…", en: "Komiko is reading the Korean text…" })) + '</div></div>';
+      var blobP = ph.file ? Promise.resolve(ph.file) : fetch(ph.url).then(function (r) { return r.blob(); });
+      return blobP.then(function (b) {
+        var fd = new FormData(); fd.append("image", b, "photo." + (ph.format === "png" ? "png" : "jpg")); fd.append("lang", LG);
+        return H.api("/api/dict/photo", { body: fd });
+      }).then(function (r) {
+        var list = (r.words || []).map(function (e) { var o = slim(e); o.tag = "ai"; searchCache[o.ko] = o; return o; });
+        learn(r.words || []);
+        out.innerHTML = '<div class="card ph-res"><img class="ph-th" src="' + esc(ph.url) + '" alt="">' +
+          (r.text ? '<div class="d-sec">📝 ' + esc(T({ uz: "Rasmdagi matn", ru: "Текст на фото", en: "Text in the photo" })) + '</div><div class="ko ph-t">' + (window.PWDict && PWDict.linkify ? PWDict.linkify(esc(r.text)) : esc(r.text)) + '</div>' : '') +
+          (r.translation ? '<div class="note" style="margin-top:6px">' + esc(r.translation) + '</div>' : '') + '</div>' +
+          (list.length ? '<div class="d-sec">📚 ' + esc(T({ uz: "Asosiy so'zlar", ru: "Ключевые слова", en: "Key words" })) + ' · ' + list.length + '</div>' + list.map(card).join("") : '<div class="card empty">' + esc(T({ uz: "Rasmda koreyscha matn topilmadi.", ru: "Корейский текст не найден.", en: "No Korean text found." })) + '</div>');
+        bind(out); if (window.PWDict && PWDict.bind) PWDict.bind(out);
+      });
+    }).catch(function (e) {
+      var m = D && D.camError ? D.camError(e) : String((e && e.message) || e);
+      if (m && !/cancel/i.test(m)) out.innerHTML = '<div class="card empty">⚠️ ' + esc(m) + '</div>';
+    });
   }
   var searchCache = {};
   var tmr = null;
@@ -258,12 +391,13 @@
       el.innerHTML = '<div class="dict-box"><div class="dict-top"><span class="dict-t">📖 ' + esc(T({ uz: "Lug'at", ru: "Словарь", en: "Dictionary" })) + '</span>' +
         '<span class="dict-l">🇰🇷 ⇄ 🇺🇿 🇷🇺 🇬🇧</span><button class="dict-x" id="dX" aria-label="Close">✕</button></div>' +
         '<div class="dict-s"><input class="inp" id="dQ" type="search" autocomplete="off" autocapitalize="off" placeholder="' + esc(T({ uz: "So'z yozing: 사과, olma, яблоко, apple…", ru: "Введите слово: 사과, olma, яблоко, apple…", en: "Type a word: 사과, olma, яблоко, apple…" })) + '">' +
-        (K.canListen() ? '<button class="dict-mic" id="dMic" aria-label="Voice">🎙️</button>' : '') + '</div>' +
+        (K.canListen() ? '<button class="dict-mic" id="dMic" aria-label="Voice">🎙️</button>' : '') + '<button class="dict-mic" id="dCam" aria-label="Photo">📷</button></div>' +
         '<div class="dict-res" id="dRes"></div></div>';
       document.body.appendChild(el);
       $("dX").onclick = close;
       $("dQ").oninput = function () { var v = this.value; clearTimeout(tmr); tmr = setTimeout(function () { render(v); }, 180); };
       $("dQ").onkeydown = function (e) { if (e.key === "Enter") { remember(this.value.trim()); this.blur(); } };
+      $("dCam").onclick = function () { photoSearch(); };
       var mic = $("dMic");
       if (mic) mic.onclick = function () {
         mic.classList.add("rec");
@@ -288,6 +422,7 @@
   fab.innerHTML = '📖<span>' + esc(T({ uz: "Lug'at", ru: "Словарь", en: "Dict" })) + '</span>';
   fab.onclick = function () { open(""); };
   document.body.appendChild(fab);
+  setTimeout(badge, 0);
 
   // ---------- Matnni belgilab tarjima qilish ----------
   var pick = document.createElement("button");
