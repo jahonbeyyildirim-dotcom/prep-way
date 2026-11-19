@@ -1,0 +1,80 @@
+{
+  "name": "hanguk-way-desktop",
+  "productName": "Hanguk Way",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hanguk Way — koreys tili imtihonlariga tayyorlov (Windows va macOS)",
+  "author": "Hanguk Way",
+  "main": "main.js",
+  "scripts": {
+    "web": "node scripts/build-web.mjs",
+    "start": "node scripts/build-web.mjs && electron .",
+    "dist:win": "node scripts/build-web.mjs && electron-builder --win --publish never",
+    "dist:mac": "node scripts/build-web.mjs && electron-builder --mac --universal --publish never"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "uz.hangukway.desktop",
+    "productName": "Hanguk Way",
+    "copyright": "© 2026 Hanguk Way",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "www/**/*",
+      "build/icon.png",
+      "package.json"
+    ],
+    "artifactName": "HangukWay-${os}-${version}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Hanguk Way",
+      "artifactName": "HangukWay-Windows-${version}.${ext}"
+    },
+    "mac": {
+      "category": "public.app-category.education",
+      "icon": "build/icon.png",
+      "target": [
+        {
+          "target": "dmg"
+        }
+      ],
+      "identity": null,
+      "hardenedRuntime": false,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Talaffuzni baholash va Komiko bilan gaplashish uchun mikrofon kerak.",
+        "NSCameraUsageDescription": "Daftarni suratga olib tekshirish uchun kamera kerak."
+      }
+    },
+    "dmg": {
+      "artifactName": "HangukWay-Mac-${version}.${ext}",
+      "title": "Hanguk Way"
+    },
+    "afterPack": "build/after-pack.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jahonbeyyildirim-dotcom/prep-way.git"
+  }
+}

@@ -251,6 +251,7 @@
   function canListen() { return !!((SR && NATIVE) || WSR); }
   function srError(e) {
     var m = String((e && (e.message || e.error)) || e || "");
+    if (/limit/i.test(m)) return m;
     if (/permission|not-allowed|denied|Missing/i.test(m)) return "Mikrofonga ruxsat berilmadi. Sozlamalar → Ilovalar → Hanguk Way → Ruxsatlar → Mikrofon ni yoqing.";
     if (/no match|no-speech|didn't understand|7|6/i.test(m)) return "Gap eshitilmadi. Mikrofonni bosib, aniqroq va balandroq gapiring.";
     if (/network|2|4/i.test(m)) return "Nutqni tanish uchun internet kerak. Internetni yoqib, qayta urinib ko'ring.";

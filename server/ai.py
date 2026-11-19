@@ -227,10 +227,20 @@ async def wav_to_ogg_opus(wav: bytes) -> bytes:
     return out
 
 
-async def transcribe(wav: bytes) -> str:
-    """Ovozni koreyscha matnga aylantiradi. Maqsad gap ko'rsatilmaydi — xatolar to'g'rilanib ketmasligi uchun."""
+async def transcribe(wav: bytes, lang: str = "ko") -> str:
+    """Ovozni koreyscha matnga aylantiradi. Maqsad gap ko'rsatilmaydi — xatolar to'g'rilanib ketmasligi uchun.
+    lang="ko" bo'lmasa (kompyuter ilovasidagi o'zbek/rus/ingliz tilidagi nutq) — shu tilda yoziladi."""
     if config.AI_FAKE:
-        return "안녕하세요 저는 우즈베키스탄 사람이에요"
+        return "안녕하세요 저는 우즈베키스탄 사람이에요" if lang.startswith("ko") else "Salom, men koreys tilini o'rganyapman"
+    if not lang.startswith("ko"):
+        names = {"uz": "Uzbek (Latin script)", "ru": "Russian", "en": "English"}
+        data = await _json_call([
+            types.Part.from_bytes(data=wav, mime_type="audio/wav"),
+            f"Transcribe this speech exactly as spoken. Expected language: {names.get(lang[:2], 'any')}; "
+            "if another language is spoken, transcribe it in that language. Korean words must stay in Hangul. "
+            'Shape: {"transcript": "..."}',
+        ], temperature=0.0)
+        return str(data.get("transcript", "")).strip()
     data = await _json_call([
         types.Part.from_bytes(data=wav, mime_type="audio/wav"),
         "Transcribe this learner's speech exactly as spoken, in Hangul. Do NOT correct grammar or pronunciation "

@@ -159,6 +159,24 @@ async def speech(req):
                               "overall": overall, **ev})
 
 
+async def stt(req):
+    """Nutqni matnga aylantirish (kompyuter ilovasi: Windows/macOS'da qurilmaning nutq xizmati yo'q)."""
+    uid = req["uid"]
+    form = await req.post()
+    audio = await _read_audio(form)
+    if not audio:
+        return jerr("Ovoz yozuvi topilmadi.")
+    lang = re.sub(r"[^a-zA-Z-]", "", str(form.get("lang") or "ko-KR"))[:10].lower() or "ko"
+    await _take_ai(uid)
+    try:
+        wav = await ai.to_wav(*audio)
+        text = await ai.transcribe(wav, lang)
+    except Exception:
+        await storage.give_back(uid, "ai")
+        raise
+    return web.json_response({"transcript": text})
+
+
 async def chat(req):
     """AI suhbatdosh: matn yoki ovoz."""
     uid = req["uid"]
@@ -571,6 +589,17 @@ async def apk_file(_req):
     })
 
 
+DESKTOP_FILES = {"HangukWay-Windows.exe", "HangukWay-Mac.dmg"}
+
+
+async def desktop_file(req):
+    """Kompyuter ilovasi: GitHub «demo» Release'dagi eng so'nggi faylga yo'naltiradi."""
+    name = req.path.lstrip("/")
+    if name not in DESKTOP_FILES:
+        raise web.HTTPNotFound()
+    raise web.HTTPFound(_APK_BASE + name)
+
+
 async def index(_req):
     return web.FileResponse(config.MINIAPP_DIR / "index.html", headers={"Cache-Control": "no-cache"})
 
@@ -603,6 +632,7 @@ def make_app() -> web.Application:
         web.get("/privacy", privacy),
         web.get("/api/health", health),
         web.post("/api/speech", speech),
+        web.post("/api/stt", stt),
         web.post("/api/chat", chat),
         web.post("/api/tts", tts),
         web.post("/api/tts-uz", tts_uz),
@@ -633,6 +663,8 @@ def make_app() -> web.Application:
         web.get("/download", install_page),
         web.get("/HangukWay.apk", apk_file),
         web.get("/PrepWay.apk", apk_file),  # eski havolalar uchun
+        web.get("/HangukWay-Windows.exe", desktop_file),
+        web.get("/HangukWay-Mac.dmg", desktop_file),
         web.get("/", index),
         web.get("/{sub:pics|pdf}/{name}", sub_static),
         web.get("/{name}", static_file),

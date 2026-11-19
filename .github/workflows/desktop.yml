@@ -1,0 +1,81 @@
+# Windows (.exe) va macOS (.dmg) ilovalarini GitHub serverida yig'adi.
+#  - main'ga har yuklashda: fayllar «demo» Release'ga HangukWay-Windows.exe va HangukWay-Mac.dmg nomi bilan chiqadi
+#    (prepway-api.onrender.com/yuklab sahifasidagi tugmalar shularga olib boradi).
+#  - v1.0.0 kabi teg qo'yilganda: versiyali fayllar Releases sahifasiga chiqadi.
+name: Kompyuter ilovasi (Windows, macOS)
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+    paths: ["miniapp/**", "desktop/**", "mobile/app.config.json", ".github/workflows/desktop.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: win
+            file: HangukWay-Windows.exe
+            pattern: "dist/*.exe"
+          - os: macos-latest
+            target: mac
+            file: HangukWay-Mac.dmg
+            pattern: "dist/*.dmg"
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Versiya raqami
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then V="${GITHUB_REF_NAME#v}"; else V="1.0.${{ github.run_number }}"; fi
+          echo "VERSION_NAME=$V" >> "$GITHUB_ENV"
+          npm pkg set version="$V"
+
+      - name: Kutubxonalarni o'rnatish
+        run: npm install --no-audit --no-fund
+
+      - name: Yig'ish
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+        run: npm run dist:${{ matrix.target }}
+
+      - name: Barqaror nom bilan nusxa
+        run: |
+          f=$(ls ${{ matrix.pattern }} | head -1)
+          cp "$f" "dist/${{ matrix.file }}"
+          ls -la dist
+
+      - name: Fayllarni saqlash (Artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: HangukWay-${{ matrix.target }}-${{ env.VERSION_NAME }}
+          path: desktop/dist/${{ matrix.file }}
+
+      - name: «demo» Release'ga chiqarish
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: demo
+          files: desktop/dist/${{ matrix.file }}
+
+      - name: Versiyali Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Hanguk Way ${{ env.VERSION_NAME }}
+          files: desktop/dist/HangukWay-*-${{ env.VERSION_NAME }}.*
