@@ -42,11 +42,28 @@
     { v: 20, i: "💪", t: { uz: "20 daqiqa", ru: "20 минут", en: "20 minutes" }, s: { uz: "Jiddiy", ru: "Серьёзно", en: "Serious" }, kw: "yigirma|\\b20\\b|двадцат|twenty" },
     { v: 30, i: "🚀", t: { uz: "30+ daqiqa", ru: "30+ минут", en: "30+ minutes" }, s: { uz: "Intensiv", ru: "Интенсивно", en: "Intensive" }, kw: "o'ttiz|\\b30\\b|тридцат|thirty|soat|час|hour" }
   ];
-  var QUIZ = [
+  // Daraja sinovi: o'zini baholashiga qarab 4 xil to'plam (A: 0–1, B: 2, C: 3, D: 4)
+  var QA = [
     { q: { uz: "Bu so'z qanday o'qiladi?", ru: "Как читается это слово?", en: "How is this word read?" }, big: "한국", o: ["hanguk", "nanguk", "hangul", "handuk"], a: 0 },
     { q: { uz: "«Rahmat» koreyscha qaysi?", ru: "Как по-корейски «спасибо»?", en: "Which one means \"thank you\"?" }, o: ["안녕하세요", "감사합니다", "죄송합니다", "괜찮아요"], a: 1 },
     { q: { uz: "Bo'sh joyni to'ldiring: «Men talabaman»", ru: "Заполните пропуск: «Я студент»", en: "Fill in the blank: \"I am a student\"" }, big: "저는 학생(    ).", o: ["있습니다", "합니다", "입니다", "갑니다"], a: 2 }
   ];
+  var QB = [
+    { q: { uz: "Bo'sh joyni to'ldiring: «Yomg'ir yog'gani uchun uyda qoldim»", ru: "Заполните пропуск: «Остался дома, потому что шёл дождь»", en: "Fill in: \"I stayed home because it rained\"" }, big: "비가 (    ) 집에 있었어요.", o: ["오면", "와서", "오고", "오지만"], a: 1 },
+    { q: { uz: "«Kecha nima qildingiz?» savoliga to'g'ri javob", ru: "Правильный ответ на «Что вы делали вчера?»", en: "Correct reply to \"What did you do yesterday?\"" }, big: "어제 뭐 했어요?", o: ["친구를 만날 거예요.", "친구를 만나요?", "친구를 만났어요.", "친구가 만나세요."], a: 2 },
+    { q: { uz: "«Bu yerda chekish mumkin emas» qaysi?", ru: "Как сказать «здесь нельзя курить»?", en: "Which means \"you may not smoke here\"?" }, big: "여기에서 담배를 (    ).", o: ["피우면 안 돼요", "피워도 돼요", "피우고 싶어요", "피울 수 있어요"], a: 0 }
+  ];
+  var QC = [
+    { q: { uz: "Bo'sh joyni to'ldiring (TOPIK 3–4)", ru: "Заполните пропуск (TOPIK 3–4)", en: "Fill in the blank (TOPIK 3–4)" }, big: "늦잠을 자는 (    ) 회의에 늦었다.", o: ["김에", "바람에", "대신에", "덕분에"], a: 1 },
+    { q: { uz: "«먹는 편이에요» ma'nosiga eng yaqini", ru: "Ближе всего по смыслу к «먹는 편이에요»", en: "Closest meaning to \"먹는 편이에요\"" }, big: "저는 아침을 먹는 편이에요.", o: ["먹을 수 없어요", "먹은 적이 없어요", "먹을 뻔했어요", "대체로 먹어요"], a: 3 },
+    { q: { uz: "Gazeta sarlavhasi nimani bildiradi?", ru: "Что значит заголовок?", en: "What does the headline mean?" }, big: "장바구니 물가 '고공 행진'", o: ["물가가 계속 높다", "물가가 내렸다", "비행기 요금이 올랐다", "시장이 문을 닫았다"], a: 0 }
+  ];
+  var QD = [
+    { q: { uz: "Bo'sh joyni to'ldiring (TOPIK 5–6)", ru: "Заполните пропуск (TOPIK 5–6)", en: "Fill in the blank (TOPIK 5–6)" }, big: "그는 잘못을 인정하기는커녕 오히려 (    ).", o: ["사과를 했다", "남의 탓을 했다", "반성을 했다", "용서를 빌었다"], a: 1 },
+    { q: { uz: "«감안하다» so'zining ma'nodoshi", ru: "Синоним слова «감안하다»", en: "Synonym of \"감안하다\"" }, big: "상황을 감안해서 결정하자.", o: ["무시하다", "감추다", "고려하다", "감사하다"], a: 2 },
+    { q: { uz: "Eng mos ifodani tanlang", ru: "Выберите подходящее выражение", en: "Choose the right expression" }, big: "아무리 바빠도 건강을 해칠 (    ) 일해서는 안 된다.", o: ["정도로", "덕분에", "김에", "바람에"], a: 0 }
+  ];
+  function curQuiz() { var v = ob && ob.d ? ob.d.self : 0; return v >= 4 ? QD : v === 3 ? QC : v === 2 ? QB : QA; }
   var LEVELS = [
     { t: { uz: "Noldan boshlovchi", ru: "С нуля", en: "Absolute beginner" }, s: { uz: "Hangul alifbosidan boshlaymiz", ru: "Начнём с алфавита хангыль", en: "We'll start with the Hangul alphabet" }, short: "A0" },
     { t: { uz: "Boshlang'ich", ru: "Начальный", en: "Beginner" }, s: { uz: "TOPIK 1 darajasi", ru: "Уровень TOPIK 1", en: "TOPIK level 1" }, short: "A1" },
@@ -119,7 +136,7 @@
       case 1: return d.name.trim().length >= 2;
       case 2: return !!d.goal;
       case 3: return d.self != null;
-      case 4: return d.quiz.length >= QUIZ.length && d.quiz.every(function (x) { return x != null; });
+      case 4: return d.quiz.length >= curQuiz().length && d.quiz.every(function (x) { return x != null; });
       case 5: return d.skills.length > 0;
       case 6: return !!d.when;
       case 7: return !!d.daily;
@@ -196,7 +213,7 @@
     } else if (s === 3) {
       h = ask(qText(3), T(Q.selfS)) + opts(SELF, d.self, false, "self");
     } else if (s === 4) {
-      var qi = Math.min(d.qi, QUIZ.length - 1), QQ = QUIZ[qi], ans = d.quiz[qi];
+      var qi = Math.min(d.qi, curQuiz().length - 1), QQ = curQuiz()[qi], ans = d.quiz[qi];
       h = ask(qText(4), T(Q.quizS)) +
         '<div class="onb-quiz"><div class="onb-qq">' + esc(P(QQ.q)) + '</div>' + (QQ.big ? '<div class="onb-big ko">' + esc(QQ.big) + '</div>' : '') +
         '<div class="onb-qo">' + QQ.o.map(function (o, i) {
@@ -235,6 +252,7 @@
   }
   function choose(k, v) {
     var d = ob.d;
+    if (k === "self" && d.self !== +v) { d.quiz = []; d.qi = 0; }
     d[k] = (k === "self" || k === "daily") ? +v : v;
     $("onbBody").querySelectorAll('.onb-opt[data-k="' + k + '"]').forEach(function (x) { x.classList.toggle("on", x.dataset.v === String(v)); });
     H.haptic("sel"); updNext();
@@ -243,14 +261,14 @@
   }
   function rerenderQuiet() { var v = ob.voice; ob.voice = false; render(1); ob.voice = v; }
   function answerQuiz(i) {
-    var d = ob.d, qi = Math.min(d.qi, QUIZ.length - 1);
+    var d = ob.d, qi = Math.min(d.qi, curQuiz().length - 1);
     d.quiz[qi] = i;
-    H.haptic("note", i === QUIZ[qi].a ? "success" : "warning");
+    H.haptic("note", i === curQuiz()[qi].a ? "success" : "warning");
     rerenderQuiet();
-    if (ob.voice) { vTok++; K.sayLocal(i === QUIZ[qi].a ? T({ uz: "To'g'ri!", ru: "Верно!", en: "Correct!" }) : T({ uz: "Hechqisi yo'q.", ru: "Ничего страшного.", en: "That's okay." }), I.speechCode()); }
+    if (ob.voice) { vTok++; K.sayLocal(i === curQuiz()[qi].a ? T({ uz: "To'g'ri!", ru: "Верно!", en: "Correct!" }) : T({ uz: "Hechqisi yo'q.", ru: "Ничего страшного.", en: "That's okay." }), I.speechCode()); }
     setTimeout(function () {
       if (!ob || ob.step !== 4) return;
-      if (d.qi < QUIZ.length - 1) { d.qi++; render(1); } else if (ob.voice) next();
+      if (d.qi < curQuiz().length - 1) { d.qi++; render(1); } else if (ob.voice) next();
     }, 1300);
   }
   function bindStep() {
@@ -304,7 +322,7 @@
     var tok = ++vTok, s = ob.step;
     if (s < 1 || s > TOTAL + 1) return;
     var text = s > TOTAL ? T({ uz: "Rejangiz tayyor, {n}! Boshlaymizmi?", ru: "Ваш план готов, {n}! Начнём?", en: "Your plan is ready, {n}! Shall we start?" }, { n: ob.d.name }) : qText(s);
-    if (s === 4) { var QQ = QUIZ[Math.min(ob.d.qi, 2)]; text = P(QQ.q) + " " + T({ uz: "Variant raqamini ayting.", ru: "Назовите номер варианта.", en: "Say the option number." }); }
+    if (s === 4) { var QQ = curQuiz()[Math.min(ob.d.qi, 2)]; text = P(QQ.q) + " " + T({ uz: "Variant raqamini ayting.", ru: "Назовите номер варианта.", en: "Say the option number." }); }
     listenBar("wait", "🔊 " + T({ uz: "Komiko gapiryapti…", ru: "Комико говорит…", en: "Komiko is speaking…" }));
     K.sayLocal(text, I.speechCode()).then(function (spoken) {
       if (tok !== vTok || !ob || ob.step !== s) return;
@@ -355,7 +373,7 @@
     }
     if (s === 2) { hit = matchOpt(GOALS, said); if (hit >= 0) { listenBar("wait", "✓ " + P(GOALS[hit].t)); choose("goal", GOALS[hit].v); return; } }
     if (s === 3) { hit = matchOpt(SELF, said); if (hit >= 0) { listenBar("wait", "✓ " + P(SELF[hit].t)); choose("self", SELF[hit].v); return; } }
-    if (s === 4) { hit = matchOpt(QUIZ[Math.min(d.qi, 2)].o.map(function (o) { return { t: { uz: o } }; }), said); if (hit >= 0) { answerQuiz(hit); return; } }
+    if (s === 4) { hit = matchOpt(curQuiz()[Math.min(d.qi, 2)].o.map(function (o) { return { t: { uz: o } }; }), said); if (hit >= 0) { answerQuiz(hit); return; } }
     if (s === 5) {
       SKILLS.forEach(function (o) { if (new RegExp(o.kw, "i").test(said) && d.skills.indexOf(o.v) < 0) d.skills.push(o.v); });
       if (d.skills.length) {
@@ -382,19 +400,19 @@
   }
 
   function playVoice(v) { vTok++; K.tmpSpeed = ob.d.speed; K.speak("안녕하세요! 저는 코미코예요. 같이 한국어를 공부해요!", v); }
-  function quizScore() { var d = ob.d; return QUIZ.reduce(function (n, q, i) { return n + (d.quiz[i] === q.a ? 1 : 0); }, 0); }
-  function calcLevel() { var pts = (ob.d.self || 0) + quizScore(); return pts <= 1 ? 0 : pts <= 3 ? 1 : pts <= 5 ? 2 : pts === 6 ? 3 : 4; }
+  function quizScore() { var d = ob.d; return curQuiz().reduce(function (n, q, i) { return n + (d.quiz[i] === q.a ? 1 : 0); }, 0); }
+  // Daraja = o'zini baholash + o'sha darajadagi sinov natijasi (yuqori darajani tanlab, savollarni yecha olmasa — pastroq)
+  function calcLevel() {
+    var v = ob.d.self || 0, sc = quizScore();
+    if (v >= 4) return sc === 3 ? 4 : sc === 2 ? 3 : 2;
+    if (v === 3) return sc >= 2 ? 3 : sc === 1 ? 2 : 1;
+    if (v === 2) return sc >= 2 ? 2 : 1;
+    if (v === 1) return sc >= 2 ? 1 : 0;
+    return sc === 3 ? 1 : 0;
+  }
   function planFor(goal, lv) {
-    var p = [];
-    if (lv === 0) p.push("🔤 " + T({ uz: "Hangul harflari va oddiy so'zlar", ru: "Буквы хангыль и простые слова", en: "Hangul letters and simple words" }));
-    p.push("🎧 " + T({ uz: "«6 daqiqa koreys»: bitta suhbatni tinglash", ru: "«6 минут корейского»: одна беседа", en: "\"6-Minute Korean\": one episode" }));
-    p.push(goal === "eps" ? "📝 " + T({ uz: "EPS-TOPIK tezkor test (10 savol)", ru: "Быстрый тест EPS-TOPIK (10 вопросов)", en: "EPS-TOPIK quick test (10 questions)" })
-      : goal === "topik" ? "📝 " + (lv >= 3 ? T({ uz: "TOPIK II tezkor test va yozish (51–54)", ru: "Быстрый тест TOPIK II и письмо (51–54)", en: "TOPIK II quick test and writing (51–54)" })
-        : T({ uz: "TOPIK I tezkor test (10 savol)", ru: "Быстрый тест TOPIK I (10 вопросов)", en: "TOPIK I quick test (10 questions)" }))
-      : "🗂️ " + T({ uz: "Kundalik so'zlar kartochkasi", ru: "Карточки бытовых слов", en: "Everyday word cards" }));
-    p.push("🤖 " + T({ uz: "Komiko bilan 5 daqiqa ovozli suhbat", ru: "5 минут разговора с Комико", en: "5-minute voice chat with Komiko" }));
-    p.push("📷 " + T({ uz: "Daftarga yozish topshirig'i va tekshiruv", ru: "Задание в тетради и проверка", en: "Notebook writing task and check" }));
-    return p;
+    if (window.PWLevel) return PWLevel.plan({ goal: goal, level: lv }).map(function (x) { return x.i + " " + x.t; });
+    return [];
   }
   function finish() {
     var d = ob.d, lv = calcLevel();
@@ -429,12 +447,7 @@
       T({ uz: "Bugun {m} daqiqa mashq qilamizmi? Men tayyorman!", ru: "Позанимаемся сегодня {m} минут? Я готов!", en: "Shall we practise {m} minutes today? I'm ready!" }, { m: goalMin });
     var examKey = p.goal === "topik" ? ((p.level | 0) >= 3 ? "topik2" : "topik") : "eps";
     var ep = window.PWSix ? PWSix.today() : null;
-    var plan = [
-      { k: "six", i: "🎧", t: T({ uz: "6 daqiqa koreys", ru: "6 минут корейского", en: "6-Minute Korean" }), s: ep ? ep.title : "", a: 'data-go="six"' },
-      { k: "test", i: "⚡", t: ({ eps: "EPS-TOPIK", topik: "TOPIK I", topik2: "TOPIK II" })[examKey] + " " + T({ uz: "tezkor test", ru: "быстрый тест", en: "quick test" }), s: T({ uz: "10 savol · 10 daqiqa", ru: "10 вопросов · 10 минут", en: "10 questions · 10 min" }), a: 'data-start="' + examKey + ':quick"' },
-      { k: "chat", i: "🤖", t: T({ uz: "Komiko bilan suhbat", ru: "Разговор с Комико", en: "Talk with Komiko" }), s: T({ uz: "Ovozli mashq · 5 daqiqa", ru: "Голосовая практика · 5 минут", en: "Voice practice · 5 min" }), a: 'data-act="chat"' },
-      { k: "hw", i: "📷", t: T({ uz: "Daftar topshirig'i", ru: "Задание в тетради", en: "Notebook task" }), s: T({ uz: "Yozing → rasmga oling → Komiko tekshiradi", ru: "Напишите → сфотографируйте → Комико проверит", en: "Write → take a photo → Komiko checks" }), a: 'data-go="hw"' }
-    ];
+    var plan = window.PWLevel ? PWLevel.plan(p) : [];
     var isDone = function (x) { return done.indexOf(x.k) >= 0 || (x.k === "chat" && done.indexOf("speak") >= 0); };
     var nDone = plan.filter(isDone).length;
     box.innerHTML =
@@ -449,7 +462,8 @@
           '<div class="st"><b>' + L.short + '</b><span>' + esc(P(L.t)) + '</span></div>' +
         '</div>' +
       '</div>' +
-      (ep ? '<button class="six-card" data-go="six"><div class="sc-l"><span class="sc-tag">🎧 ' + esc(T({ uz: "6 daqiqa koreys", ru: "6 минут корейского", en: "6-Minute Korean" })) + '</span>' +
+      (window.PWLevel ? PWLevel.trackCard(p) : '') +
+      (ep && (p.level | 0) >= 1 ? '<button class="six-card" data-go="six"><div class="sc-l"><span class="sc-tag">🎧 ' + esc(T({ uz: "6 daqiqa koreys", ru: "6 минут корейского", en: "6-Minute Korean" })) + '</span>' +
         '<b>' + esc(ep.title) + '</b><small>' + esc(T({ uz: "Ikki kishi suhbati · yangi so'zlar · PDF", ru: "Диалог двоих · новые слова · PDF", en: "Two-person chat · new words · PDF" })) + '</small></div><span class="sc-play">▶</span></button>' : '') +
       '<div class="sec-h"><h2>' + esc(T({ uz: "Bugungi reja", ru: "План на сегодня", en: "Today's plan" })) + '</h2><span class="chip">' + nDone + ' / ' + plan.length + '</span></div>' +
       '<div class="plan-l">' + plan.map(function (x) {

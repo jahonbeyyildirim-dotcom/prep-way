@@ -333,7 +333,7 @@
     var fd = new FormData();
     fd.append("history", JSON.stringify(ch.history.slice(-10)));
     fd.append("topic", ch.topic);
-    fd.append("level", "boshlang'ich yoki o'rta (javoblariga qarab moslang)");
+    fd.append("level", window.PWLevel ? PWLevel.chat() : "boshlang'ich yoki o'rta (javoblariga qarab moslang)");
     if (audio) fd.append("audio", audio.blob, "rec" + audio.ext);
     else { fd.append("text", text); addHTML('<div class="bub me ko">' + esc(text) + '</div>'); }
     var waitId = "w" + Date.now();

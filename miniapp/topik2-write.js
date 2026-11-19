@@ -155,8 +155,11 @@
         '<details class="card wr-rules"><summary><b>📌 ' + TF("Yozish qoidalari", "Правила письма", "Writing rules") + '</b></summary><ul>' + RULES.map(function (r) { return '<li>' + r + '</li>'; }).join("") + '</ul></details>';
       $("wrTabs").querySelectorAll("button").forEach(function (b) { b.onclick = function () { tab = +b.dataset.n; cur = null; render(); }; });
     }
-    var last = load(SKEY, null);
-    if (!cur && last) { cur = TASKS.filter(function (t) { return t.id === last; })[0] || null; if (cur) tab = cur.no; }
+    var last = load(SKEY, null), forced = 0;
+    try { forced = +localStorage.getItem("pwWriteTab") || 0; localStorage.removeItem("pwWriteTab"); } catch (e) {}
+    if (forced && MAX[forced]) { tab = forced; cur = null; }
+    else if (!cur && last) { cur = TASKS.filter(function (t) { return t.id === last; })[0] || null; if (cur) tab = cur.no; }
+    else if (!cur && window.PWLevel) tab = PWLevel.get() >= 4 ? 53 : 51;
     render();
   }
   function render() {
@@ -245,7 +248,9 @@
   var glv = 0;
   function gramView() {
     var s = $("v-t2gram"); if (!s) return;
-    var LG = I ? I.lang() : "uz";
+    var LG = I ? I.lang() : "uz", forcedG = 0;
+    try { forcedG = +localStorage.getItem("pwGramLv") || 0; localStorage.removeItem("pwGramLv"); } catch (e) {}
+    if (forcedG) glv = forcedG; else if (!s.dataset.ready && window.PWLevel) glv = PWLevel.gramLv();
     if (!s.dataset.ready) {
       s.dataset.ready = "1";
       s.innerHTML = '<h2 style="margin-top:0">🧩 ' + TF("TOPIK II grammatikasi (3–6)", "Грамматика TOPIK II (3–6)", "TOPIK II grammar (3–6)") + '</h2>' +
