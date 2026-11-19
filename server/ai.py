@@ -611,6 +611,46 @@ async def tts(text: str, gender: str | None = None) -> bytes:
     return data
 
 
+async def tts_uz(text: str, gender: str | None = None) -> bytes:
+    """O'zbekcha matnni ovozga aylantiradi (diktor, namoyish videolari, o'zbekcha izohlar). Natija keshlanadi."""
+    text = text.strip()[:400]
+    vname = voice_name(gender)
+    path = TTS_DIR / (hashlib.sha1(f"uz|{vname}|{text}".encode()).hexdigest() + ".wav")
+    if path.exists():
+        return path.read_bytes()
+    if config.AI_FAKE:
+        raise AIError("Sinov rejimida server ovozi yo'q.")
+    it, err = None, None
+    # 130 tilli flagman model birinchi (o'zbek tili uchun), keyin lite
+    for model in dict.fromkeys(["gemini-3.8-flash-tts", config.GEMINI_TTS_MODEL]):
+        try:
+            it = await _cli().aio.interactions.create(
+                api_version="v1beta", model=model,
+                input=[{"type": "user_input", "content": [{"type": "text", "text": text}]}],
+                response_format={"type": "audio"},
+                generation_config={"speech_config": [{"voice": vname}]},
+            )
+            break
+        except genai_errors.APIError as e:
+            err = _api_error_to_uz(e)
+        except Exception as e:
+            log.warning("TTS-uz (%s) xatosi: %s", model, str(e)[:300])
+            err = AIError("Ovoz yaratib bo'lmadi. Birozdan keyin qayta urinib ko'ring.")
+    if it is None:
+        raise err
+    audio = _find_audio(it.model_dump() if hasattr(it, "model_dump") else it)
+    if not audio:
+        raise AIError("Ovoz yaratib bo'lmadi.")
+    raw, mime = audio
+    data = base64.b64decode(raw) if isinstance(raw, str) else raw
+    if not (mime or "").startswith("audio/wav") and data[:4] != b"RIFF":
+        m = re.search(r"rate=(\d+)", mime or "")
+        data = _pcm_to_wav(data, int(m.group(1)) if m else 24000)
+    TTS_DIR.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(data)
+    return data
+
+
 def _find_audio(obj):
     """Interactions javobidan oxirgi audio bo'lagini (data, mime_type) topadi."""
     found = None

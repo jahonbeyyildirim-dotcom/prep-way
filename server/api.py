@@ -4,6 +4,7 @@ import json
 import logging
 import tempfile
 import time
+import re
 from pathlib import Path
 
 import aiohttp
@@ -241,6 +242,24 @@ async def tts(req):
             await storage.give_back(uid, "tts")
             raise
     return web.FileResponse(path, headers={"Content-Type": "audio/wav", "Cache-Control": "private, max-age=86400"})
+
+
+async def tts_uz(req):
+    """O'zbekcha matn → ovoz (WAV). Oddiy TTS bilan bir xil kunlik limit."""
+    uid = req["uid"]
+    body = await req.json()
+    text = str(body.get("text") or "").strip()[:400]
+    gender = "male" if body.get("voice") == "male" else "female"
+    if not text or not re.search(r"[A-Za-zЀ-ӿ]", text):
+        return jerr("O'zbekcha matn kiriting.")
+    if not await storage.take(uid, "tts"):
+        return jerr("Bugungi ovoz limiti tugadi.", 429)
+    try:
+        data = await ai.tts_uz(text, gender)
+    except Exception:
+        await storage.give_back(uid, "tts")
+        raise
+    return web.Response(body=data, headers={"Content-Type": "audio/wav", "Cache-Control": "private, max-age=86400"})
 
 
 async def homework(req):
@@ -586,6 +605,7 @@ def make_app() -> web.Application:
         web.post("/api/speech", speech),
         web.post("/api/chat", chat),
         web.post("/api/tts", tts),
+        web.post("/api/tts-uz", tts_uz),
         web.post("/api/advice", advice),
         web.post("/api/homework", homework),
         web.post("/api/write", write_grade),
