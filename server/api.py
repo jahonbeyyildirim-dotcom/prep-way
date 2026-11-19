@@ -252,6 +252,22 @@ async def dict_photo(req):
         raise
 
 
+async def xp_add(req):
+    """Haftalik liga uchun XP qo'shadi."""
+    try:
+        b = await req.json()
+        xp = int(b.get("xp") or 0)
+    except Exception:
+        return jerr("Noto'g'ri so'rov.")
+    name = str(b.get("name") or req["user"].get("first_name") or "")
+    total = await storage.league_add(req["uid"], xp, name, str(b.get("lv") or ""))
+    return web.json_response({"xp": total})
+
+
+async def league(req):
+    return web.json_response(storage.league_get(req["uid"]))
+
+
 async def explain(req):
     """Testdagi xato javobni AI tushuntiradi."""
     uid = req["uid"]
@@ -484,6 +500,8 @@ def make_app() -> web.Application:
         web.post("/api/write", write_grade),
         web.post("/api/dict/photo", dict_photo),
         web.post("/api/explain", explain),
+        web.post("/api/xp", xp_add),
+        web.get("/api/league", league),
         web.post("/api/dict", dict_lookup),
         web.get("/api/dict/words", dict_words),
         web.post("/api/words", words),

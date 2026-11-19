@@ -149,6 +149,7 @@
       x.box = b; x.due = Date.now() + (g === 0 ? 5 * 60 * 1000 : DAYS[b] * 864e5); x.seen = (x.seen || 0) + 1;
     });
     sv(SKEY, s); badge();
+    document.dispatchEvent(new CustomEvent("pw:xp", { detail: { xp: g === 2 ? 2 : 1, why: "review" } }));
   }
   function badge() {
     var f = document.getElementById("dictFab"); if (!f) return;

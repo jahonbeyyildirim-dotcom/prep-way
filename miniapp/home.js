@@ -464,7 +464,9 @@
         (window.PWCoach ? PWCoach.week() : '') +
       '</div>' +
       (window.PWLevel ? PWLevel.trackCard(p) : '') +
+      (window.PWLeague ? PWLeague.examCard(p) : '') +
       (window.PWCoach ? PWCoach.card(p) : '') +
+      (window.PWLeague ? PWLeague.card(p) : '') +
       (ep && (p.level | 0) >= 1 ? '<button class="six-card" data-go="six"><div class="sc-l"><span class="sc-tag">🎧 ' + esc(T({ uz: "6 daqiqa koreys", ru: "6 минут корейского", en: "6-Minute Korean" })) + '</span>' +
         '<b>' + esc(ep.title) + '</b><small>' + esc(T({ uz: "Ikki kishi suhbati · yangi so'zlar · PDF", ru: "Диалог двоих · новые слова · PDF", en: "Two-person chat · new words · PDF" })) + '</small></div><span class="sc-play">▶</span></button>' : '') +
       '<div class="sec-h"><h2>' + esc(T({ uz: "Bugungi reja", ru: "План на сегодня", en: "Today's plan" })) + '</h2><span class="chip">' + nDone + ' / ' + plan.length + '</span></div>' +
@@ -497,10 +499,12 @@
       [5, 10, 20, 30].map(function (m) { return '<button data-dm="' + m + '" class="' + ((p.daily || 10) === m ? "on" : "") + '">' + m + ' ' + esc(T({ uz: "daq", ru: "мин", en: "min" })) + '</button>'; }).join("") + '</div>' +
       '<div style="height:12px"></div>' +
       (window.PWCoach ? '<button class="lsn" id="stRem"><span class="n">🔔</span><span style="flex:1"><b>' + esc(T({ uz: "Kundalik eslatma", ru: "Ежедневное напоминание", en: "Daily reminder" })) + '</b><div class="s">' + esc((PWCoach.reminder() || {}).on ? (PWCoach.reminder().h + ":00") : T({ uz: "o'chiq", ru: "выкл.", en: "off" })) + '</div></span>›</button><div style="height:8px"></div>' : '') +
+      (window.PWLeague ? '<button class="lsn" id="stExam"><span class="n">📅</span><span style="flex:1"><b>' + esc(T({ uz: "Imtihon sanasi", ru: "Дата экзамена", en: "Exam date" })) + '</b><div class="s">' + esc(localStorage.getItem("pwExamDate") ? JSON.parse(localStorage.getItem("pwExamDate")) : T({ uz: "kiritilmagan", ru: "не указана", en: "not set" })) + '</div></span>›</button><div style="height:8px"></div>' : '') +
       '<button class="lsn" id="stRedo"><span class="n">🔄</span><span style="flex:1"><b>' + esc(T({ uz: "Tanishuv savollarini qaytadan", ru: "Пройти знакомство заново", en: "Redo the intro questions" })) + '</b><div class="s">' + esc(T({ uz: "Darajani qayta aniqlash", ru: "Заново определить уровень", en: "Re-check your level" })) + '</div></span>›</button>' +
       '<p class="note" style="font-size:11.5px;margin-top:14px;opacity:.75">' + esc(T({ uz: "Chizmalar", ru: "Рисунки", en: "Drawings" })) + ': OpenMoji — CC BY-SA 4.0</p>');
     $("stVoice").onclick = function () { K.closeSheet(); K.voicePicker(); };
     $("stRedo").onclick = function () { K.closeSheet(); startOnboarding(); };
+    if ($("stExam")) $("stExam").onclick = function () { K.closeSheet(); setTimeout(PWLeague.examSheet, 250); };
     if ($("stRem")) $("stRem").onclick = function () { K.closeSheet(); setTimeout(PWCoach.reminderSheet, 250); };
     document.querySelectorAll("#kSheet [data-sl]").forEach(function (b) { b.onclick = function () { I.setLang(b.dataset.sl); }; });
     document.querySelectorAll("#kSheet [data-dm]").forEach(function (b) {

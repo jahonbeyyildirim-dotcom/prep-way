@@ -56,6 +56,7 @@
     var d = A.day(), goal = (p.daily || 10) * 60, td = dayAgo(0);
     if (d.secs >= goal && ld("pwGoalCel", "") !== td) {
       sv("pwGoalCel", td); earn(); confetti();
+      document.dispatchEvent(new CustomEvent("pw:xp", { detail: { xp: 20, why: "goal" } }));
       H.toast("🎉 " + T({ uz: "Bugungi maqsad bajarildi! 🔥 {s} kun ketma-ket.", ru: "Цель на сегодня выполнена! 🔥 {s} дн. подряд.", en: "Daily goal done! 🔥 {s} days in a row." }, { s: A.streak() }));
       H.haptic && H.haptic("note", "success");
       remind();  // bugungi eslatma kerak emas
@@ -187,6 +188,6 @@
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { maintain(); remind(); } });
   maintain(); setTimeout(remind, 2000); setInterval(checkGoal, 60000);
 
-  window.PWCoach = { record: record, weak: weak, card: card, week: week, reminderSheet: reminderSheet, remind: remind, maintain: maintain, hasLN: function () { return !!LN(); }, reminder: function () { return ld(RKEY, null); } };
+  window.PWCoach = { label: label, record: record, weak: weak, card: card, week: week, reminderSheet: reminderSheet, remind: remind, maintain: maintain, hasLN: function () { return !!LN(); }, confetti: confetti, reminder: function () { return ld(RKEY, null); } };
   document.dispatchEvent(new CustomEvent("pw:activity"));  // bosh sahifa yangi kartalar bilan qayta chiziladi
 })();

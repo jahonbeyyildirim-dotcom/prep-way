@@ -3,7 +3,7 @@
 Nega: bepul hostingda (Render free) disk vaqtinchalik — qayta ishga tushganda fayllar o'chadi.
 DATABASE_URL berilmasa, hech narsa qilmaydi (oddiy fayl rejimi).
 
-Saqlanadi: premium_users.json, usage.json, books/** (meta, darslar, kitob fayli).
+Saqlanadi: premium_users.json, usage.json, league.json, books/** (meta, darslar, kitob fayli).
 Saqlanmaydi: tts_cache/** (keshni qayta yaratish mumkin).
 """
 import asyncio

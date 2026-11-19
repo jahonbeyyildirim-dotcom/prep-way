@@ -1176,6 +1176,7 @@
     });
     saveM();
     if (window.PWCoach) PWCoach.record(cur.key.split(":")[0], qs, cur.ans);
+    document.dispatchEvent(new CustomEvent("pw:test", { detail: { key: cur.key, ok: ok, n: qs.length } }));
     var pct = Math.round(ok/qs.length*100);
     haptic("note", pct>=50 ? "success" : "warning");
     function sp(x){ return x[1] ? Math.round(x[0]/x[1]*100) : null; }
@@ -1337,6 +1338,7 @@
 <script src="dict.js"></script>
 <script src="home.js"></script>
 <script src="coach.js"></script>
+<script src="league.js"></script>
 <script src="daftar.js"></script>
 <script src="topik2-write.js"></script>
 <script src="level.js"></script>
