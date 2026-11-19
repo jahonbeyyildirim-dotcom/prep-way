@@ -420,6 +420,7 @@
       <button class="btn ghost" data-go="mistakes">Xatolar daftari</button>
       <button class="btn ghost" data-go="home">Bosh sahifa</button>
     </div>
+    <div id="shareRow"></div>
     <h2>Javoblar tahlili</h2>
     <div class="review" id="review"></div>
   </section>
@@ -507,6 +508,7 @@
   <section class="view" id="v-write"></section>
   <section class="view" id="v-t2gram"></section>
   <section class="view" id="v-hangul"></section>
+  <section class="view" id="v-role"></section>
 
   <!-- DAFTAR (kamera) -->
   <section class="view" id="v-hw"></section>
@@ -997,7 +999,7 @@
   }
 
   // ---------- ROUTING ----------
-  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home", six:"home", write:"home", t2gram:"home", hangul:"home" };
+  var NAVMAP = { test:"home", result:"home", books:"home", book:"home", lesson:"home", six:"home", write:"home", t2gram:"home", hangul:"home", role:"home" };
   var PARENT = { lesson:"book", book:"books" };
   var curView = "home";
   function go(v){
@@ -1024,10 +1026,15 @@
   // ---------- TEST ----------
   var cur = null; // {key, exam, i, ans[], left, tid}
   function startTest(key){
-    var parts = String(key).split(":"), k = parts[0], mode = ({full:1, listen:1, read:1, exam:1, weak:1})[parts[1]] ? parts[1] : "quick";
+    var parts = String(key).split(":"), k = parts[0], mode = ({full:1, listen:1, read:1, exam:1, weak:1, ch:1})[parts[1]] ? parts[1] : "quick";
     var M = MODES[k], cfg = M[mode] || {min:15}, qs = [], seen = seenMap(), used = {}, minutes = cfg.min;
     var mock = (mode === "full" || mode === "exam") && FMT && FMT.MOCK[mode === "exam" ? k + "_exam" : k];
-    if (mode === "weak"){
+    if (mode === "ch"){
+      // Do'st chaqirig'i: aynan o'sha savollar, o'sha tartibda
+      var byId = {}; BANK[k].forEach(function(q){ byId[q.id] = q; });
+      qs = String(parts[2] || "").split(",").map(function(id){ return byId[id]; }).filter(Boolean).slice(0, 100);
+      minutes = Math.max(10, Math.round(qs.length * 1.3));
+    } else if (mode === "weak"){
       // Zaif savol turlari: har bir turdan teng ulush, eng kam ko'rilganlari birinchi
       var wt = String(parts[2] || "").split(",").filter(Boolean), per = Math.max(3, Math.ceil(12 / Math.max(1, wt.length)));
       wt.forEach(function(t){ qs = qs.concat(pickUnits(BANK[k].filter(function(q){ return q.type === t; }), per, seen, used)); });
@@ -1079,7 +1086,7 @@
     var rng = {};
     qs.forEach(function(q, i){ var no = (rd0 && q.sec === "read") ? i+1-rd0 : i+1; q.no = no; var r = rng[q.rk] || (rng[q.rk] = [no, no]); r[1] = no; });
     qs.forEach(function(q){ var r = rng[q.rk]; q.rng = r[0] === r[1] ? String(r[0]) : r[0] + "~" + r[1]; });
-    var ex = { name: M.name+({weak: TF(" · zaif joylar"," · слабые места"," · weak spots"), exam: TF(" · to'liq imtihon"," · полный экзамен"," · full exam"), full: mock && k!=="eps" ? TF(" · imtihon formati"," · формат экзамена"," · exam format") : TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: minutes, qs: qs };
+    var ex = { name: M.name+({ch: TF(" · do'st chaqirig'i"," · вызов друга"," · friend challenge"), weak: TF(" · zaif joylar"," · слабые места"," · weak spots"), exam: TF(" · to'liq imtihon"," · полный экзамен"," · full exam"), full: mock && k!=="eps" ? TF(" · imtihon formati"," · формат экзамена"," · exam format") : TF(" · to'liq"," · полный"," · full"), listen:TF(" · tinglash"," · аудирование"," · listening"), read:TF(" · o'qish"," · чтение"," · reading")}[mode] || TF(" · tezkor"," · быстрый"," · quick")), minutes: minutes, qs: qs };
     cur = { key:key, exam:ex, i:0, ans:ex.qs.map(function(){return -1;}), left:ex.minutes*60, tid:null };
     $("tExam").textContent = ex.name;
     go("test");
@@ -1176,7 +1183,7 @@
     });
     saveM();
     if (window.PWCoach) PWCoach.record(cur.key.split(":")[0], qs, cur.ans);
-    document.dispatchEvent(new CustomEvent("pw:test", { detail: { key: cur.key, ok: ok, n: qs.length } }));
+    document.dispatchEvent(new CustomEvent("pw:test", { detail: { key: cur.key, ok: ok, n: qs.length, ids: qs.map(function(q){ return q.id; }), name: cur.exam.name } }));
     var pct = Math.round(ok/qs.length*100);
     haptic("note", pct>=50 ? "success" : "warning");
     function sp(x){ return x[1] ? Math.round(x[0]/x[1]*100) : null; }
@@ -1339,6 +1346,9 @@
 <script src="home.js"></script>
 <script src="coach.js"></script>
 <script src="league.js"></script>
+<script src="roleplay-data.js"></script>
+<script src="roleplay.js"></script>
+<script src="share.js"></script>
 <script src="daftar.js"></script>
 <script src="topik2-write.js"></script>
 <script src="level.js"></script>

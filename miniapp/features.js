@@ -574,5 +574,6 @@
       ["spMic", "chMic"].forEach(function (id) { var b = $(id); if (!b.dataset.busy) { b.classList.remove("rec"); b.textContent = "🎙️"; } });
     }
   };
+  window.PWFeat = { bindMic: bindMic, setBusy: setBusy, recCancel: recCancel, needServer: needServer };
   renderSentence();
 })();

@@ -189,6 +189,41 @@ async def chat(req):
     return web.json_response({"user_text": text, **res})
 
 
+async def roleplay(req):
+    """Rolli vaziyat: turn / hint / finish."""
+    uid = req["uid"]
+    form = await req.post()
+    try:
+        history = json.loads(str(form.get("history") or "[]"))
+        done = [int(x) for x in json.loads(str(form.get("done") or "[]"))][:10]
+        if not isinstance(history, list):
+            history = []
+    except (json.JSONDecodeError, TypeError, ValueError):
+        history, done = [], []
+    mode = str(form.get("mode") or "turn")
+    if mode not in ("turn", "hint", "finish"):
+        return jerr("Noto'g'ri so'rov.")
+    rid = str(form.get("scene") or "")[:30]
+    level = str(form.get("level") or "boshlang'ich")[:80]
+    text = str(form.get("text") or "").strip()[:500]
+    audio = await _read_audio(form) if mode == "turn" else None
+    if mode == "turn" and not text and not audio:
+        return jerr("Xabar bo'sh.")
+    await _take_ai(uid)
+    try:
+        wav = None
+        if audio:
+            wav = await ai.to_wav(*audio)
+            text = await ai.transcribe(wav)
+            if not text:
+                raise AIError("Ovozda gap eshitilmadi. Qayta urinib ko'ring.")
+        res = await ai.roleplay_turn(rid, history, text, level, done, mode, wav)
+    except Exception:
+        await storage.give_back(uid, "ai")
+        raise
+    return web.json_response({"user_text": text, **res})
+
+
 async def tts(req):
     uid = req["uid"]
     body = await req.json()
@@ -500,6 +535,7 @@ def make_app() -> web.Application:
         web.post("/api/write", write_grade),
         web.post("/api/dict/photo", dict_photo),
         web.post("/api/explain", explain),
+        web.post("/api/roleplay", roleplay),
         web.post("/api/xp", xp_add),
         web.get("/api/league", league),
         web.post("/api/dict", dict_lookup),

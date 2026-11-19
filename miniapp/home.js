@@ -475,6 +475,7 @@
         return '<button class="pl' + (ok ? " ok" : "") + '" ' + x.a + '><span class="pl-i">' + x.i + '</span><span class="pl-t"><b>' + esc(x.t) + '</b><small>' + esc(x.s) + '</small></span><span class="pl-c">' + (ok ? "✓" : "›") + '</span></button>';
       }).join("") + '</div>' +
       '<div class="tiles">' +
+        '<button class="tile t6" data-go="role"><span>🎭</span><b>' + esc(T({ uz: "Vaziyatlar", ru: "Ситуации", en: "Role-play" })) + '</b><small>' + esc(T({ uz: "Zavod, bank, shifokor: rolli suhbat", ru: "Завод, банк, врач: ролевой диалог", en: "Factory, bank, doctor: role-play" })) + '</small></button>' +
         '<button class="tile t1" data-act="chat"><span>🤖</span><b>Komiko</b><small>' + esc(T({ uz: "Ovozli suhbat", ru: "Голосовой диалог", en: "Voice chat" })) + '</small></button>' +
         '<button class="tile t2" data-go="hw"><span>📷</span><b>' + esc(T({ uz: "Daftar", ru: "Тетрадь", en: "Notebook" })) + '</b><small>' + esc(T({ uz: "Rasm bilan tekshiruv", ru: "Проверка по фото", en: "Photo check" })) + '</small></button>' +
         '<button class="tile t3" data-go="speak"><span>🎯</span><b>' + esc(T({ uz: "Talaffuz", ru: "Произношение", en: "Pronunciation" })) + '</b><small>' + esc(T({ uz: "Gapni ayting, baho oling", ru: "Скажите фразу — получите оценку", en: "Say it, get a score" })) + '</small></button>' +

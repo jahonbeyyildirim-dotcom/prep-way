@@ -323,6 +323,87 @@ async def chat_turn(history: list, user_text: str, level: str, topic: str, wav: 
     }
 
 
+# ---------------------------------------------------------------- ROLLI VAZIYATLAR
+def _load_roles() -> dict:
+    """miniapp/roleplay-data.js dan vaziyatlarni o'qiydi (mijoz bilan bitta manba)."""
+    try:
+        raw = (Path(__file__).resolve().parent.parent / "miniapp" / "roleplay-data.js").read_text(encoding="utf-8")
+        raw = raw[raw.index("["):raw.rindex("]") + 1]
+        return {r["id"]: r for r in json.loads(raw)}
+    except Exception:
+        log.exception("roleplay-data.js o'qilmadi")
+        return {}
+
+
+ROLES = _load_roles()
+
+
+async def roleplay_turn(rid: str, history: list, user_text: str, level: str, done: list, mode: str,
+                        wav: bytes | None = None) -> dict:
+    """Rolli vaziyat: bir qadam (turn), maslahat (hint) yoki yakuniy hisobot (finish)."""
+    r = ROLES.get(rid)
+    if not r:
+        raise AIError("Bunday vaziyat topilmadi.")
+    goals = r["goals"]
+    glist = "\n".join(f"{i}. {g['en']}" + (" (DONE)" if i in done else "") for i, g in enumerate(goals))
+    hist = "\n".join(f"{'AI' if h.get('role') == 'ai' else 'Learner'}: {str(h.get('ko', ''))[:300]}" for h in history[-14:])
+    head = (f"Korean roleplay practice for a learner from Uzbekistan. ROLE: {r['role']}\nLearner level: {level}.\n"
+            f"The learner's goals in this scene:\n{glist}\nConversation so far:\n{hist or '(start)'}\n\n")
+    if config.AI_FAKE:
+        if mode == "hint":
+            nxt = next((g for i, g in enumerate(goals) if i not in done), goals[-1])
+            return {"hint_ko": nxt.get("ko", ""), "hint_uz": nxt.get("uz", "")}
+        if mode == "finish":
+            return {"summary_uz": "Sinov rejimi: suhbat yaxshi o'tdi.", "phrases": [{"ko": g["ko"], "uz": g["uz"]} for g in goals[:3]],
+                    "score": 80}
+        nd = next((i for i in range(len(goals)) if i not in done), None)
+        return {"corrected_ko": user_text, "correction_uz": "", "scores": {"grammar": 85, "vocabulary": 80, "pronunciation": 75 if wav else None},
+                "reply_ko": "네, 알겠어요. 또 궁금한 거 있어요?", "reply_uz": "Ha, tushundim. Yana savolingiz bormi?",
+                "goals_done": [nd] if nd is not None else [], "help_uz": ""}
+    if mode == "hint":
+        data = await _json_call([head + "The learner is stuck. Suggest ONE natural Korean sentence they could say next that "
+                                 "fits the conversation and moves toward an unfinished goal, at their level. Give its Uzbek meaning.\n"
+                                 'Shape: {"hint_ko": "", "hint_uz": ""}'], temperature=0.5)
+        return {"hint_ko": str(data.get("hint_ko", "")), "hint_uz": str(data.get("hint_uz", ""))}
+    if mode == "finish":
+        data = await _json_call([head + "The scene is over. Write summary_uz: 2–3 sentences in Uzbek on how the learner did "
+                                 "(what was good, the main thing to improve). phrases: 4–6 useful Korean phrases from this scene "
+                                 "the learner should remember (prefer ones they struggled with), each with Uzbek meaning. "
+                                 "score: overall 0–100 for communication in this scene.\n"
+                                 'Shape: {"summary_uz": "", "phrases": [{"ko": "", "uz": ""}], "score": 0}'], temperature=0.3)
+        ph = [{"ko": str(p.get("ko", "")), "uz": str(p.get("uz", ""))} for p in data.get("phrases", [])[:6] if isinstance(p, dict) and p.get("ko")]
+        return {"summary_uz": str(data.get("summary_uz", "")), "phrases": ph, "score": _clamp(data.get("score")) or 0}
+    parts = []
+    if wav:
+        parts.append(types.Part.from_bytes(data=wav, mime_type="audio/wav"))
+    parts.append(head + f"Learner's new message{' (spoken; audio attached, transcript below)' if wav else ''}: «{user_text}»\n\n"
+                 "1. If the learner wrote Korean: corrected_ko (natural correct Korean, same if already correct), correction_uz "
+                 "(what was wrong and why, in Uzbek; empty if correct). Score grammar and vocabulary 0-100"
+                 + (", pronunciation 0-100 from the audio" if wav else "") + ".\n"
+                 "2. If the learner wrote Uzbek/Russian/English or asked for help: help_uz teaches how to say it in Korean; scores null.\n"
+                 "3. goals_done: indexes of goals (not already DONE) that the learner's message clearly accomplished "
+                 "(meaning matters, small mistakes are fine).\n"
+                 "4. reply_ko: stay in character, 1–3 short sentences at the learner's level, naturally steering toward the "
+                 "unfinished goals; reply_uz: Uzbek translation. If all goals are done, close the scene naturally.\n"
+                 'Shape: {"corrected_ko": "", "correction_uz": "", "scores": {"grammar": 0, "vocabulary": 0, "pronunciation": null}, '
+                 '"goals_done": [0], "help_uz": "", "reply_ko": "", "reply_uz": ""}')
+    data = await _json_call(parts, temperature=0.6)
+    sc = data.get("scores") or {}
+    gd = []
+    for g in data.get("goals_done") or []:
+        try:
+            g = int(g)
+        except (TypeError, ValueError):
+            continue
+        if 0 <= g < len(goals) and g not in done and g not in gd:
+            gd.append(g)
+    return {"corrected_ko": str(data.get("corrected_ko", "")), "correction_uz": str(data.get("correction_uz", "")),
+            "scores": {"grammar": _clamp(sc.get("grammar")), "vocabulary": _clamp(sc.get("vocabulary")),
+                       "pronunciation": _clamp(sc.get("pronunciation")) if wav else None},
+            "goals_done": gd, "help_uz": str(data.get("help_uz", "")),
+            "reply_ko": str(data.get("reply_ko", "")), "reply_uz": str(data.get("reply_uz", ""))}
+
+
 # ---------------------------------------------------------------- MASLAHATLAR
 async def advice(stats: dict) -> dict:
     if config.AI_FAKE:
