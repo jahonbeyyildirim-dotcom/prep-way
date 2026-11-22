@@ -1,0 +1,441 @@
+{
+ "lang": "uz",
+ "prob": 1,
+ "segments": [
+  {
+   "start": 0.0,
+   "end": 3.34,
+   "text": " xaftalik bonusli turniyurlarini qaytadan yolga koydi.",
+   "words": [
+    [
+     0.0,
+     0.48,
+     " xaftalik"
+    ],
+    [
+     0.48,
+     1.04,
+     " bonusli"
+    ],
+    [
+     1.04,
+     1.74,
+     " turniyurlarini"
+    ],
+    [
+     1.74,
+     2.62,
+     " qaytadan"
+    ],
+    [
+     2.62,
+     3.02,
+     " yolga"
+    ],
+    [
+     3.02,
+     3.34,
+     " koydi."
+    ]
+   ]
+  },
+  {
+   "start": 4.02,
+   "end": 7.8,
+   "text": " Yandikista isli oca akela, xar xafta taksaparki sabidan",
+   "words": [
+    [
+     4.02,
+     4.84,
+     " Yandikista"
+    ],
+    [
+     4.84,
+     5.12,
+     " isli"
+    ],
+    [
+     5.12,
+     5.3,
+     " oca"
+    ],
+    [
+     5.3,
+     5.72,
+     " akela,"
+    ],
+    [
+     5.86,
+     6.34,
+     " xar"
+    ],
+    [
+     6.34,
+     6.72,
+     " xafta"
+    ],
+    [
+     6.72,
+     7.46,
+     " taksaparki"
+    ],
+    [
+     7.46,
+     7.8,
+     " sabidan"
+    ]
+   ]
+  },
+  {
+   "start": 7.8,
+   "end": 10.46,
+   "text": " illik dolorlik bonus kurlarini alnusna aqla sangiz,",
+   "words": [
+    [
+     7.8,
+     8.3,
+     " illik"
+    ],
+    [
+     8.3,
+     8.7,
+     " dolorlik"
+    ],
+    [
+     8.7,
+     9.0,
+     " bonus"
+    ],
+    [
+     9.0,
+     9.48,
+     " kurlarini"
+    ],
+    [
+     9.48,
+     9.82,
+     " alnusna"
+    ],
+    [
+     9.82,
+     10.08,
+     " aqla"
+    ],
+    [
+     10.08,
+     10.46,
+     " sangiz,"
+    ]
+   ]
+  },
+  {
+   "start": 10.62,
+   "end": 12.32,
+   "text": " mu videonu aqarga chakibri.",
+   "words": [
+    [
+     10.62,
+     11.04,
+     " mu"
+    ],
+    [
+     11.04,
+     11.6,
+     " videonu"
+    ],
+    [
+     11.6,
+     11.96,
+     " aqarga"
+    ],
+    [
+     11.96,
+     12.32,
+     " chakibri."
+    ]
+   ]
+  },
+  {
+   "start": 12.46,
+   "end": 16.28,
+   "text": " Tezgirar taksi taksaparki uz xayda ocalarini oylayan halda",
+   "words": [
+    [
+     12.46,
+     13.2,
+     " Tezgirar"
+    ],
+    [
+     13.2,
+     13.6,
+     " taksi"
+    ],
+    [
+     13.6,
+     14.34,
+     " taksaparki"
+    ],
+    [
+     14.34,
+     14.68,
+     " uz"
+    ],
+    [
+     14.68,
+     15.0,
+     " xayda"
+    ],
+    [
+     15.0,
+     15.42,
+     " ocalarini"
+    ],
+    [
+     15.42,
+     15.84,
+     " oylayan"
+    ],
+    [
+     15.84,
+     16.28,
+     " halda"
+    ]
+   ]
+  },
+  {
+   "start": 16.28,
+   "end": 20.0,
+   "text": " xaftalik bonusli turniyurlarini qaytadan yolga koydi.",
+   "words": [
+    [
+     16.28,
+     17.12,
+     " xaftalik"
+    ],
+    [
+     17.12,
+     17.68,
+     " bonusli"
+    ],
+    [
+     17.68,
+     18.4,
+     " turniyurlarini"
+    ],
+    [
+     18.4,
+     19.26,
+     " qaytadan"
+    ],
+    [
+     19.26,
+     19.68,
+     " yolga"
+    ],
+    [
+     19.68,
+     20.0,
+     " koydi."
+    ]
+   ]
+  },
+  {
+   "start": 20.18,
+   "end": 24.42,
+   "text": " En aktif xayda ocalarimizga xar xafta illik dolorlik bonus kurlari",
+   "words": [
+    [
+     20.18,
+     20.52,
+     " En"
+    ],
+    [
+     20.52,
+     20.98,
+     " aktif"
+    ],
+    [
+     20.98,
+     21.2,
+     " xayda"
+    ],
+    [
+     21.2,
+     21.92,
+     " ocalarimizga"
+    ],
+    [
+     21.92,
+     22.28,
+     " xar"
+    ],
+    [
+     22.28,
+     22.66,
+     " xafta"
+    ],
+    [
+     22.66,
+     23.12,
+     " illik"
+    ],
+    [
+     23.12,
+     23.58,
+     " dolorlik"
+    ],
+    [
+     23.58,
+     23.88,
+     " bonus"
+    ],
+    [
+     23.88,
+     24.42,
+     " kurlari"
+    ]
+   ]
+  },
+  {
+   "start": 24.42,
+   "end": 28.16,
+   "text": " va undan tashqara xar oyda tekingan muay almashdirish,",
+   "words": [
+    [
+     24.42,
+     24.94,
+     " va"
+    ],
+    [
+     24.94,
+     25.26,
+     " undan"
+    ],
+    [
+     25.26,
+     25.7,
+     " tashqara"
+    ],
+    [
+     25.7,
+     26.0,
+     " xar"
+    ],
+    [
+     26.0,
+     26.4,
+     " oyda"
+    ],
+    [
+     26.4,
+     27.02,
+     " tekingan"
+    ],
+    [
+     27.02,
+     27.34,
+     " muay"
+    ],
+    [
+     27.34,
+     28.16,
+     " almashdirish,"
+    ]
+   ]
+  },
+  {
+   "start": 28.2,
+   "end": 32.22,
+   "text": " benzin zaprafika va VIP muayga xizmatlarini taklif qilamiz",
+   "words": [
+    [
+     28.2,
+     28.94,
+     " benzin"
+    ],
+    [
+     28.94,
+     29.62,
+     " zaprafika"
+    ],
+    [
+     29.62,
+     29.8,
+     " va"
+    ],
+    [
+     29.8,
+     30.16,
+     " VIP"
+    ],
+    [
+     30.16,
+     30.54,
+     " muayga"
+    ],
+    [
+     30.54,
+     31.3,
+     " xizmatlarini"
+    ],
+    [
+     31.3,
+     31.76,
+     " taklif"
+    ],
+    [
+     31.76,
+     32.22,
+     " qilamiz"
+    ]
+   ]
+  },
+  {
+   "start": 32.22,
+   "end": 36.12,
+   "text": " ba tafsil malumat olus chun taksaparkimizga aloqa yachgin.",
+   "words": [
+    [
+     32.22,
+     32.76,
+     " ba"
+    ],
+    [
+     32.76,
+     33.18,
+     " tafsil"
+    ],
+    [
+     33.18,
+     33.6,
+     " malumat"
+    ],
+    [
+     33.6,
+     33.9,
+     " olus"
+    ],
+    [
+     33.9,
+     34.2,
+     " chun"
+    ],
+    [
+     34.2,
+     35.18,
+     " taksaparkimizga"
+    ],
+    [
+     35.18,
+     35.74,
+     " aloqa"
+    ],
+    [
+     35.74,
+     36.12,
+     " yachgin."
+    ]
+   ]
+  }
+ ]
+}
