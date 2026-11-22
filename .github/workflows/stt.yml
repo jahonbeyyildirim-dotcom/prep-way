@@ -1,0 +1,19 @@
+name: tmp-stt
+on:
+  push:
+    branches: [tmp-subs]
+    paths: ["full.ogg", "stt.py", ".github/workflows/stt.yml"]
+permissions:
+  contents: write
+jobs:
+  stt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -q faster-whisper==1.1.1
+      - run: python stt.py
+      - run: |
+          git config user.email bot@example.com; git config user.name bot
+          git add out_*.json && git commit -m "stt result [skip ci]" && git push
