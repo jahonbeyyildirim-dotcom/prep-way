@@ -69,10 +69,10 @@ jobs:
       - name: Yangilanish ma'lumoti (desktop-latest.json)
         if: github.ref == 'refs/heads/main' && matrix.target == 'mac'
         env:
-          NOTES: ${{ github.event.head_commit.message }}
+          NOTES: "Yangi imkoniyatlar va xatolar tuzatildi. Yangilash uchun yangi faylni yuklab, o'rnating — ma'lumotlaringiz saqlanib qoladi."
         run: |
           node -e '
-            const notes = (process.env.NOTES || "").split("\n")[0].slice(0, 200);
+            const notes = process.env.NOTES || "";
             require("fs").writeFileSync("dist/desktop-latest.json", JSON.stringify({
               version: process.env.VERSION_NAME, notes,
               win: "https://prepway-api.onrender.com/HangukWay-Windows.exe",
