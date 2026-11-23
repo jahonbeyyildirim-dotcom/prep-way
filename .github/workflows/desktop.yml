@@ -85,6 +85,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: demo
+          target_commitish: ${{ github.sha }}
+          name: Hanguk Way — sinov versiyasi
+          prerelease: true
+          make_latest: false
           files: |
             desktop/dist/${{ matrix.file }}
             desktop/dist/desktop-latest.json
