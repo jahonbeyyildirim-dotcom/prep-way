@@ -65,9 +65,25 @@
     }
   };
 
+  // ---- Kundalik eslatmalar: Capacitor LocalNotifications bilan bir xil ko'rinish ----
+  var D = window.PW_DESKTOP;
+  var LocalNotifications = {
+    requestPermissions: function () { return Promise.resolve({ display: "granted" }); },
+    checkPermissions: function () { return Promise.resolve({ display: "granted" }); },
+    schedule: function (o) {
+      var list = ((o && o.notifications) || []).map(function (n) {
+        var at = n.schedule && n.schedule.at; at = at instanceof Date ? at.getTime() : new Date(at).getTime();
+        return { id: n.id, title: n.title, body: n.body, at: at };
+      });
+      return D.schedule(list).then(function () { return { notifications: list.map(function (n) { return { id: n.id }; }) }; });
+    },
+    cancel: function (o) { return D.cancel(((o && o.notifications) || []).map(function (n) { return n.id; })); },
+    getPending: function () { return D.pending().then(function (l) { return { notifications: l }; }); }
+  };
+
   window.Capacitor = {
     isNativePlatform: function () { return true; },
-    getPlatform: function () { return window.PW_DESKTOP.platform === "darwin" ? "mac" : "windows"; },
-    Plugins: { SpeechRecognition: SpeechRecognition }
+    getPlatform: function () { return D.platform === "darwin" ? "mac" : "windows"; },
+    Plugins: { SpeechRecognition: SpeechRecognition, LocalNotifications: LocalNotifications }
   };
 })();

@@ -66,12 +66,28 @@ jobs:
           name: HangukWay-${{ matrix.target }}-${{ env.VERSION_NAME }}
           path: desktop/dist/${{ matrix.file }}
 
+      - name: Yangilanish ma'lumoti (desktop-latest.json)
+        if: github.ref == 'refs/heads/main' && matrix.target == 'mac'
+        env:
+          NOTES: ${{ github.event.head_commit.message }}
+        run: |
+          node -e '
+            const notes = (process.env.NOTES || "").split("\n")[0].slice(0, 200);
+            require("fs").writeFileSync("dist/desktop-latest.json", JSON.stringify({
+              version: process.env.VERSION_NAME, notes,
+              win: "https://prepway-api.onrender.com/HangukWay-Windows.exe",
+              mac: "https://prepway-api.onrender.com/HangukWay-Mac.dmg",
+              page: "https://prepway-api.onrender.com/yuklab" }, null, 1));'
+          cat dist/desktop-latest.json
+
       - name: «demo» Release'ga chiqarish
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: demo
-          files: desktop/dist/${{ matrix.file }}
+          files: |
+            desktop/dist/${{ matrix.file }}
+            desktop/dist/desktop-latest.json
 
       - name: Versiyali Release
         if: startsWith(github.ref, 'refs/tags/v')

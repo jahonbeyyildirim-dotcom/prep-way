@@ -165,7 +165,14 @@
     K.sheet('<h3 style="margin:0 0 8px">🔔 ' + esc(T({ uz: "Kundalik eslatma", ru: "Ежедневное напоминание", en: "Daily reminder" })) + '</h3>' +
       '<p class="note">' + esc(T({ uz: "Har kuni tanlangan soatda eslataman. Maqsad bajarilgan kunlari bezovta qilmayman.", ru: "Напомню каждый день в выбранный час. В дни, когда цель выполнена, не побеспокою.", en: "I'll remind you daily at the chosen time — but not on days you've hit your goal." })) + '</p>' +
       '<div class="onb-speed" style="justify-content:flex-start;flex-wrap:wrap">' + [8, 12, 18, 19, 20, 21].map(function (h) { return '<button data-rh="' + h + '" class="' + (r.on && r.h === h ? "on" : "") + '">' + h + ':00</button>'; }).join("") +
-      '<button data-rh="off" class="' + (!r.on ? "on" : "") + '">' + esc(T({ uz: "O'chirish", ru: "Выкл.", en: "Off" })) + '</button></div>');
+      '<button data-rh="off" class="' + (!r.on ? "on" : "") + '">' + esc(T({ uz: "O'chirish", ru: "Выкл.", en: "Off" })) + '</button></div>' +
+      (window.PW_DESKTOP ? '<label style="display:flex;gap:10px;margin-top:12px;align-items:flex-start;cursor:pointer"><input type="checkbox" id="rmAuto" style="width:20px;height:20px;margin-top:2px"><span class="note" style="margin:0">' +
+        esc(T({ uz: "Kompyuter yoqilganda Hanguk Way fonda ishga tushsin — oyna ochilmagan bo'lsa ham eslatma keladi.", ru: "Запускать Hanguk Way в фоне при включении компьютера — напоминания придут, даже если окно не открыто.", en: "Start Hanguk Way in the background when the computer starts — reminders arrive even if the window isn't open." })) + '</span></label>' : ''));
+    if (window.PW_DESKTOP && PW_DESKTOP.autostart) {
+      var cb = $("rmAuto");
+      PW_DESKTOP.autostart().then(function (v) { cb.checked = !!v; }).catch(function () {});
+      cb.onchange = function () { PW_DESKTOP.autostart(cb.checked).catch(function () {}); };
+    }
     document.querySelectorAll("[data-rh]").forEach(function (b) {
       b.onclick = function () {
         var L = LN();
@@ -175,7 +182,8 @@
         L.requestPermissions().then(function (pm) {
           if (pm && pm.display === "denied") throw new Error(T({ uz: "Bildirishnomalarga ruxsat berilmagan (telefon sozlamalaridan yoqing).", ru: "Уведомления запрещены (включите в настройках).", en: "Notifications are blocked (enable them in settings)." }));
           sv(RKEY, { on: true, h: h, m: 0 }); remind(); K.closeSheet();
-          H.toast("🔔 " + T({ uz: "Har kuni {h}:00 da eslataman.", ru: "Буду напоминать в {h}:00.", en: "I'll remind you at {h}:00." }, { h: h }));
+          H.toast("🔔 " + T({ uz: "Har kuni {h}:00 da eslataman.", ru: "Буду напоминать в {h}:00.", en: "I'll remind you at {h}:00." }, { h: h }) +
+            (window.PW_DESKTOP ? " " + T({ uz: "Oynani yopsangiz ham ilova fonda qoladi.", ru: "Приложение останется в фоне после закрытия окна.", en: "The app stays in the background when you close the window." }) : ""));
         }).catch(function (e) { H.toast(e.message || String(e)); });
       };
     });
