@@ -94,6 +94,14 @@
   .price .amt small{font-size:14px;color:var(--muted);font-weight:600}
   .price ul{margin:4px 0 0;padding-left:18px;color:var(--muted);font-size:14px}
   .price.pro{border:2px solid var(--blue)}
+  .price.ultra{border-color:var(--red)}
+  .tariffs{align-items:stretch}
+  .pay-status{background:var(--card);border-radius:12px;padding:10px 12px;margin:0 0 10px;font-weight:700;color:var(--green)}
+  .pay-amt{font-size:30px;font-weight:800;letter-spacing:-.03em;margin:2px 0}
+  .pay-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1.5px solid var(--line,#e3e6ee);background:var(--card);color:var(--ink);border-radius:14px;padding:12px 14px;margin:0 0 8px;font:inherit;cursor:pointer}
+  .pay-btn b{font-size:17px;min-width:72px}.pay-btn small{flex:1;color:var(--muted);font-size:13px}.pay-btn span{font-size:22px;color:var(--muted)}
+  .pay-btn:disabled{opacity:.5}
+  .pay-click b{color:#00a3ff}.pay-payme b{color:#00b5b8}.pay-test b{color:var(--muted)}
   .pay{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
   .note{font-size:12.5px;color:var(--muted)}
 
@@ -394,7 +402,8 @@
     <div id="tipsList"></div>
 
     <h2>Tariflar</h2>
-    <div class="grid2">
+    <div class="note app-pay pay-status" id="payStatus" style="display:none"></div>
+    <div class="grid2 tariffs">
       <div class="card price">
         <span class="tag" style="font-size:12px;font-weight:700;color:var(--muted)">BEPUL</span>
         <div class="amt">0 so'm</div>
@@ -402,12 +411,21 @@
       </div>
       <div class="card price pro">
         <span class="tag" style="font-size:12px;font-weight:700;color:var(--blue)">PREMIUM</span>
-        <div class="amt">⭐ <span id="starPrice">200</span> Stars <small>/ oy</small></div>
-        <ul><li>Kuniga 300 ta AI so'rov</li><li>20 tagacha kitob va ular bo'yicha darslar</li><li>Ovozli assistent: botda ovozli javoblar</li><li>Shaxsiy maslahat va haftalik reja</li></ul>
-        <button class="btn" id="buyBtn" style="margin-top:6px">⭐ Premium olish</button>
+        <div class="amt tg-only">⭐ <span id="starPrice">200</span> Stars <small>/ oy</small></div>
+        <div class="amt app-pay" style="display:none"><span id="price_premium">84 000 so'm</span> <small>/ oy</small></div>
+        <ul><li>Kuniga 300 ta AI so'rov (bepulda 15 ta)</li><li>Komiko bilan suhbat, rolli vaziyatlar va yozishni AI baholashi — ko'p marta</li><li>20 tagacha kitob va ular bo'yicha darslar</li></ul>
+        <button class="btn tg-only" id="buyBtn" style="margin-top:6px">⭐ Premium olish</button>
+        <button class="btn app-pay" data-plan="premium" style="margin-top:6px;display:none">💳 Premium olish</button>
+      </div>
+      <div class="card price pro ultra app-pay" style="display:none">
+        <span class="tag" style="font-size:12px;font-weight:700;color:var(--red)">ULTRA</span>
+        <div class="amt"><span id="price_ultra">120 000 so'm</span> <small>/ oy</small></div>
+        <ul><li>Premium'dagi hammasi</li><li>Kuniga 600 ta AI so'rov — 2 barobar ko'p</li><li>Imtihon oldidan jadal tayyorlanish uchun</li></ul>
+        <button class="btn" data-plan="ultra" style="margin-top:6px;background:var(--red)">💳 Ultra olish</button>
       </div>
     </div>
     <p class="note tg-only" style="margin-top:10px">To'lov Telegram Stars orqali amalga oshiriladi: Telegram ichida raqamli xizmatlar uchun shu usul talab qilinadi. Stars'ni Telegram ilovasining o'zida sotib olish mumkin.</p>
+    <p class="note app-pay" style="margin-top:10px;display:none">To'lov Click yoki Payme orqali (Uzcard, Humo). Obuna 30 kunga yoqiladi va avtomatik yangilanmaydi. <a href="#" class="ext-link" data-href="/oferta">Ommaviy oferta</a> · <a href="#" class="ext-link" data-href="/privacy">Maxfiylik siyosati</a></p>
   </section>
 
   <!-- TEST -->
@@ -1363,6 +1381,7 @@
 <script src="dict-data.js"></script>
 <script src="conj.js"></script>
 <script src="dict.js"></script>
+<script src="pay.js"></script>
 <script src="home.js"></script>
 <script src="coach.js"></script>
 <script src="league.js"></script>

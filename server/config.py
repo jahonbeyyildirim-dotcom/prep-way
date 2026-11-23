@@ -44,6 +44,7 @@ PREMIUM_STARS = _int("PREMIUM_STARS", 200)
 PREMIUM_DAYS = _int("PREMIUM_DAYS", 30)
 FREE_DAILY_AI = _int("FREE_DAILY_AI", 15)        # bepul foydalanuvchi uchun kunlik AI so'rovlar
 PREMIUM_DAILY_AI = _int("PREMIUM_DAILY_AI", 300)
+ULTRA_DAILY_AI = _int("ULTRA_DAILY_AI", 600)
 FREE_DAILY_TTS = _int("FREE_DAILY_TTS", 60)      # serverda ovozga aylantirish (kesh ishlatilmaganda)
 PREMIUM_DAILY_TTS = _int("PREMIUM_DAILY_TTS", 600)
 FREE_MAX_BOOKS = _int("FREE_MAX_BOOKS", 1)

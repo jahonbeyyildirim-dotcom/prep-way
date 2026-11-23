@@ -25,7 +25,9 @@ writeFileSync(join(out, "app-config.js"),
     googleWebClientId: cfg.googleWebClientId || "",
     googleIosClientId: cfg.googleIosClientId || "",
     demo: !!cfg.demo,
-    guest: !!cfg.guest
+    guest: !!cfg.guest,
+    // "play" — Google Play uchun yig'ish: ilova ichida Click/Payme ko'rsatilmaydi (Play qoidasi: Google Play Billing)
+    store: process.env.PW_STORE || cfg.store || "direct"
   }, null, 2) + ";\n");
 
 // iPhone: Google kirishdan qaytish uchun "teskari" client ID URL sxemasi (Info.plist)

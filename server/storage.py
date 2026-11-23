@@ -61,14 +61,25 @@ def is_premium(uid: int) -> bool:
     return premium_until(uid) > time.time()
 
 
-async def add_premium(uid: int, charge_id: str) -> float:
+async def add_premium(uid: int, charge_id: str, days: int | None = None, tier: str = "premium") -> float:
+    """Obunani uzaytiradi. tier: "premium" yoki "ultra" (Ultra muddat davomida Premium imkoniyatlarini ham beradi)."""
     async with _lock:
         users = _read(PREMIUM_FILE, {})
-        start = max(time.time(), float(users.get(str(uid), {}).get("until", 0)))
-        until = start + config.PREMIUM_DAYS * 86400
-        users[str(uid)] = {"until": until, "last_charge_id": charge_id}
+        cur = users.get(str(uid), {})
+        start = max(time.time(), float(cur.get("until", 0)))
+        until = start + (days or config.PREMIUM_DAYS) * 86400
+        if cur.get("tier") == "ultra" and float(cur.get("until", 0)) > time.time():
+            tier = "ultra"                      # faol Ultra ustiga Premium olinsa ham Ultra saqlanadi
+        users[str(uid)] = {"until": until, "last_charge_id": charge_id, "tier": tier}
         _write(PREMIUM_FILE, users)
         return until
+
+
+def tier(uid: int) -> str:
+    """"free", "premium" yoki "ultra"."""
+    if not is_premium(uid):
+        return "free"
+    return _read(PREMIUM_FILE, {}).get(str(uid), {}).get("tier", "premium")
 
 
 # ---------- Kunlik limitlar ----------
@@ -78,8 +89,9 @@ def _today() -> str:
 
 def limits(uid: int) -> dict:
     p = is_premium(uid)
+    ultra = p and tier(uid) == "ultra"
     return {
-        "ai": config.PREMIUM_DAILY_AI if p else config.FREE_DAILY_AI,
+        "ai": config.ULTRA_DAILY_AI if ultra else (config.PREMIUM_DAILY_AI if p else config.FREE_DAILY_AI),
         "tts": config.PREMIUM_DAILY_TTS if p else config.FREE_DAILY_TTS,
         "books": config.PREMIUM_MAX_BOOKS if p else config.FREE_MAX_BOOKS,
     }

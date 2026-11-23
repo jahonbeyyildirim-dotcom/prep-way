@@ -10,7 +10,7 @@ from pathlib import Path
 import aiohttp
 from aiohttp import web
 
-from . import dictsvc, ai, auth, books, config, korean, storage
+from . import dictsvc, ai, auth, books, config, korean, payments, storage
 from .ai import AIError
 
 log = logging.getLogger("api")
@@ -128,6 +128,7 @@ async def me(req):
         "email": req.get("user", {}).get("email", ""),
         "premium_until": storage.premium_until(uid),
         "premium": storage.is_premium(uid),
+        "tier": storage.tier(uid),
         "limits": storage.limits(uid),
         "usage": storage.usage(uid),
         "bot_username": req.app.get("bot_username", ""),
@@ -533,6 +534,10 @@ async def health(_req):
     return web.json_response({"ok": True, "db": db, "deepl": dictsvc.deepl_enabled(), "claude": ai.claude_enabled()})
 
 
+async def oferta(_req):
+    return web.FileResponse(config.MINIAPP_DIR / "oferta.html", headers={"Cache-Control": "no-cache"})
+
+
 async def privacy(_req):
     return web.FileResponse(config.MINIAPP_DIR / "privacy.html", headers={"Cache-Control": "no-cache"})
 
@@ -627,9 +632,11 @@ def make_app() -> web.Application:
     app.add_routes([
         web.post("/api/auth/google", auth_google),
         web.post("/api/auth/guest", auth_guest),
+        *payments.routes(),
         web.get("/api/me", me),
         web.delete("/api/me", delete_me),
         web.get("/privacy", privacy),
+        web.get("/oferta", oferta),
         web.get("/api/health", health),
         web.post("/api/speech", speech),
         web.post("/api/stt", stt),
