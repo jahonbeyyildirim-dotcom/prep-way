@@ -28,17 +28,30 @@ Kod tayyor (`server/payments.py`, `miniapp/pay.js`). Shartnoma tuzilgach, faqat 
    - Fiskal chek uchun (Payme so'rasa): `PAYME_IKPU` (xizmatning MXIK kodi, tasnif.soliq.uz), `PAYME_PACKAGE_CODE`
 5. Payme sinov sahifasida (test.paycom.uz) barcha ssenariylarni o'tkazing — Payme shundan keyin kassani ishga tushiradi.
 
-## 3. Narxlar (ixtiyoriy)
+## 3. O'quv markazi litsenziyasi
+
+- Ilovada: Guruhlar → guruhni ochish → «Litsenziya olish» (Click/Payme). Guruh egasi va birinchi 30 ta o'quvchi Premium oladi.
+- **Bank o'tkazmasi** bilan to'lagan markaz uchun: Render → Environment'ga `ADMIN_KEY` (uzun tasodifiy satr) qo'shing, keyin:
+
+```
+curl -X POST https://prepway-api.onrender.com/admin/group-license \
+  -H "X-Admin-Key: <ADMIN_KEY>" -H "Content-Type: application/json" \
+  -d '{"code":"PN9XRM","days":30,"seats":30,"ref":"hisob-faktura 12"}'
+```
+
+- Narx va o'rinlar: `PRICE_CENTER` (600000), `CENTER_SEATS` (30).
+
+## 4. Narxlar (ixtiyoriy)
 
 Standart: Premium 84 000 so'm, Ultra 120 000 so'm, 30 kun. O'zgartirish uchun: `PRICE_PREMIUM`, `PRICE_ULTRA`, `PAY_DAYS`.
 
-## 4. Tekshirish
+## 5. Tekshirish
 
 - Ilova → Asosiy → Tariflar → «Premium olish». Kalitlar qo'shilgan tizimlargina ko'rinadi.
 - To'lovdan keyin obuna avtomatik yoqiladi; ilova 3 soniyada bir tekshiradi.
 - Buyurtmalar: `data/orders.json`, Payme tranzaksiyalari: `data/payme_tx.json` (bazaga ham nusxalanadi).
 
-## 5. Sahifalar (to'lov tizimlari so'raydi)
+## 6. Sahifalar (to'lov tizimlari so'raydi)
 
 - Ommaviy oferta: `https://prepway-api.onrender.com/oferta` — sariq joylarga YaTT rekvizitlarini yozing (`miniapp/oferta.html`).
 - Maxfiylik siyosati: `https://prepway-api.onrender.com/privacy`

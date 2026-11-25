@@ -9,7 +9,7 @@
   function dmy(ts) { var d = new Date(ts * 1000); return ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); }
 
   var PLANS = null, PROVIDERS = [], poll = null;
-  var NAMES = { premium: "Premium", ultra: "Ultra" };
+  var NAMES = { premium: "Premium", ultra: "Ultra", center: "Markaz litsenziyasi" }, EXTRA = {};
   var PROV = {
     click: { name: "Click", sub: { uz: "Uzcard, Humo · Click ilovasi", ru: "Uzcard, Humo · приложение Click", en: "Uzcard, Humo · Click app" }, cls: "pay-click" },
     payme: { name: "Payme", sub: { uz: "Uzcard, Humo · Payme ilovasi", ru: "Uzcard, Humo · приложение Payme", en: "Uzcard, Humo · Payme app" }, cls: "pay-payme" },
@@ -37,7 +37,8 @@
 
   function playBuild() { return !!(window.PW_CONFIG && PW_CONFIG.store === "play"); }
 
-  function open(plan) {
+  function open(plan, extra) {
+    EXTRA = extra || {};
     if (playBuild()) { H.toast(T({ uz: "Google Play orqali to'lov tez orada qo'shiladi.", ru: "Оплата через Google Play скоро появится.", en: "Google Play payments are coming soon." })); return; }
     if (!canPay()) { H.toast(T({ uz: "To'lov Hanguk Way ilovasida (Android, iPhone, kompyuter) ishlaydi.", ru: "Оплата доступна в приложении Hanguk Way.", en: "Payments work in the Hanguk Way app." })); return; }
     if (PW.demo) { H.toast(T({ uz: "Demo versiyada to'lov yo'q.", ru: "В демо-версии оплаты нет.", en: "No payments in the demo." })); return; }
@@ -49,7 +50,8 @@
     var p = PLANS[plan]; if (!p) return;
     var list = PROVIDERS.filter(function (k) { return PROV[k]; });
     var html = '<h3 style="margin:0 0 4px">💳 ' + esc(T({ uz: "{t} — 1 oy", ru: "{t} — 1 месяц", en: "{t} — 1 month" }, { t: NAMES[plan] })) + '</h3>' +
-      '<div class="pay-amt">' + esc(som(p.price)) + '</div>';
+      '<div class="pay-amt">' + esc(som(p.price)) + '</div>' +
+      (plan === "center" ? '<p class="note" style="margin:2px 0 6px">' + esc(T({ uz: "«{g}» guruhi: siz va birinchi qo'shilgan {n} ta o'quvchi 30 kun Premium oladi.", ru: "Группа «{g}»: вы и первые {n} учеников получат Premium на 30 дней.", en: "Group “{g}”: you and the first {n} students get Premium for 30 days." }, { g: EXTRA.name || EXTRA.group, n: p.seats || 30 })) + '</p>' : '');
     if (!list.length) {
       html += '<p class="note">' + esc(T({ uz: "To'lov tizimlari hozir ulanmoqda. Tez orada Click va Payme orqali to'lash mumkin bo'ladi.", ru: "Платёжные системы подключаются. Скоро можно будет оплатить через Click и Payme.", en: "Payment systems are being connected. Click and Payme will be available soon." })) + '</p>';
     } else {
@@ -73,7 +75,7 @@
 
   function start(plan, prov, btn) {
     btn.disabled = true;
-    H.api("/api/pay/create", { json: { plan: plan, provider: prov } }).then(function (d) {
+    H.api("/api/pay/create", { json: { plan: plan, provider: prov, group: EXTRA.group || "" } }).then(function (d) {
       try { localStorage.setItem("pwPayOrder", JSON.stringify({ id: d.order_id, t: Date.now() })); } catch (e) {}
       waiting(d.order_id);
       setTimeout(function () { openUrl(d.url); }, 150);
@@ -110,7 +112,9 @@
     H.api("/api/me").then(function (me) { H.SERVER.me = me; render(); }).catch(function () {});
     render(o);
     K.sheet('<div style="text-align:center"><div style="font-size:52px">🎉</div><h3 style="margin:6px 0">' + esc(T({ uz: "{t} yoqildi!", ru: "{t} активирован!", en: "{t} is on!" }, { t: NAMES[o.plan] || "Premium" })) + '</h3>' +
-      '<p class="note">' + esc(T({ uz: "{d} gacha amal qiladi. Rahmat!", ru: "Действует до {d}. Спасибо!", en: "Valid until {d}. Thank you!" }, { d: dmy(o.premium_until) })) + '</p></div>');
+      '<p class="note">' + esc(o.plan === "center"
+        ? T({ uz: "Guruh o'quvchilariga Premium berildi. Yangi qo'shilganlar ham bo'sh o'rin bo'lsa avtomatik oladi.", ru: "Ученики группы получили Premium. Новые участники получат его автоматически, пока есть места.", en: "Group students now have Premium. New members get it automatically while seats remain." })
+        : T({ uz: "{d} gacha amal qiladi. Rahmat!", ru: "Действует до {d}. Спасибо!", en: "Valid until {d}. Thank you!" }, { d: dmy(o.premium_until) })) + '</p></div>');
     try { if (window.PWCoach && PWCoach.confetti) PWCoach.confetti(); } catch (e) {}
     try { window.dispatchEvent(new CustomEvent("pw:premium", { detail: o })); } catch (e) {}
   }
@@ -136,5 +140,5 @@
     setTimeout(function () { load().catch(function () {}); resume(); }, 1200);
   }
 
-  window.PWPay = { open: open, check: check, render: render };
+  window.PWPay = { open: open, check: check, render: render, openUrl: openUrl, plans: function () { return load().then(function () { return PLANS; }); } };
 })();

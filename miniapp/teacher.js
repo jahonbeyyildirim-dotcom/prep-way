@@ -106,15 +106,28 @@
           '<div class="rp-c"><span>👥</span><b>' + rows.length + '</b><small>' + esc(T({ uz: "o'quvchi", ru: "учеников", en: "students" })) + '</small></div>' +
           '<div class="rp-c"><span>🔥</span><b>' + act + '</b><small>' + esc(T({ uz: "shu hafta faol", ru: "активны за неделю", en: "active this week" })) + '</small></div>' +
           '<div class="rp-c"><span>🎯</span><b>' + (avg == null ? "—" : avg + "%") + '</b><small>' + esc(T({ uz: "o'rtacha natija", ru: "средний результат", en: "avg score" })) + '</small></div></div>' +
+        licBox(r) +
         (rows.length ? '<div class="tc-tbl">' + rows.map(function (x, i) {
           var cold = !x.last || (new Date(dayAgo(0)) - new Date(x.last)) / 864e5 > 6;
-          return '<div class="tc-st' + (cold ? " cold" : "") + '"><div class="tc-st-h"><b>' + (i + 1) + '. ' + esc(x.name) + '</b>' + (x.level ? '<i class="lg-lv">' + esc(x.level) + '</i>' : '') + '<span class="tc-xp">' + (x.wxp || 0) + ' XP</span></div>' +
+          return '<div class="tc-st' + (cold ? " cold" : "") + '"><div class="tc-st-h"><b>' + (i + 1) + '. ' + esc(x.name) + '</b>' + (x.level ? '<i class="lg-lv">' + esc(x.level) + '</i>' : '') + (x.seat ? '<i class="tc-prem" title="Premium">💎</i>' : '') + '<span class="tc-xp">' + (x.wxp || 0) + ' XP</span></div>' +
             '<div class="tc-st-g"><span>📝 ' + (x.tests7 || 0) + ' ' + esc(T({ uz: "test", ru: "тест.", en: "tests" })) + '</span><span>🎯 ' + (x.tests7 ? x.avg7 + "%" : "—") + '</span><span>🔥 ' + (x.streak || 0) + '</span><span>⏱ ' + (x.mins7 || 0) + ' ' + esc(T({ uz: "daq", ru: "мин", en: "min" })) + '</span></div>' +
             '<div class="note">' + (x.weak ? '⚠️ ' + esc(x.weak) + ' · ' : '') + esc(T({ uz: "oxirgi faollik", ru: "последняя активность", en: "last active" })) + ': ' + esc(ago(x.last)) + '</div></div>';
         }).join("") + '</div>' : '<div class="card empty">' + esc(T({ uz: "Hali hech kim qo'shilmagan. Kodni yoki havolani o'quvchilarga yuboring.", ru: "Пока никто не вступил. Отправьте ученикам код или ссылку.", en: "No one has joined yet. Send the code or link to your students." })) + '</div>') +
         '<p class="note" style="margin-top:10px">' + esc(T({ uz: "Ko'rsatkichlar oxirgi 7 kun bo'yicha. XP — shu haftaning ligasi.", ru: "Показатели за последние 7 дней. XP — за текущую неделю лиги.", en: "Figures cover the last 7 days. XP is this week's league score." })) + '</p>' +
+        (rows.length ? '<button class="btn ghost" id="tcXls" style="width:100%;margin-top:6px">📊 ' + esc(T({ uz: "Excel'ga yuklab olish", ru: "Скачать в Excel", en: "Download as Excel" })) + '</button>' : '') +
         '<button class="btn ghost" id="tcDel" style="width:100%;margin-top:6px;color:var(--red)">🗑 ' + esc(T({ uz: "Guruhni o'chirish", ru: "Удалить группу", en: "Delete group" })) + '</button>';
       $("tcBack").onclick = view;
+      if ($("tcLic")) $("tcLic").onclick = function () {
+        if (!window.PWPay) return;
+        PWPay.open("center", { group: r.code, name: r.name });
+      };
+      if ($("tcXls")) $("tcXls").onclick = function () {
+        var btn = $("tcXls"); btn.disabled = true;
+        H.api("/api/group/" + encodeURIComponent(r.code) + "/export-link").then(function (x) {
+          btn.disabled = false;
+          if (window.PWPay && PWPay.openUrl) PWPay.openUrl(x.url); else window.open(x.url, "_blank");
+        }).catch(function (e) { btn.disabled = false; H.toast(e.message); });
+      };
       $("tcShare").onclick = function () {
         var txt = T({ uz: "Hanguk Way'dagi «{n}» guruhimga qo'shiling! Kod: {c}", ru: "Вступайте в мою группу «{n}» в Hanguk Way! Код: {c}", en: "Join my group “{n}” on Hanguk Way! Code: {c}" }, { n: r.name, c: r.code });
         if (navigator.share) navigator.share({ text: txt, url: link }).catch(function () {});
@@ -126,6 +139,24 @@
       };
     }).catch(function (e) { b.innerHTML = '<div class="err">⚠️ ' + esc(e.message) + '</div>'; });
   }
+
+  // ---------- O'quv markazi litsenziyasi ----------
+  function dmy(ts) { var d = new Date(ts * 1000); return ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); }
+  function licBox(r) {
+    var L = r.license || {};
+    if (L.active) {
+      return '<div class="card tc-lic on"><b>💎 ' + esc(T({ uz: "Markaz litsenziyasi faol", ru: "Лицензия центра активна", en: "Centre licence active" })) + '</b>' +
+        '<div class="note">' + esc(T({ uz: "{d} gacha · {u} / {s} o'rin band. Siz va 💎 belgili o'quvchilar Premium'dan foydalanadi.", ru: "До {d} · занято {u} из {s} мест. Вы и ученики с 💎 пользуются Premium.", en: "Until {d} · {u} of {s} seats used. You and students marked 💎 have Premium." }, { d: dmy(L.until), u: L.used || 0, s: L.seats || 0 })) + '</div>' +
+        '<button class="linkbtn" id="tcLic">' + esc(T({ uz: "Yana 1 oyga uzaytirish", ru: "Продлить на месяц", en: "Extend by 1 month" })) + ' ›</button></div>';
+    }
+    return '<div class="card tc-lic"><b>🏫 ' + esc(T({ uz: "O'quv markazi litsenziyasi", ru: "Лицензия учебного центра", en: "Learning centre licence" })) + '</b>' +
+      '<div class="note">' + esc(T({ uz: "Oyiga 600 000 so'm: siz va guruhga birinchi qo'shilgan 30 ta o'quvchi Premium oladi (kuniga 300 ta AI so'rov). Bank o'tkazmasi bilan to'lash uchun biz bilan bog'laning.", ru: "600 000 сум в месяц: вы и первые 30 учеников группы получают Premium (300 AI-запросов в день). Для оплаты переводом свяжитесь с нами.", en: "600,000 UZS/month: you and the first 30 students get Premium (300 AI requests a day). Contact us to pay by bank transfer." })) + '</div>' +
+      '<button class="btn" id="tcLic" style="margin-top:8px">💳 ' + esc(T({ uz: "Litsenziya olish", ru: "Купить лицензию", en: "Get a licence" })) + '</button></div>';
+  }
+  window.addEventListener("pw:premium", function (e) {
+    var o = e.detail || {};
+    if (o.plan === "center" && o.group && H.curView() === "teacher") dash(o.group);
+  });
 
   // Havola orqali taklif: /?g=KOD
   (function () { var m = /[?&]g=([A-Za-z0-9]{4,8})/.exec(location.search); if (m) { sv("pwGroupPending", m[1].toUpperCase()); try { history.replaceState(null, "", location.pathname); } catch (e) {} } })();

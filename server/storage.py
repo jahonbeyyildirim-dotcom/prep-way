@@ -53,8 +53,31 @@ def rmtree(path: Path) -> None:
 
 
 # ---------- Premium ----------
-def premium_until(uid: int) -> float:
+def own_premium_until(uid: int) -> float:
+    """Foydalanuvchining o'zi to'lagan obunasi."""
     return float(_read(PREMIUM_FILE, {}).get(str(uid), {}).get("until", 0))
+
+
+def license_until(uid: int) -> float:
+    """O'quv markazi litsenziyasi orqali berilgan Premium (guruh egasi + birinchi N o'rin, qo'shilish tartibida)."""
+    now, best = time.time(), 0.0
+    for g in _read(GROUPS_FILE, {}).values():
+        lic = g.get("license") or {}
+        until = float(lic.get("until", 0))
+        if until <= now:
+            continue
+        if g.get("owner") == uid:
+            best = max(best, until)
+            continue
+        seats = int(lic.get("seats", 30))
+        order = sorted(g.get("members", {}).items(), key=lambda kv: kv[1].get("joined", 0))[:seats]
+        if any(m == str(uid) for m, _ in order):
+            best = max(best, until)
+    return best
+
+
+def premium_until(uid: int) -> float:
+    return max(own_premium_until(uid), license_until(uid))
 
 
 def is_premium(uid: int) -> bool:
@@ -66,7 +89,7 @@ async def add_premium(uid: int, charge_id: str, days: int | None = None, tier: s
     async with _lock:
         users = _read(PREMIUM_FILE, {})
         cur = users.get(str(uid), {})
-        start = max(time.time(), float(cur.get("until", 0)))
+        start = max(time.time(), float(cur.get("until", 0)))   # faqat o'zi to'lagan muddat uzaytiriladi
         until = start + (days or config.PREMIUM_DAYS) * 86400
         if cur.get("tier") == "ultra" and float(cur.get("until", 0)) > time.time():
             tier = "ultra"                      # faol Ultra ustiga Premium olinsa ham Ultra saqlanadi
@@ -77,9 +100,9 @@ async def add_premium(uid: int, charge_id: str, days: int | None = None, tier: s
 
 def tier(uid: int) -> str:
     """"free", "premium" yoki "ultra"."""
-    if not is_premium(uid):
-        return "free"
-    return _read(PREMIUM_FILE, {}).get(str(uid), {}).get("tier", "premium")
+    if own_premium_until(uid) > time.time():
+        return _read(PREMIUM_FILE, {}).get(str(uid), {}).get("tier", "premium")
+    return "premium" if license_until(uid) > time.time() else "free"
 
 
 # ---------- Kunlik limitlar ----------
@@ -356,6 +379,26 @@ async def group_stats_save(uid: int, st: dict) -> bool:
     return True
 
 
+async def group_license_add(code: str, days: int, seats: int, ref: str) -> float:
+    """Guruhga o'quv markazi litsenziyasini qo'shadi (yoki uzaytiradi)."""
+    async with _lock:
+        gr = _read(GROUPS_FILE, {})
+        g = gr.get(str(code).upper())
+        if not g:
+            raise ValueError("Guruh topilmadi.")
+        lic = g.get("license") or {}
+        start = max(time.time(), float(lic.get("until", 0)))
+        lic.update(until=start + days * 86400, seats=max(int(lic.get("seats", 0)), seats), last_ref=ref)
+        g["license"] = lic
+        _write(GROUPS_FILE, gr)
+        return lic["until"]
+
+
+def group_owner(code: str):
+    g = _read(GROUPS_FILE, {}).get(str(code).upper())
+    return g.get("owner") if g else None
+
+
 def group_view(uid: int, code: str) -> dict | None:
     gr = _read(GROUPS_FILE, {})
     g = gr.get(str(code).upper())
@@ -363,9 +406,15 @@ def group_view(uid: int, code: str) -> dict | None:
         return None
     gs = _read(GSTATS_FILE, {})
     lg = _league_roll(_read(LEAGUE_FILE, {}))
+    lic = g.get("license") or {}
+    active = float(lic.get("until", 0)) > time.time()
+    seats = int(lic.get("seats", 0))
+    covered = {m for m, _ in sorted(g.get("members", {}).items(), key=lambda kv: kv[1].get("joined", 0))[:seats]} if active else set()
     rows = []
     for m, info in g.get("members", {}).items():
         st = gs.get(m, {})
-        rows.append({"name": info.get("name", ""), "joined": info.get("joined", 0), "wxp": lg.get("users", {}).get(m, {}).get("xp", 0), **st})
+        rows.append({"name": info.get("name", ""), "joined": info.get("joined", 0), "wxp": lg.get("users", {}).get(m, {}).get("xp", 0),
+                     "seat": m in covered, **st})
     rows.sort(key=lambda r: -r.get("wxp", 0))
-    return {"code": str(code).upper(), "name": g["name"], "rows": rows}
+    return {"code": str(code).upper(), "name": g["name"], "rows": rows,
+            "license": {"active": active, "until": float(lic.get("until", 0)), "seats": seats, "used": len(covered)}}

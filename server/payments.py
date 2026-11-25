@@ -38,7 +38,12 @@ PLANS = {
                 "title": {"uz": "Hanguk Way Premium — 1 oy", "ru": "Hanguk Way Premium — 1 месяц", "en": "Hanguk Way Premium — 1 month"}},
     "ultra": {"price": int(_env("PRICE_ULTRA", "120000") or 120000), "days": PAY_DAYS,
               "title": {"uz": "Hanguk Way Ultra — 1 oy", "ru": "Hanguk Way Ultra — 1 месяц", "en": "Hanguk Way Ultra — 1 month"}},
+    # O'quv markazi: guruhga litsenziya — guruh egasi va qo'shilish tartibida birinchi CENTER_SEATS o'quvchi Premium oladi
+    "center": {"price": int(_env("PRICE_CENTER", "600000") or 600000), "days": PAY_DAYS, "seats": int(_env("CENTER_SEATS", "30") or 30),
+               "title": {"uz": "Hanguk Way — o'quv markazi litsenziyasi, 1 oy", "ru": "Hanguk Way — лицензия учебного центра, 1 месяц",
+                         "en": "Hanguk Way — learning centre licence, 1 month"}},
 }
+ADMIN_KEY = _env("ADMIN_KEY")                # bank o'tkazmasi bilan to'lagan markazlar uchun litsenziyani qo'lda yoqish
 CLICK_SERVICE_ID = _env("CLICK_SERVICE_ID")
 CLICK_MERCHANT_ID = _env("CLICK_MERCHANT_ID")
 CLICK_SECRET_KEY = _env("CLICK_SECRET_KEY")
@@ -77,13 +82,15 @@ def get_order(oid) -> dict | None:
     return _orders()["items"].get(str(oid))
 
 
-async def create_order(uid: int, plan: str, provider: str) -> dict:
+async def create_order(uid: int, plan: str, provider: str, group: str = "") -> dict:
     async with storage._lock:
         data = _orders()
         data["seq"] = int(data.get("seq", 100000)) + 1
         oid = str(data["seq"])
         order = {"id": oid, "uid": uid, "plan": plan, "amount": PLANS[plan]["price"], "days": PLANS[plan]["days"],
                  "provider": provider, "status": "new", "created": time.time()}
+        if group:
+            order["group"] = group
         data["items"][oid] = order
         storage._write(ORDERS_FILE, data)
         return order
@@ -108,7 +115,10 @@ async def _mark_paid(oid: str, provider: str, ref: str) -> bool:
     if o["status"] == "paid":
         return True
     await _set_order(oid, status="paid", paid_at=time.time(), paid_via=provider, provider_ref=ref)
-    until = await storage.add_premium(int(o["uid"]), f"{provider}:{ref}", days=int(o["days"]), tier=o["plan"])
+    if o["plan"] == "center":
+        until = await storage.group_license_add(o["group"], int(o["days"]), PLANS["center"]["seats"], f"{provider}:{ref}")
+    else:
+        until = await storage.add_premium(int(o["uid"]), f"{provider}:{ref}", days=int(o["days"]), tier=o["plan"])
     log.info("To'lov qabul qilindi: order=%s uid=%s plan=%s via=%s until=%s", oid, o["uid"], o["plan"], provider, until)
     return True
 
@@ -133,7 +143,7 @@ def checkout_url(order: dict, req) -> str:
 # ---------------- Ilova uchun API (avtorizatsiya bilan) ----------------
 async def api_plans(req):
     return web.json_response({
-        "plans": {k: {"price": v["price"], "days": v["days"], "title": v["title"]} for k, v in PLANS.items()},
+        "plans": {k: {"price": v["price"], "days": v["days"], "title": v["title"], "seats": v.get("seats")} for k, v in PLANS.items()},
         "providers": providers(), "tier": storage.tier(req["uid"]), "premium_until": storage.premium_until(req["uid"]),
     })
 
@@ -145,7 +155,12 @@ async def api_create(req):
         return web.json_response({"error": "Noma'lum tarif."}, status=400)
     if provider not in providers():
         return web.json_response({"error": "Bu to'lov usuli hozircha ulanmagan."}, status=400)
-    order = await create_order(req["uid"], plan, provider)
+    group = ""
+    if plan == "center":
+        group = str(body.get("group", "")).strip().upper()
+        if not group or storage.group_owner(group) != req["uid"]:
+            return web.json_response({"error": "Litsenziya faqat o'zingiz ochgan guruh uchun olinadi."}, status=400)
+    order = await create_order(req["uid"], plan, provider, group)
     return web.json_response({"order_id": order["id"], "amount": order["amount"], "url": checkout_url(order, req)})
 
 
@@ -153,7 +168,7 @@ async def api_order(req):
     o = get_order(req.match_info["oid"])
     if not o or int(o["uid"]) != req["uid"]:
         return web.json_response({"error": "Buyurtma topilmadi."}, status=404)
-    return web.json_response({"id": o["id"], "status": o["status"], "plan": o["plan"], "amount": o["amount"],
+    return web.json_response({"id": o["id"], "status": o["status"], "plan": o["plan"], "amount": o["amount"], "group": o.get("group", ""),
                               "tier": storage.tier(req["uid"]), "premium_until": storage.premium_until(req["uid"])})
 
 
@@ -435,6 +450,22 @@ async def payme(req):
     return err(E_METHOD, rid)
 
 
+async def admin_license(req):
+    """Bank o'tkazmasi (hisob-faktura) bilan to'lagan markaz uchun litsenziyani qo'lda yoqish.
+    curl -X POST .../admin/group-license -H "X-Admin-Key: ..." -d '{"code":"PN9XRM","days":30}'"""
+    if not ADMIN_KEY or not hmac.compare_digest(req.headers.get("X-Admin-Key", ""), ADMIN_KEY):
+        raise web.HTTPNotFound()
+    try:
+        b = await req.json()
+        code, days = str(b.get("code", "")).upper(), int(b.get("days", PAY_DAYS))
+        seats = int(b.get("seats", PLANS["center"]["seats"]))
+        until = await storage.group_license_add(code, days, seats, f"bank:{b.get('ref', '')}")
+    except (ValueError, TypeError) as e:
+        return web.json_response({"error": str(e)}, status=400)
+    log.info("Litsenziya qo'lda yoqildi: %s, %s kun, %s o'rin", code, days, seats)
+    return web.json_response({"ok": True, "code": code, "until": until})
+
+
 def routes() -> list:
     return [
         web.get("/api/pay/plans", api_plans),
@@ -443,6 +474,7 @@ def routes() -> list:
         web.post("/pay/click/prepare", click_prepare),
         web.post("/pay/click/complete", click_complete),
         web.post("/pay/payme", payme),
+        web.post("/admin/group-license", admin_license),
         web.get("/pay/done", page_done),
         web.get("/pay/done/{oid}", page_done),
         web.get("/pay/test", page_test),

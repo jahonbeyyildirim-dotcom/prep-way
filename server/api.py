@@ -3,6 +3,8 @@ import asyncio
 import json
 import logging
 import tempfile
+import hashlib
+import hmac
 import time
 import re
 from pathlib import Path
@@ -10,7 +12,7 @@ from pathlib import Path
 import aiohttp
 from aiohttp import web
 
-from . import dictsvc, ai, auth, books, config, korean, payments, storage
+from . import dictsvc, ai, auth, books, config, korean, payments, storage, xlsx
 from .ai import AIError
 
 log = logging.getLogger("api")
@@ -387,6 +389,49 @@ async def group_stats(req):
     return web.json_response({"saved": await storage.group_stats_save(req["uid"], b if isinstance(b, dict) else {})})
 
 
+def _export_sig(code: str, exp: int) -> str:
+    return hmac.new(config.SECRET_KEY.encode(), f"group-export|{code}|{exp}".encode(), hashlib.sha256).hexdigest()[:32]
+
+
+async def group_export_link(req):
+    """O'qituvchi uchun 10 daqiqalik yuklab olish havolasi (brauzerda token yo'q, shuning uchun imzo bilan)."""
+    code = req.match_info["code"].upper()
+    if storage.group_view(req["uid"], code) is None:
+        return jerr("Guruh topilmadi yoki siz uning o'qituvchisi emassiz.", 404)
+    exp = int(time.time()) + 600
+    base = (config.WEBAPP_URL or f"{req.scheme}://{req.host}").rstrip("/")
+    return web.json_response({"url": f"{base}/export/group/{code}.xlsx?e={exp}&s={_export_sig(code, exp)}"})
+
+
+async def group_export(req):
+    code = req.match_info["code"].upper()
+    try:
+        exp = int(req.query.get("e", "0"))
+    except ValueError:
+        exp = 0
+    if exp < time.time() or not hmac.compare_digest(req.query.get("s", ""), _export_sig(code, exp)):
+        return web.Response(text="Havola eskirgan. Ilovada «Excel'ga yuklash» ni qayta bosing.", status=403)
+    owner = storage.group_owner(code)
+    v = storage.group_view(owner, code) if owner is not None else None
+    if v is None:
+        raise web.HTTPNotFound()
+    def d(ts):
+        return time.strftime("%d.%m.%Y", time.localtime(ts)) if ts else ""
+    head = ["№", "Ism", "Daraja", "Haftalik XP", "Testlar (7 kun)", "O'rtacha natija, %", "Seriya, kun", "Daqiqalar (7 kun)",
+            "Saqlangan so'zlar", "Rolli vaziyatlar", "Hikoyalar", "Eng zaif savol turi", "Oxirgi faollik", "Qo'shilgan", "Premium (litsenziya)"]
+    rows = []
+    for i, r in enumerate(v["rows"], 1):
+        rows.append([i, r.get("name", ""), r.get("level", ""), r.get("wxp", 0), r.get("tests7", 0), r.get("avg7", 0) if r.get("tests7") else "",
+                     r.get("streak", 0), r.get("mins7", 0), r.get("words", 0), r.get("role", 0), r.get("stories", 0), r.get("weak", ""),
+                     r.get("last", ""), d(r.get("joined", 0)), "ha" if r.get("seat") else ""])
+    data = xlsx.build(v["name"], head, rows, [5, 24, 8, 12, 14, 16, 11, 16, 15, 15, 11, 28, 14, 13, 18])
+    fname = re.sub(r"[^A-Za-z0-9_-]+", "_", v["name"]).strip("_") or code
+    return web.Response(body=data, headers={
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": f'attachment; filename="HangukWay_{fname}_{time.strftime("%Y-%m-%d")}.xlsx"',
+        "Cache-Control": "no-store"})
+
+
 async def explain(req):
     """Testdagi xato javobni AI tushuntiradi."""
     uid = req["uid"]
@@ -656,7 +701,9 @@ def make_app() -> web.Application:
         web.post("/api/group/join", group_join),
         web.post("/api/group/leave", group_leave),
         web.post("/api/group/stats", group_stats),
+        web.get("/api/group/{code}/export-link", group_export_link),
         web.get("/api/group/{code}", group_get),
+        web.get("/export/group/{code}.xlsx", group_export),
         web.delete("/api/group/{code}", group_del),
         web.post("/api/dict", dict_lookup),
         web.get("/api/dict/words", dict_words),

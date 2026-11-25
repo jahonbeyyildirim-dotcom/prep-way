@@ -593,3 +593,8 @@ html.dark .gc-card.flip .gc-p,html.dark .gc-card.flip .gc-lvb{color:#5eead4}
 .tc-st .lg-lv{background:var(--blue-soft);color:var(--blue)}
 .tc-xp{font-weight:800;color:#FF7A2F;font-size:13.5px}
 .tc-st-g{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 2px;font-size:13.5px;font-weight:700}
+/* O'quv markazi litsenziyasi */
+.tc-lic{padding:14px;margin:0 0 10px;border:1.5px dashed var(--line)}
+.tc-lic.on{border:1.5px solid var(--green);background:color-mix(in srgb,var(--green) 7%,var(--card))}
+.tc-lic .note{margin:4px 0 0}
+.tc-prem{font-style:normal;font-size:13px;margin-left:4px}
